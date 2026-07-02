@@ -1,0 +1,58 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+
+const stores = [
+  // 🗽 East Coast
+  { id: 1, name: "Vinod Luxury New York", city: "New York", state: "NY", zip: "10001" },
+  { id: 2, name: "Vinod Luxury Brooklyn", city: "Brooklyn", state: "NY", zip: "11201" },
+  { id: 3, name: "Vinod Luxury Boston", city: "Boston", state: "MA", zip: "02108" },
+  { id: 4, name: "Vinod Luxury Philadelphia", city: "Philadelphia", state: "PA", zip: "19103" },
+  { id: 5, name: "Vinod Luxury Miami", city: "Miami", state: "FL", zip: "33101" },
+
+  // 🏙️ Midwest
+  { id: 6, name: "Vinod Luxury Chicago", city: "Chicago", state: "IL", zip: "60601" },
+  { id: 7, name: "Vinod Luxury Detroit", city: "Detroit", state: "MI", zip: "48201" },
+  { id: 8, name: "Vinod Luxury Minneapolis", city: "Minneapolis", state: "MN", zip: "55401" },
+  { id: 9, name: "Vinod Luxury St. Louis", city: "St. Louis", state: "MO", zip: "63101" },
+
+  // 🌴 West Coast
+  { id: 10, name: "Vinod Luxury Los Angeles", city: "Los Angeles", state: "CA", zip: "90001" },
+  { id: 11, name: "Vinod Luxury San Francisco", city: "San Francisco", state: "CA", zip: "94102" },
+  { id: 12, name: "Vinod Luxury San Diego", city: "San Diego", state: "CA", zip: "92101" },
+  { id: 13, name: "Vinod Luxury Seattle", city: "Seattle", state: "WA", zip: "98101" },
+  { id: 14, name: "Vinod Luxury Portland", city: "Portland", state: "OR", zip: "97201" },
+
+  // 🌵 South / Central
+  { id: 15, name: "Vinod Luxury Dallas", city: "Dallas", state: "TX", zip: "75201" },
+  { id: 16, name: "Vinod Luxury Houston", city: "Houston", state: "TX", zip: "77001" },
+  { id: 17, name: "Vinod Luxury Austin", city: "Austin", state: "TX", zip: "73301" },
+  { id: 18, name: "Vinod Luxury Atlanta", city: "Atlanta", state: "GA", zip: "30301" },
+  { id: 19, name: "Vinod Luxury Nashville", city: "Nashville", state: "TN", zip: "37201" },
+
+  // 🏜️ Southwest
+  { id: 20, name: "Vinod Luxury Phoenix", city: "Phoenix", state: "AZ", zip: "85001" },
+  { id: 21, name: "Vinod Luxury Las Vegas", city: "Las Vegas", state: "NV", zip: "89101" },
+  { id: 22, name: "Vinod Luxury Denver", city: "Denver", state: "CO", zip: "80201" }
+];
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(200).json(stores);
+  }
+
+  const q = (query as string).toLowerCase();
+
+  const filtered = stores.filter((store) => {
+    return (
+      store.city.toLowerCase().includes(q) ||
+      store.state.toLowerCase().includes(q) ||
+      store.zip.includes(q)
+    );
+  });
+
+  return res.status(200).json(filtered);
+}

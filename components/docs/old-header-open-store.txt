@@ -1,0 +1,21 @@
+{/* Store Modal */}
+      {openStore && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2>Select Store</h2>
+
+            <ul>
+              <li>Nashville Store</li>
+              <li>Atlanta Store</li>
+              <li>Dallas Store</li>
+            </ul>
+
+            <button
+              className={styles.closeButton}
+              onClick={() => setOpenStore(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}

@@ -1,0 +1,43 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 40px auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 50px;
+}
+
+.content {
+  width: 100%;
+}
+
+.content h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 50px;
+}
+
+.storeGrid {
+  display: grid;
+  grid-template-columns:
+    repeat(4, 1fr);
+  gap: 50px;
+}
+
+.storeGrid h2 {
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 25px;
+}
+
+.storeGrid p {
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.storeGrid a {
+  text-decoration: underline;
+  cursor: pointer;
+}

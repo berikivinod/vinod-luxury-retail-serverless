@@ -1,0 +1,19 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 40px auto;
+  padding: 0 40px;
+}
+
+.wrapper h1 {
+  font-family: Georgia, serif;
+  font-size: 48px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(280px, 1fr));
+  gap: 40px;
+}

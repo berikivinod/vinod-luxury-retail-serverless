@@ -1,0 +1,97 @@
+import styles from "./Footer.module.css";
+
+export default function Footer() {
+  return (
+    <footer className={styles.footer}>
+      <div className={styles.topSection}>
+        {/* Customer Service */}
+        <div className={styles.column}>
+          <h3>Customer Service</h3>
+          <a href="#">Track an Order</a>
+          <a href="#">Shipping & Delivery</a>
+          <a href="#">Returns</a>
+          <a href="#">Pay My Credit Card</a>
+          <a href="#">Services of NM</a>
+          <a href="#">Assistance</a>
+        </div>
+
+        {/* Stores & Corporate */}
+        <div className={styles.column}>
+          <h3>Stores & Corporate</h3>
+          <a href="#">Store Locations & Events</a>
+          <a href="#">About Us</a>
+          <a href="#">Saks Global Chapter 11</a>
+          <a href="#">Investor Relations</a>
+          <a href="#">Press Inquiries</a>
+          <a href="#">Careers</a>
+          <a href="#">The Heart of Neiman Marcus</a>
+        </div>
+
+        {/* Explore */}
+        <div className={styles.column}>
+          <h3>Explore</h3>
+          <a href="#">Magazine</a>
+          <a href="#">Gift Cards</a>
+          <a href="#">NM Credit Card</a>
+          <a href="#">Fashioned for Change</a>
+        </div>
+      </div>
+
+      {/* Newsletter */}
+      <div className={styles.newsletter}>
+        <h3>
+          Get 15% off* your next purchase when you sign up for email updates
+        </h3>
+
+        <div className={styles.signupRow}>
+          <input
+            type="email"
+            placeholder="Enter Email Address"
+          />
+
+          <button>SIGN UP</button>
+        </div>
+
+        <p>
+          *Offer only valid for new subscribers. Exclusions apply.
+        </p>
+      </div>
+
+      {/* Mobile Links */}
+      <div className={styles.mobileSection}>
+        <p>📱 Sign up for text messages</p>
+        <p>📱 Download NM App</p>
+      </div>
+
+      {/* Social Icons */}
+      <div className={styles.socialSection}>
+        <span>Facebook</span>
+        <span>Twitter</span>
+        <span>Pinterest</span>
+        <span>Instagram</span>
+      </div>
+
+      {/* Feedback */}
+      <div className={styles.feedback}>
+        <a href="#">SITE FEEDBACK</a>
+      </div>
+
+      {/* Brands */}
+      <div className={styles.brands}>
+        <span>VinodKumar Beriki</span>
+        <span>NagaLakshmi Chatla</span>
+        <span>Charvi</span>
+      </div>
+
+      {/* Bottom Footer */}
+      <div className={styles.bottomFooter}>
+        © 2026, Vinod Beriki |
+        Terms & Conditions and Privacy Policy |
+        Your Privacy Choices |
+        Cookie Preferences |
+        CA Supply Chain Transparency Act |
+        Sitemap
+      </div>
+    </footer>
+  );
+}

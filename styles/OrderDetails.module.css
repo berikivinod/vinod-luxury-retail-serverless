@@ -1,0 +1,135 @@
+.wrapper {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 40px;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+.wrapper h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.summaryCard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  border: 1px solid #e5e5e5;
+  padding: 30px;
+  margin-bottom: 50px;
+}
+
+.summaryCard strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.productCard {
+  border: 1px solid #e5e5e5;
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.productCard h3 {
+  margin-bottom: 15px;
+}
+
+.productCard p {
+  margin-bottom: 8px;
+}
+
+.notFound {
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+}
+
+.infoCard {
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 24px;
+  margin-bottom: 40px;
+}
+
+.infoCard p {
+  margin-bottom: 10px;
+  line-height: 1.8;
+}
+
+.infoCard strong {
+  font-weight: 700;
+}
+
+.productCard {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  border: 1px solid #e5e5e5;
+  padding: 30px;
+  margin-bottom: 25px;
+  background: white;
+}
+
+.productImage {
+  object-fit: cover;
+  border: 1px solid #eee;
+}
+
+.productInfo {
+  flex: 1;
+}
+
+.productInfo h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.productInfo p {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.sectionTitle {
+  font-family: Georgia, serif;
+  font-size: 34px;
+  font-weight: 300;
+  color: #666;
+  margin-top: 50px;
+  margin-bottom: 25px;
+}
+
+.infoCard {
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.infoCard p {
+  margin-bottom: 10px;
+  line-height: 1.8;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.summaryGrid strong {
+  display: block;
+  margin-bottom: 10px;
+}

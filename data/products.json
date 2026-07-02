@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "sku": "VLR1001",
+    "brand": "VLR Signature",
+    "name": "Quilted Shoulder Bag",
+    "category": "Handbags",
+    "price": 1295,
+    "image": "/images/products/quilted-shoulder-bag.jpg",
+    "description": "Premium quilted leather shoulder bag."
+  },
+  {
+    "id": 2,
+    "sku": "MA1001",
+    "brand": "Maison Aurelle",
+    "name": "Classic Travel Tote",
+    "category": "Handbags",
+    "price": 2100,
+    "image": "/images/products/classic-travel-tote.jpg",
+    "description": "Spacious premium leather travel tote."
+  },
+  {
+    "id": 3,
+    "sku": "ML1001",
+    "brand": "Milano Atelier",
+    "name": "Heritage Shoulder Bag",
+    "category": "Handbags",
+    "price": 1895,
+    "image": "/images/products/heritage-shoulder-bag.jpg",
+    "description": "Elegant everyday leather shoulder bag."
+  },
+  {
+    "id": 4,
+    "sku": "HL1001",
+    "brand": "Heritage Leather",
+    "name": "Classic Flap Bag",
+    "category": "Handbags",
+    "price": 495,
+    "image": "/images/products/classic-flap-bag.jpg",
+    "description": "Timeless flap bag crafted from genuine leather."
+  },
+  {
+    "id": 5,
+    "sku": "UL1001",
+    "brand": "Urban Luxe",
+    "name": "City Shopper Tote",
+    "category": "Handbags",
+    "price": 325,
+    "image": "/images/products/city-shopper-tote.jpg",
+    "description": "Modern tote designed for everyday essentials."
+  },
+  {
+    "id": 6,
+    "sku": "ML2001",
+    "brand": "Milano Atelier",
+    "name": "Leather Penny Loafers",
+    "category": "Shoes",
+    "price": 899,
+    "image": "/images/products/leather-penny-loafers.jpg",
+    "description": "Classic handcrafted leather loafers."
+  },
+  {
+    "id": 7,
+    "sku": "VLR2001",
+    "brand": "VLR Signature",
+    "name": "Premium Leather Loafers",
+    "category": "Shoes",
+    "price": 990,
+    "image": "/images/products/premium-leather-loafers.jpg",
+    "description": "Luxury leather loafers with timeless styling."
+  },
+  {
+    "id": 8,
+    "sku": "VC2001",
+    "brand": "Verona Couture",
+    "name": "Signature Pointed Pumps",
+    "category": "Shoes",
+    "price": 1150,
+    "image": "/images/products/signature-pointed-pumps.jpg",
+    "description": "Elegant pointed pumps for formal occasions."
+  },
+  {
+    "id": 9,
+    "sku": "NS2001",
+    "brand": "Nova Studio",
+    "name": "Urban Runner Sneakers",
+    "category": "Shoes",
+    "price": 1090,
+    "image": "/images/products/urban-runner-sneakers.jpg",
+    "description": "Premium designer-inspired sneakers."
+  },
+  {
+    "id": 10,
+    "sku": "RC2001",
+    "brand": "Regent Collection",
+    "name": "Chelsea Leather Boots",
+    "category": "Shoes",
+    "price": 875,
+    "image": "/images/products/chelsea-leather-boots.jpg",
+    "description": "Classic Chelsea boots made from premium leather."
+  },
+  {
+    "id": 11,
+    "sku": "AJ3001",
+    "brand": "Aurora Jewelry",
+    "name": "Golden Horizon Necklace",
+    "category": "Jewelry",
+    "price": 875,
+    "image": "/images/products/golden-horizon-necklace.jpg",
+    "description": "Elegant gold necklace with minimalist styling."
+  },
+  {
+    "id": 12,
+    "sku": "IG3001",
+    "brand": "Imperial Gold",
+    "name": "Heritage Gold Bracelet",
+    "category": "Jewelry",
+    "price": 7200,
+    "image": "/images/products/heritage-gold-bracelet.jpg",
+    "description": "Luxury handcrafted gold bracelet."
+  },
+  {
+    "id": 13,
+    "sku": "SG3001",
+    "brand": "Seraph Gems",
+    "name": "Emerald Elegance Necklace",
+    "category": "Jewelry",
+    "price": 5400,
+    "image": "/images/products/emerald-elegance-necklace.jpg",
+    "description": "Premium gemstone necklace for special occasions."
+  },
+  {
+    "id": 14,
+    "sku": "OS4001",
+    "brand": "Oak & Stone",
+    "name": "Tailored Wool Blazer",
+    "category": "Clothing",
+    "price": 780,
+    "image": "/images/products/tailored-wool-blazer.jpg",
+    "description": "Modern tailored blazer made from premium wool."
+  },
+  {
+    "id": 15,
+    "sku": "ML4001",
+    "brand": "Modern Line",
+    "name": "Elegant Midi Dress",
+    "category": "Clothing",
+    "price": 299,
+    "image": "/images/products/elegant-midi-dress.jpg",
+    "description": "Stylish midi dress suitable for every occasion."
+  },
+  {
+    "id": 16,
+    "sku": "MS4001",
+    "brand": "Minimal Studio",
+    "name": "Slim Fit Formal Shirt",
+    "category": "Clothing",
+    "price": 149,
+    "image": "/images/products/slim-fit-formal-shirt.jpg",
+    "description": "Premium cotton slim-fit shirt."
+  },
+  {
+    "id": 17,
+    "sku": "AW4001",
+    "brand": "Alpine Wear",
+    "name": "Premium Winter Jacket",
+    "category": "Clothing",
+    "price": 1650,
+    "image": "/images/products/premium-winter-jacket.jpg",
+    "description": "Luxury insulated winter jacket."
+  },
+  {
+    "id": 18,
+    "sku": "MP5001",
+    "brand": "Milano Prestige",
+    "name": "Luxury Aviator Sunglasses",
+    "category": "Accessories",
+    "price": 425,
+    "image": "/images/products/luxury-aviator-sunglasses.jpg",
+    "description": "Designer aviator sunglasses with UV protection."
+  },
+  {
+    "id": 19,
+    "sku": "PA5001",
+    "brand": "Paris Atelier",
+    "name": "Premium Leather Belt",
+    "category": "Accessories",
+    "price": 450,
+    "image": "/images/products/premium-leather-belt.jpg",
+    "description": "Elegant handcrafted leather belt."
+  },
+  {
+    "id": 20,
+    "sku": "TO5001",
+    "brand": "TechOne",
+    "name": "Smart Fitness Watch",
+    "category": "Accessories",
+    "price": 799,
+    "image": "/images/products/smart-fitness-watch.jpg",
+    "description": "Advanced smartwatch with fitness tracking."
+  }
+]

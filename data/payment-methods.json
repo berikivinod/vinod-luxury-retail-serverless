@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "cardType": "VLR Credit Card",
+    "cardNumber": "**** **** **** 4589",
+    "expiryMonth": "12",
+    "expiryYear": "2028",
+    "nameOnCard": "Alex Johnson",
+    "isDefault": true
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "cardType": "Visa",
+    "cardNumber": "**** **** **** 7788",
+    "expiryMonth": "08",
+    "expiryYear": "2027",
+    "nameOnCard": "Alex Johnson",
+    "isDefault": false
+  },
+  {
+    "id": 3,
+    "userId": 2,
+    "cardType": "MasterCard",
+    "cardNumber": "**** **** **** 1122",
+    "expiryMonth": "06",
+    "expiryYear": "2029",
+    "nameOnCard": "Emma Carter",
+    "isDefault": true
+  }
+]

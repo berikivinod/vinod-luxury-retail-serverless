@@ -1,0 +1,176 @@
+.wrapper {
+  max-width: 1200px;
+  margin: 40px auto 80px;
+  padding: 60px 70px;
+  border: 1px solid #e5e5e5;
+  background: white;
+}
+
+.wrapper h1 {
+  font-family: Georgia, serif;
+  font-size: 36px;
+  font-weight: 200;
+  color: #666;
+  margin-bottom: 60px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+}
+
+.leftColumn {
+  padding-right: 50px;
+  border-right: 1px solid #e5e5e5;
+}
+
+.rightColumn {
+  padding-left: 20px;
+}
+
+.leftColumn h2,
+.rightColumn h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 30px;
+}
+
+.leftColumn p {
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.leftColumn input,
+.rightColumn input {
+  width: 100%;
+  height: 52px;
+  border: 1px solid #ccc;
+  padding: 0 12px;
+  font-size: 16px;
+}
+
+.leftColumn button,
+.rightColumn button {
+  background: black;
+  color: white;
+  border: none;
+  height: 56px;
+  min-width: 170px;
+  padding: 0 40px;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+
+.tabs {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 12px;
+}
+
+.active {
+  border-bottom: 4px solid black;
+  padding-bottom: 10px;
+  font-weight: 700;
+}
+
+.or {
+  margin: 25px 0;
+  font-size: 18px;
+}
+
+.keepSignedIn {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.keepSignedIn label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.policyText {
+  margin-top: 8px;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.sectionDescription {
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  color: #444;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.forgotPassword:hover {
+  opacity: 0.7;
+}
+
+.submitButton {
+  width: 180px;
+  height: 56px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-bottom: 35px;
+}
+
+.keepSignedIn {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.keepSignedIn label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.keepSignedIn input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.policyText {
+  margin-top: 15px;
+  line-height: 1.8;
+  font-size: 14px;
+  color: #555;
+  max-width: 420px;
+}
+
+.sectionDivider {
+  margin: 40px 0;
+  border-top: 1px solid #e5e5e5;
+}

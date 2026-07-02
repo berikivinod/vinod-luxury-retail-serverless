@@ -1,0 +1,99 @@
+import { useState } from "react";
+import styles from "../styles/StoresModal.module.css";
+import { Store } from "@/types/store";
+
+type StoresModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function StoresModal({ isOpen, onClose }: StoresModalProps) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Store[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSearch = async () => {
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) return;
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(`/api/stores?query=${trimmedQuery}`);
+      const data = await res.json();
+
+      setResults(data);
+    } catch (err) {
+      console.error("Search failed", err);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div
+        className={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2>Find Our Stores</h2>
+
+        {/* INPUT */}
+        <input
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setResults([]); // clears old results when user types new search
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
+          placeholder="Enter city, state or ZIP"
+        />
+
+        {/* SEARCH BUTTON */}
+        <button
+          onClick={handleSearch}
+          disabled={!query.trim()}
+        >
+          Search
+        </button>
+
+        {/* LOADING */}
+        {loading && <p>Searching...</p>}
+
+        {/* RESULTS */}
+        {!loading && results.length > 0 && (
+          <div>
+            {results.map((store) => (
+              <div key={store.id}>
+                <h4>{store.name}</h4>
+                <p>
+                  {store.city}, {store.state} - {store.zip}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* EMPTY STATE (FIXED LOGIC) */}
+        {!loading &&
+          query.trim() &&
+          results.length === 0 && (
+            <p style={{ marginTop: "20px" }}>
+              No stores found. Try a different city, state, or ZIP.
+            </p>
+          )}
+
+        {/* CLOSE */}
+        <button onClick={onClose}>
+          Close
+        </button>
+      </div>
+    </div>
+  );
+}

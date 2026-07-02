@@ -1,0 +1,35 @@
+<main className={styles.homeContainer}>
+        {/* Banner 1 */}
+        <section className={styles.banner}>
+          <img
+            src="https://images.unsplash.com/photo-1496747611176-843222e1e57c"
+            alt="Luxury Fashion"
+            className={styles.bannerImage}
+          />
+
+          <div className={styles.bannerContent}>
+            <h2>Summer Luxury Collection</h2>
+            <p>
+              Discover designer styles curated for modern elegance.
+            </p>
+            <button>SHOP NOW</button>
+          </div>
+        </section>
+
+        {/* Banner 2 */}
+        <section className={styles.banner}>
+          <img
+            src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b"
+            alt="Luxury Accessories"
+            className={styles.bannerImage}
+          />
+
+          <div className={styles.bannerContent}>
+            <h2>Exclusive Accessories</h2>
+            <p>
+              Handbags, jewelry and accessories from world-class designers.
+            </p>
+            <button>EXPLORE</button>
+          </div>
+        </section>
+      </main>

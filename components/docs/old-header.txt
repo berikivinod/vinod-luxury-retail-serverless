@@ -1,0 +1,197 @@
+import { useRouter } from "next/router";
+import { FaUserAlt } from "react-icons/fa";
+import { FiShoppingBag } from "react-icons/fi";
+import styles from "./Header.module.css";
+import { useState } from "react";
+import SideDrawer from "./SideDrawer";
+import StoresModal from "./StoresModal";
+
+export default function Header() {
+  const router = useRouter();
+  /*const [openStore, setOpenStore] = useState(false);*/
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [showStores, setShowStores] = useState(false);
+  const [storeQuery, setStoreQuery] = useState("");
+
+
+  return (
+    <>
+      {/* Promotional Banner */}
+      <div className={styles.promoBar}>
+        RECEIVE 15% OFF WHEN YOU SIGN UP FOR TEXTS
+      </div>
+
+      {/* Main Header */}
+      <header className={styles.header}>
+        {/* Left Section */}
+        <div className={styles.leftSection}>
+          <button
+            className={styles.headerLink}
+            onClick={() => setShowStores(true)}
+          >
+            Our Stores
+          </button>
+
+          <div className={styles.genderLinks}>
+            <a href="#" className={styles.headerLink}>
+              WOMEN
+            </a>
+
+            <a href="#" className={styles.headerLink}>
+              MEN
+            </a>
+          </div>
+        </div>
+
+        {/* Center Logo */}
+        <div className={styles.logo}>
+          Vinod Luxury Retailer
+        </div>
+
+        {/* Right Section */}
+        <div className={styles.rightSection}>
+          <div className={styles.topLinks}>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/guest-order-history");
+              }}
+            >
+              My Orders
+            </a>
+
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                router.push("/c/cat78570743");
+              }}
+            >
+              Match with a Style Advisor
+            </a>
+          </div>
+          <div className={styles.accountRow}>
+            <span
+              className={styles.iconText}
+              onClick={() => setShowSignIn(true)}
+            >
+              <FaUserAlt />
+              Sign In
+            </span>
+
+            <span className={styles.iconText}>
+              <FiShoppingBag />
+              Bag
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.searchContainer}>
+          <input
+            type="text"
+            placeholder="Search"
+            className={styles.searchInput}
+          />
+
+          <button className={styles.searchButton}>
+            SEARCH
+          </button>
+        </div>
+      </header >
+
+      {/* Navigation */}
+      <nav className={styles.nav}>
+        <a href="#">New Arrivals</a>
+        <a href="#">The Edits</a>
+        <a href="#">Designers</a>
+        <a href="#">Clothing</a>
+        <a href="#">Shoes</a>
+        <a href="#">Handbags</a>
+        <a href="#">Jewelry</a>
+        <a href="#">Accessories</a>
+        <a href="#">Beauty</a>
+        <a href="#">Kids</a>
+        <a href="#">Home</a>
+        <a href="#">Father's Day Gifts</a>
+        <a href="#">Sale</a>
+      </nav >
+
+      {/* Side Drawer for Sign In */}
+      <SideDrawer
+        isOpen={showSignIn}
+        onClose={() => setShowSignIn(false)
+        }
+        title="Welcome"
+      >
+        <div style={{ marginBottom: "20px" }}>
+          👤 Welcome
+        </div>
+
+        <p>Your Account</p>
+
+        <p>Sign in / Register</p>
+
+        <p>Order History</p>
+
+        <p>NM Credit Card</p>
+
+        <p>My Style Preferences</p>
+
+        <p>We're Here To Help</p>
+
+        <hr />
+
+        <h3>Your Neiman's</h3>
+
+        <p>Match with a Style Advisor</p>
+
+        <p>Book an appointment with a style advisor</p>
+
+        <hr />
+
+        <h3>Your Store</h3>
+
+        <p>Select a store</p>
+      </SideDrawer >
+
+      <SideDrawer
+        isOpen={showStores}
+        onClose={() => setShowStores(false)}
+        title="Select a Store"
+      >
+        <input
+          type="text"
+          placeholder="Enter City, State or Zip"
+          style={{
+            width: "100%",
+            padding: "12px",
+            marginBottom: "12px",
+          }}
+        />
+
+        <button
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "black",
+            color: "white",
+            border: "none",
+          }}
+        >
+          Search
+        </button>
+
+        <p style={{ marginTop: "20px" }}>
+          We currently have no results for this search.
+          Try changing the city, state, zip.
+        </p>
+      </SideDrawer>
+      {/* STORES MODAL (CLEAN IMPLEMENTATION) */}
+      <StoresModal
+        isOpen={showStores}
+        onClose={() => setShowStores(false)}
+      />
+    </>
+  );
+}

@@ -1,0 +1,107 @@
+.footer {
+  background: #f8f8f8;
+  padding: 70px 50px 40px;
+}
+
+.topSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+  gap: 50px;
+  margin-bottom: 60px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column h3,
+.newsletter h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.column a {
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 12px;
+}
+
+.column a:hover {
+  text-decoration: underline;
+}
+
+.newsletter {
+  text-align: left;
+}
+
+.signupRow {
+  display: flex;
+  margin-top: 20px;
+}
+
+.signupRow input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+}
+
+.signupRow button {
+  background: black;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+}
+
+.newsletter p {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.socialSection {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.appLinks {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.brands {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  font-size: 18px;
+  margin-bottom: 40px;
+  font-weight: 600;
+}
+
+.legal {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  border-top: 1px solid #ddd;
+  padding-top: 25px;
+}
+
+.legal a {
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 25px;
+  color: #777;
+  font-size: 14px;
+}

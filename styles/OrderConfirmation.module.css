@@ -1,0 +1,27 @@
+.wrapper {
+  max-width: 900px;
+  margin: 120px auto;
+  text-align: center;
+}
+
+.wrapper h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+
+.wrapper p {
+  font-size: 20px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.button {
+  width: 300px;
+  height: 55px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}

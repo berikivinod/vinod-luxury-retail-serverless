@@ -1,0 +1,30 @@
+.sidebar {
+  border-right: 1px solid #e5e5e5;
+  padding-right: 40px;
+}
+
+.sidebar h2 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 35px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu div {
+  padding: 16px 0;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.menu div:hover {
+  text-decoration: underline;
+}
+
+.active {
+  font-weight: 700;
+}

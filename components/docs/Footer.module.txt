@@ -1,0 +1,107 @@
+.footer {
+  background: #f8f8f8;
+  margin-top: 60px;
+  padding: 50px;
+}
+
+.topSection {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  margin-bottom: 50px;
+}
+{%*src={product.image}*/}
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.column h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.column a {
+  color: #333;
+  text-decoration: none;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.column a:hover {
+  text-decoration: underline;
+}
+
+.newsletter {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.newsletter h3 {
+  margin-bottom: 20px;
+}
+
+.signupRow {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.signupRow input {
+  width: 350px;
+  padding: 12px;
+  border: 1px solid #ccc;
+}
+
+.signupRow button {
+  padding: 12px 24px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.mobileSection {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.mobileSection p {
+  margin: 10px 0;
+}
+
+.socialSection {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 30px 0;
+  font-weight: 600;
+}
+
+.feedback {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.feedback a {
+  color: black;
+  font-weight: 700;
+}
+
+.brands {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.bottomFooter {
+  text-align: center;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+  font-size: 14px;
+  color: #555;
+}

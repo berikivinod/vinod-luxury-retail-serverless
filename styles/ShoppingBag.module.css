@@ -1,0 +1,76 @@
+.wrapper {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 0 40px;
+}
+
+.wrapper h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+
+.cartItems {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.cartItem {
+  display: flex;
+  gap: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 25px;
+}
+
+.image {
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+}
+
+.summary {
+  margin-top: 40px;
+  border-top: 2px solid black;
+  padding-top: 30px;
+}
+
+.checkoutButton {
+  margin-top: 20px;
+  width: 280px;
+  height: 55px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.emptyBag {
+  font-size: 18px;
+  color: #666;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.quantity button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+}
+
+.removeButton {
+  margin-top: 10px;
+  border: none;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}

@@ -1,0 +1,98 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 40px auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 50px;
+}
+
+.sidebar {
+  border-right: 1px solid #e5e5e5;
+  padding-right: 40px;
+}
+
+.sidebar h2 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 35px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu div {
+  padding: 16px 0;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.menu div:hover {
+  text-decoration: underline;
+}
+
+.active {
+  font-weight: 700;
+}
+
+.content h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.profileSection {
+  border-top: 1px solid #e5e5e5;
+  margin-bottom: 60px;
+}
+
+.profileRow {
+  display: grid;
+  grid-template-columns: 250px 1fr 100px;
+  padding: 18px 0;
+  border-bottom: 1px solid #e5e5e5;
+  align-items: center;
+}
+
+.profileRow span:first-child {
+  font-weight: 700;
+}
+
+.profileRow button {
+  border: none;
+  background: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.section {
+  margin-bottom: 60px;
+}
+
+.section h2 {
+  font-size: 40px;
+  font-weight: 300;
+  margin-bottom: 15px;
+}
+
+.section p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.section button {
+  border: 1px solid black;
+  background: white;
+  padding: 10px 24px;
+  cursor: pointer;
+}
+
+.section button:hover {
+  background: black;
+  color: white;
+}

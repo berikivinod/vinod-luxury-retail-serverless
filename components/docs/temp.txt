@@ -1,0 +1,55 @@
+<div className={styles.signInDrawer}>
+
+            <div className={styles.drawerWelcome}>
+              <FaUserAlt />
+              <span>Welcome</span>
+            </div>
+
+            <div className={styles.drawerSection}>
+              <h2>Your Account</h2>
+
+              <div className={styles.drawerItem}>
+                Sign in / Register
+              </div>
+
+              <div className={styles.drawerItem}>
+                Order History
+              </div>
+
+              <div className={styles.drawerItem}>
+                NM Credit Card
+              </div>
+
+              <div className={styles.drawerItem}>
+                My Style Preferences
+              </div>
+            </div>
+
+            <div className={styles.drawerSection}>
+              <h2>We're Here To Help</h2>
+
+              <img
+                src="/images/Sign-In-Drawer.jpg"
+                alt="Style Advisor"
+                className={styles.drawerBanner}
+              />
+
+              <div className={styles.drawerItem}>
+                Match with a style advisor
+              </div>
+
+              <div className={styles.drawerItem}>
+                Book an appointment with a style advisor
+              </div>
+            </div>
+
+            <div className={styles.drawerSection}>
+              <h2>Your Store</h2>
+
+              <div className={styles.drawerItemArrow}>
+                <span>Select a store</span>
+                <span>›</span>
+              </div>
+            </div>
+
+          </div>

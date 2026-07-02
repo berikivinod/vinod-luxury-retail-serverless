@@ -1,0 +1,90 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 40px auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 50px;
+}
+
+.sidebar {
+  border-right: 1px solid #e5e5e5;
+  padding-right: 40px;
+}
+
+.sidebar h2 {
+  font-size: 32px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 35px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu div {
+  padding: 16px 0;
+  cursor: pointer;
+}
+
+.active {
+  font-weight: 700;
+}
+
+.content h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.addButton {
+  background: black;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  cursor: pointer;
+  margin-bottom: 40px;
+}
+
+.addressList {
+  display: grid;
+  gap: 24px;
+}
+
+.addressCard {
+  border: 1px solid #e5e5e5;
+  padding: 30px;
+  background: white;
+}
+
+.addressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.addressHeader span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addressCard p {
+  margin-bottom: 8px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.actions button {
+  border: 1px solid black;
+  background: white;
+  padding: 8px 16px;
+  cursor: pointer;
+}

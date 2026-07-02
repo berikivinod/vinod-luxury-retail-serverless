@@ -1,0 +1,41 @@
+[
+  {
+    "id": 1,
+    "userId": 1,
+    "type": "Home",
+    "firstName": "Alex",
+    "lastName": "Johnson",
+    "street": "123 Peachtree Street",
+    "city": "Atlanta",
+    "state": "GA",
+    "zip": "30303",
+    "phone": "(404) 555-1001",
+    "isDefault": true
+  },
+  {
+    "id": 2,
+    "userId": 1,
+    "type": "Work",
+    "firstName": "Alex",
+    "lastName": "Johnson",
+    "street": "100 Corporate Drive",
+    "city": "Atlanta",
+    "state": "GA",
+    "zip": "30328",
+    "phone": "(404) 555-1002",
+    "isDefault": false
+  },
+  {
+    "id": 3,
+    "userId": 2,
+    "type": "Home",
+    "firstName": "Emma",
+    "lastName": "Carter",
+    "street": "45 Willow Lane",
+    "city": "Dallas",
+    "state": "TX",
+    "zip": "75001",
+    "phone": "(972) 555-1003",
+    "isDefault": true
+  }
+]

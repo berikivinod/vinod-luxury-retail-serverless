@@ -1,0 +1,70 @@
+.wrapper {
+  max-width: 1600px;
+  margin: 40px auto 80px;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 50px;
+}
+
+.content h1 {
+  font-family: Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.addButton {
+  background: black;
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  cursor: pointer;
+  margin-bottom: 40px;
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 30px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cardHeader span {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.card p {
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.actions button {
+  border: 1px solid black;
+  background: white;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  background: black;
+  color: white;
+}

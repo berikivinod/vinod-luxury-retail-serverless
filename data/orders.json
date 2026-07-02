@@ -1,0 +1,292 @@
+[
+  {
+    "orderId": "VLR100001",
+    "userId": 1,
+    "channel": "Online",
+    "orderDate": "2026-06-01",
+    "status": "Delivered",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567890",
+    "paymentMethod": "VLR Credit Card",
+    "shippingAddress": {
+      "street": "123 Peachtree Street",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30303"
+    },
+    "subtotal": 1195,
+    "tax": 100,
+    "total": 1295,
+    "items": [
+      {
+        "sku": "VLR1001",
+        "productName": "Quilted Shoulder Bag",
+        "brand": "VLR Signature",
+        "quantity": 1,
+        "price": 1295,
+        "image": "/images/products/quilted-shoulder-bag.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100002",
+    "userId": 1,
+    "channel": "In-Store",
+    "orderDate": "2026-05-15",
+    "status": "Delivered",
+    "store": "VLR Atlanta",
+    "trackingNumber": "STORE-PICKUP-100002",
+    "paymentMethod": "VLR Credit Card",
+    "shippingAddress": {
+      "street": "3393 Peachtree Rd NE",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30326"
+    },
+    "subtotal": 830,
+    "tax": 69,
+    "total": 899,
+    "items": [
+      {
+        "sku": "MLA2001",
+        "productName": "Leather Penny Loafers",
+        "brand": "Milano Atelier",
+        "quantity": 1,
+        "price": 899,
+        "image": "/images/products/leather-penny-loafers.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100003",
+    "userId": 2,
+    "channel": "Online",
+    "orderDate": "2026-06-01",
+    "status": "Delivered",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567893",
+    "paymentMethod": "VLR Credit Card",
+    "shippingAddress": {
+      "street": "123 Peachtree Street",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30303"
+    },
+    "subtotal": 1195,
+    "tax": 100,
+    "total": 1295,
+    "items": [
+      {
+        "sku": "VLR1001",
+        "productName": "Quilted Shoulder Bag",
+        "brand": "VLR Signature",
+        "quantity": 1,
+        "price": 1295,
+        "image": "/images/products/quilted-shoulder-bag.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100004",
+    "userId": 2,
+    "channel": "In-Store",
+    "orderDate": "2026-04-10",
+    "status": "Delivered",
+    "store": "VLR Dallas",
+    "trackingNumber": "STORE-PICKUP-100004",
+    "paymentMethod": "Visa",
+    "shippingAddress": {
+      "street": "8687 N Central Expy",
+      "city": "Dallas",
+      "state": "TX",
+      "zip": "75225"
+    },
+    "subtotal": 300,
+    "tax": 25,
+    "total": 325,
+    "items": [
+      {
+        "sku": "UL1002",
+        "productName": "Urban Leather Wallet",
+        "brand": "Urban Luxe",
+        "quantity": 1,
+        "price": 325,
+        "image": "/images/products/urban-leather-wallet.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100005",
+    "userId": 3,
+    "channel": "Online",
+    "orderDate": "2026-05-25",
+    "status": "Delivered",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567895",
+    "paymentMethod": "Mastercard",
+    "shippingAddress": {
+      "street": "742 Maple Avenue",
+      "city": "Tampa",
+      "state": "FL",
+      "zip": "33602"
+    },
+    "subtotal": 435,
+    "tax": 40,
+    "total": 475,
+    "items": [
+      {
+        "sku": "HL1002",
+        "productName": "Classic Crossbody Bag",
+        "brand": "Heritage Leather",
+        "quantity": 1,
+        "price": 475,
+        "image": "/images/products/classic-crossbody-bag.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100006",
+    "userId": 4,
+    "channel": "Online",
+    "orderDate": "2026-05-28",
+    "status": "Delivered",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567896",
+    "paymentMethod": "American Express",
+    "shippingAddress": {
+      "street": "510 Park Avenue",
+      "city": "New York",
+      "state": "NY",
+      "zip": "10022"
+    },
+    "subtotal": 1940,
+    "tax": 160,
+    "total": 2100,
+    "items": [
+      {
+        "sku": "MA1001",
+        "productName": "Classic Travel Tote",
+        "brand": "Maison Aurelle",
+        "quantity": 1,
+        "price": 2100,
+        "image": "/images/products/classic-travel-tote.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100007",
+    "userId": 5,
+    "channel": "In-Store",
+    "orderDate": "2026-03-14",
+    "status": "Delivered",
+    "store": "VLR Atlanta",
+    "trackingNumber": "STORE-PICKUP-100007",
+    "paymentMethod": "VLR Credit Card",
+    "shippingAddress": {
+      "street": "3393 Peachtree Rd NE",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30326"
+    },
+    "subtotal": 418,
+    "tax": 32,
+    "total": 450,
+    "items": [
+      {
+        "sku": "LB7001",
+        "productName": "Elegant Everyday Handbag",
+        "brand": "Luna Boutique",
+        "quantity": 1,
+        "price": 450,
+        "image": "/images/products/elegant-everyday-handbag.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100008",
+    "userId": 6,
+    "channel": "Online",
+    "orderDate": "2026-06-09",
+    "status": "Processing",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567898",
+    "paymentMethod": "Visa",
+    "shippingAddress": {
+      "street": "1100 Market Street",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94103"
+    },
+    "subtotal": 720,
+    "tax": 60,
+    "total": 780,
+    "items": [
+      {
+        "sku": "OS4002",
+        "productName": "Premium Casual Jacket",
+        "brand": "Oak & Stone",
+        "quantity": 1,
+        "price": 780,
+        "image": "/images/products/premium-casual-jacket.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100009",
+    "userId": 7,
+    "channel": "Online",
+    "orderDate": "2026-05-01",
+    "status": "Delivered",
+    "store": null,
+    "trackingNumber": "1Z999AA1234567899",
+    "paymentMethod": "Mastercard",
+    "shippingAddress": {
+      "street": "88 Main Street",
+      "city": "Chicago",
+      "state": "IL",
+      "zip": "60601"
+    },
+    "subtotal": 135,
+    "tax": 14,
+    "total": 149,
+    "items": [
+      {
+        "sku": "MS4001",
+        "productName": "Slim Fit Formal Shirt",
+        "brand": "Minimal Studio",
+        "quantity": 2,
+        "price": 74.5,
+        "image": "/images/products/slim-fit-formal-shirt.jpg"
+      }
+    ]
+  },
+  {
+    "orderId": "VLR100010",
+    "userId": 8,
+    "channel": "In-Store",
+    "orderDate": "2026-04-20",
+    "status": "Delivered",
+    "store": "VLR Houston",
+    "trackingNumber": "STORE-PICKUP-100010",
+    "paymentMethod": "Discover",
+    "shippingAddress": {
+      "street": "5015 Westheimer Rd",
+      "city": "Houston",
+      "state": "TX",
+      "zip": "77056"
+    },
+    "subtotal": 275,
+    "tax": 24,
+    "total": 299,
+    "items": [
+      {
+        "sku": "ML4001",
+        "productName": "Elegant Midi Dress",
+        "brand": "Modern Line",
+        "quantity": 1,
+        "price": 299,
+        "image": "/images/products/elegant-midi-dress.jpg"
+      }
+    ]
+  }
+]

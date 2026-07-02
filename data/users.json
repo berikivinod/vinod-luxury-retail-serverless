@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "firstName": "Alex",
+    "lastName": "Johnson",
+    "email": "alex.johnson@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 2,
+    "firstName": "Emma",
+    "lastName": "Carter",
+    "email": "emma.carter@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 3,
+    "firstName": "Ethan",
+    "lastName": "Carter",
+    "email": "ethan.carter@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 4,
+    "firstName": "Olivia",
+    "lastName": "Parker",
+    "email": "olivia.parker@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 5,
+    "firstName": "Sophia",
+    "lastName": "Mitchell",
+    "email": "sophia.mitchell@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 6,
+    "firstName": "Noah",
+    "lastName": "Walker",
+    "email": "noah.walker@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 7,
+    "firstName": "John",
+    "lastName": "Smith",
+    "email": "john.smith@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 8,
+    "firstName": "Emily",
+    "lastName": "Johnson",
+    "email": "emily.johnson@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 9,
+    "firstName": "Michael",
+    "lastName": "Brown",
+    "email": "michael.brown@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 10,
+    "firstName": "Sarah",
+    "lastName": "Davis",
+    "email": "sarah.davis@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 11,
+    "firstName": "David",
+    "lastName": "Wilson",
+    "email": "david.wilson@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 12,
+    "firstName": "Jessica",
+    "lastName": "Moore",
+    "email": "jessica.moore@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 13,
+    "firstName": "Daniel",
+    "lastName": "Taylor",
+    "email": "daniel.taylor@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 14,
+    "firstName": "Olivia",
+    "lastName": "Anderson",
+    "email": "olivia.anderson@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 15,
+    "firstName": "James",
+    "lastName": "Thomas",
+    "email": "james.thomas@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 16,
+    "firstName": "Sophia",
+    "lastName": "Martinez",
+    "email": "sophia.martinez@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 17,
+    "firstName": "Robert",
+    "lastName": "Garcia",
+    "email": "robert.garcia@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 18,
+    "firstName": "Mia",
+    "lastName": "Rodriguez",
+    "email": "mia.rodriguez@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 19,
+    "firstName": "William",
+    "lastName": "Lee",
+    "email": "william.lee@vlr.com",
+    "password": "Password123"
+  },
+  {
+    "id": 20,
+    "firstName": "Emma",
+    "lastName": "Walker",
+    "email": "emma.walker@vlr.com",
+    "password": "Password123"
+  }
+]
