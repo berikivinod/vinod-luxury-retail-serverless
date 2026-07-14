@@ -1,4 +1,4 @@
-# ☁️ Vinod Luxury Retail (VLR) - Serverless Application
+# ☁️ Vinod Luxury Retail (VLR) – Cloud-Native E-Commerce Application
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![React](https://img.shields.io/badge/React-19-blue?logo=react)
@@ -9,151 +9,341 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 📖 Overview
+---
 
-**Vinod Luxury Retail (VLR)** is a cloud-native luxury retail e-commerce application built using **Next.js**, **React**, **TypeScript**, and **AWS Serverless services**.
+# 📖 Overview
 
-This project demonstrates how a modern frontend application integrates with a serverless backend using Amazon API Gateway, AWS Lambda, and Amazon DynamoDB.
+**Vinod Luxury Retail (VLR)** is a modern cloud-native luxury retail e-commerce application built using **Next.js**, **React**, **TypeScript**, and **AWS Serverless services**.
 
-> **Note**
->
-> This repository is an educational and portfolio project. All products, brands, users, stores, addresses, payment methods, orders, shopping carts, and other business data are fictional sample data created solely for learning and demonstration purposes.
+The application demonstrates how a modern frontend communicates with a scalable serverless backend using Amazon API Gateway, AWS Lambda, and Amazon DynamoDB while following production-style application architecture.
+
+This repository contains the complete application source code, including the frontend, Lambda functions, sample datasets, Docker configuration, and database import scripts.
 
 ---
 
-## 🏗️ Application Architecture
+# 🚧 Project Status
 
-```text
-Browser
-    │
-    ▼
-Next.js / React
-    │
-    ▼
-REST API
-    │
-    ▼
-Amazon API Gateway
-    │
-    ▼
-AWS Lambda
-    │
-    ▼
-Amazon DynamoDB
-```
+**Current Status:** Active Development
 
-## ✨ Features
+## Completed
 
 - Product Catalog
-- Product Search
 - Product Details
-- Shopping Bag
+- Product Search
+- Shopping Cart
 - Update Cart Quantity
 - Remove Cart Items
-- Favorites
-- Checkout UI
-- Order History
+- Checkout
+- Place Order
 - Store Locator
-- Mock Authentication
-- Responsive Design
+- Responsive UI
+- REST APIs
+- AWS Lambda Integration
+- Amazon DynamoDB Integration
 
-### REST APIs
+## Currently In Progress
+
+- Order History
+- Order Details
+- Favorites API
+- Address Management
+- Payment Method APIs
+- Amazon Cognito Authentication
+
+---
+
+# ✨ Features
+
+### Shopping Experience
+
+- Product Catalog
+- Product Details
+- Product Search
+- Shopping Cart
+- Update Cart Quantity
+- Remove Cart Items
+- Checkout
+- Place Order
+- Order Confirmation
+- Store Locator
+
+### Serverless Backend
+
+- REST APIs
+- AWS Lambda
+- Amazon API Gateway
+- Amazon DynamoDB
+- CloudWatch Logging
+
+### Frontend
+
+- Next.js 16
+- React 19
+- TypeScript
+- CSS Modules
+- Responsive Design
+- Component-Based Architecture
+
+---
+
+# 🏗 Application Architecture
+
+```text
+                    Browser
+                       │
+                       ▼
+             Next.js / React Frontend
+                       │
+                       ▼
+                Amazon API Gateway
+                       │
+        ┌──────────────┼──────────────┐
+        ▼              ▼              ▼
+   Product APIs    Shopping Cart   Order APIs
+        │              │              │
+        └──────────────┼──────────────┘
+                       ▼
+                  AWS Lambda
+                       │
+                       ▼
+                Amazon DynamoDB
+```
+
+---
+
+# 🚀 REST APIs
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| GET | /products | Retrieve products |
-| GET | /products/{id} | Product details |
+| GET | /products | Retrieve all products |
+| GET | /products/{id} | Retrieve product details |
 | GET | /products/search | Search products |
 | GET | /cart | Retrieve shopping cart |
-| POST | /cart | Add item to cart |
+| POST | /cart | Add product to cart |
 | PUT | /cart | Update quantity |
-| DELETE | /cart | Remove item |
+| DELETE | /cart | Remove cart item |
+| POST | /orders | Place customer order |
 
-## 🚀 Technology Stack
+---
+
+# 🚀 Technology Stack
+
+## Frontend
 
 - Next.js
 - React
 - TypeScript
-- Node.js
+- CSS Modules
+
+## Backend
+
 - AWS Lambda
 - Amazon API Gateway
 - Amazon DynamoDB
+- Node.js
+
+## DevOps
+
 - Docker
-- CSS Modules
+- Amazon ECS (Deployment)
+- CloudWatch
+- IAM
 
-## 🌱 Database Seeding
+---
 
-Initialize the sample product catalog:
+# 🌱 Database Seeding
+
+Populate DynamoDB with sample data.
+
+## Products
 
 ```bash
 node scripts/seed-products.js
 ```
 
-The script imports sample product data from the `data/` folder into DynamoDB.
+Additional seed scripts are included for expanding the sample application dataset.
 
-## 📁 Project Structure
+---
+
+# 📁 Project Structure
 
 ```text
-components/
-data/
-lambda/
-pages/
-public/
-scripts/
-styles/
-types/
-Dockerfile
-package.json
-README.md
+vinod-luxury-retail-serverless
+
+├── components/
+├── data/
+├── lambda/
+│   ├── cart/
+│   ├── orders/
+│   └── products/
+├── pages/
+├── public/
+├── scripts/
+├── styles/
+├── types/
+├── Dockerfile
+├── .dockerignore
+├── package.json
+├── README.md
 ```
 
-## ▶️ Run Locally
+---
+
+# ▶️ Run Locally
+
+Install dependencies
 
 ```bash
 npm install
+```
+
+Run locally
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000
+Open
 
-## ☁️ AWS Services
+```
+http://localhost:3000
+```
+
+---
+
+# 🐳 Docker
+
+Build
+
+```bash
+docker build -t vlr-ui .
+```
+
+Run
+
+```bash
+docker run -p 3000:3000 vlr-ui
+```
+
+---
+
+# ☁️ AWS Services Used
 
 - Amazon API Gateway
 - AWS Lambda
 - Amazon DynamoDB
 - CloudWatch
 - IAM
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
 
-Infrastructure provisioning is maintained in a separate Terraform repository.
+Infrastructure provisioning is maintained in the companion Terraform repository.
 
-## 🛣️ Future Enhancements
+---
 
-- Amazon Cognito
-- Checkout
-- Orders
-- Payment Integration
-- CloudFront
-- Amazon S3
-- CI/CD
+# 📊 Skills Demonstrated
+
+- Next.js
+- React
+- TypeScript
+- REST API Integration
+- AWS Lambda
+- Amazon API Gateway
+- Amazon DynamoDB
+- Docker
+- Serverless Architecture
+- Component-Based UI Design
+- Responsive Web Development
+
+---
+
+# 🌟 Portfolio Highlights
+
+This project demonstrates:
+
+- Modern React application architecture
+- Serverless backend integration
+- AWS Lambda REST APIs
+- Amazon DynamoDB integration
+- Shopping cart workflow
+- Checkout process
+- Order placement workflow
+- Docker containerization
+- Production-style project organization
+
+---
+
+# 🔄 Future Enhancements
+
+Planned improvements include:
+
+- Amazon Cognito Authentication
+- JWT Authorization
+- Favorites APIs
+- Address APIs
+- Payment Method APIs
+- Order History
+- Order Details
+- Payment Gateway Integration
+- CloudFront CDN
+- Amazon S3 Image Hosting
+- GitHub Actions CI/CD
+- Performance Optimization
+- End-to-End Testing
+
+---
+
+# 🔗 Related Repositories
+
+## vinod-luxury-retail-local
+
+Local prototype built using JSON files without AWS services.
+
+---
+
+## terraform-aws-serverless-ecommerce-platform
+
+Infrastructure as Code repository provisioning:
+
+- Amazon ECS
+- AWS Lambda
+- API Gateway
+- Amazon DynamoDB
+- Networking
+- IAM
+- Application Load Balancer
+
+---
 
 # ⚠️ Disclaimer
 
-This project was created **solely for educational, learning, and portfolio purposes**.
+This repository was created solely for educational, learning, and portfolio purposes.
 
-All products, product names, descriptions, brands, users, stores, addresses, orders, payment methods, favorites, and shopping cart data included in this repository are **fictional sample data** created to demonstrate software engineering concepts.
+The application simulates a luxury retail e-commerce platform to demonstrate modern full-stack software engineering and cloud architecture.
+
+All products, product names, brands, descriptions, customers, stores, addresses, payment methods, favorites, shopping carts, and orders are **fictional sample data** created exclusively for learning and demonstration purposes.
 
 This project is **not affiliated with, endorsed by, sponsored by, or associated with any retailer, luxury brand, company, or organization**.
 
-Any resemblance to real companies, organizations, products, services, trademarks, or brands is purely coincidental.
+Any resemblance to actual companies, products, brands, organizations, services, or trademarks is purely coincidental.
 
 No commercial use is intended.
 
-## 👨‍💻 Author
+---
+
+# 👨‍💻 Author
 
 **Vinod Beriki**
 
-GitHub: https://github.com/berikivinod
+DevOps Engineer | AWS | Terraform | Kubernetes | Docker | React | Serverless
 
-## 📄 License
+GitHub
+
+https://github.com/berikivinod
+
+---
+
+# 📄 License
 
 MIT License
