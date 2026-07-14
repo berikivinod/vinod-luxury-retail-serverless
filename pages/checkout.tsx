@@ -20,12 +20,18 @@ export default function Checkout() {
         useState<any>(null);
 
     useEffect(() => {
+
+    const loadCheckout = async () => {
+
         const storedUser =
             localStorage.getItem("user");
 
         if (!storedUser) {
+
             router.push("/");
+
             return;
+
         }
 
         const currentUser =
@@ -33,34 +39,67 @@ export default function Checkout() {
 
         setUser(currentUser);
 
-        const storedCart =
-            localStorage.getItem(
-                `cart_${currentUser.id}`
+        try {
+
+            const response =
+                await fetch(
+
+                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart?userId=${currentUser.id}`
+
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load cart."
+                );
+
+            }
+
+            const cartResponse =
+                await response.json();
+
+            setCart(
+                cartResponse.items || []
             );
 
-        if (storedCart) {
-            setCart(
-                JSON.parse(storedCart)
-            );
+        }
+        catch (error) {
+
+            console.error(error);
+
+            setCart([]);
+
         }
 
         const userAddresses =
             addresses.filter(
+
                 (address: any) =>
+
                     address.userId ===
                     currentUser.id
+
             );
 
         const defaultAddress =
             userAddresses.find(
+
                 (address: any) =>
+
                     address.isDefault
+
             );
 
         setSelectedAddress(
             defaultAddress || null
         );
-    }, [router]);
+
+    };
+
+    loadCheckout();
+
+}, [router]);
 
     const subtotal = cart.reduce(
         (sum, item) =>
@@ -75,61 +114,49 @@ export default function Checkout() {
 
     if (!user) return null;
 
-    const handlePlaceOrder = () => {
-        if (!user || cart.length === 0) {
-            return;
+    const handlePlaceOrder = async () => {
+
+    if (!user || cart.length === 0) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+
+                `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders`,
+
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        userId: user.id
+
+                    })
+
+                }
+
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to place order."
+            );
+
         }
 
-        const existingOrders = JSON.parse(
-            localStorage.getItem(
-                `orders_${user.id}`
-            ) || "[]"
-        );
+        const result =
+            await response.json();
 
-        const newOrder = {
-            orderId:
-                "VLR" +
-                Date.now(),
-
-            userId: user.id,
-
-            orderDate:
-                new Date()
-                    .toISOString()
-                    .split("T")[0],
-
-            status: "Processing",
-
-            channel: "Online",
-
-            trackingNumber:
-                "Pending",
-
-            paymentMethod:
-                "VLR Credit Card",
-
-            shippingAddress:
-                selectedAddress,
-
-            subtotal,
-
-            tax,
-
-            total,
-
-            items: cart
-        };
-
-        existingOrders.unshift(
-            newOrder
-        );
-
-        localStorage.setItem(
-            `orders_${user.id}`,
-            JSON.stringify(
-                existingOrders
-            )
-        );
+        setCart([]);
 
         localStorage.removeItem(
             `cart_${user.id}`
@@ -140,9 +167,23 @@ export default function Checkout() {
         );
 
         router.push(
-            "/order-confirmation"
+
+            `/order-confirmation?orderId=${result.orderId}`
+
         );
-    };
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to place order."
+        );
+
+    }
+
+};
 
     return (
         <>
