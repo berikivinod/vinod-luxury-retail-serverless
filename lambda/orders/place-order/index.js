@@ -73,13 +73,21 @@ exports.handler = async (event) => {
 
             return {
 
-                productId: cartItem.productId,
+    productId: product.id,
 
-                quantity: cartItem.quantity,
+    productName: product.productName,
 
-                price: product.price
+    brand: product.brand,
 
-            };
+    image: product.image,
+
+    quantity: cartItem.quantity,
+
+    price: product.price,
+
+    lineTotal
+
+};
 
         });
 
@@ -141,21 +149,33 @@ exports.handler = async (event) => {
 
         return {
 
-            statusCode: 200,
+    statusCode: 200,
 
-            headers: {
-                "Access-Control-Allow-Origin": "*"
-            },
+    headers: {
+        "Access-Control-Allow-Origin": "*"
+    },
 
-            body: JSON.stringify({
+    body: JSON.stringify({
 
-                message: "Order placed successfully.",
+        success: true,
 
-                orderId
+        orderId,
 
-            })
+        orderDate: order.orderDate,
 
-        };
+        status: order.status,
+
+        subtotal,
+
+        tax,
+
+        shipping,
+
+        total
+
+    })
+
+};
 
     }
     catch (error) {

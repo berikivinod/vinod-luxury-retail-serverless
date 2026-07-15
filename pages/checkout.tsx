@@ -155,6 +155,7 @@ export default function Checkout() {
 
         const result =
             await response.json();
+        console.log("Place Order Response:", result);
 
         setCart([]);
 
@@ -166,11 +167,23 @@ export default function Checkout() {
             new Event("cartUpdated")
         );
 
-        router.push(
+        router.push({
 
-            `/order-confirmation?orderId=${result.orderId}`
+    pathname: "/order-confirmation",
 
-        );
+    query: {
+
+        orderId: result.orderId,
+
+        orderDate: result.orderDate,
+
+        status: result.status,
+
+        total: result.total
+
+    }
+
+});
 
     }
     catch (error) {

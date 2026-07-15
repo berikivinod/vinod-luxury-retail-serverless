@@ -15,9 +15,18 @@
 
 **Vinod Luxury Retail (VLR)** is a modern cloud-native luxury retail e-commerce application built using **Next.js**, **React**, **TypeScript**, and **AWS Serverless services**.
 
-The application demonstrates how a modern frontend communicates with a scalable serverless backend using Amazon API Gateway, AWS Lambda, and Amazon DynamoDB while following production-style application architecture.
+The application demonstrates how a modern frontend communicates with a scalable serverless backend using **Amazon API Gateway**, **AWS Lambda**, and **Amazon DynamoDB** while following production-style application architecture.
 
-This repository contains the complete application source code, including the frontend, Lambda functions, sample datasets, Docker configuration, and database import scripts.
+This repository contains the complete application source code, including:
+
+- Next.js frontend
+- AWS Lambda source code
+- API integrations
+- Sample datasets
+- Docker configuration
+- DynamoDB seed scripts
+
+Infrastructure provisioning is maintained separately using Terraform.
 
 ---
 
@@ -25,36 +34,7 @@ This repository contains the complete application source code, including the fro
 
 **Current Status:** Active Development
 
-## Completed
-
-- Product Catalog
-- Product Details
-- Product Search
-- Shopping Cart
-- Update Cart Quantity
-- Remove Cart Items
-- Checkout
-- Place Order
-- Store Locator
-- Responsive UI
-- REST APIs
-- AWS Lambda Integration
-- Amazon DynamoDB Integration
-
-## Currently In Progress
-
-- Order History
-- Order Details
-- Favorites API
-- Address Management
-- Payment Method APIs
-- Amazon Cognito Authentication
-
----
-
-# ✨ Features
-
-### Shopping Experience
+## ✅ Completed
 
 - Product Catalog
 - Product Details
@@ -66,16 +46,56 @@ This repository contains the complete application source code, including the fro
 - Place Order
 - Order Confirmation
 - Store Locator
+- REST API Integration
+- AWS Lambda Integration
+- Amazon API Gateway Integration
+- Amazon DynamoDB Integration
+- Docker Production Build
+- Responsive UI
 
-### Serverless Backend
+## 🚧 Currently In Progress
 
-- REST APIs
+- Order History (Frontend)
+- Order Details (Frontend)
+- Favorites
+- Address Management
+- Payment Methods
+- Amazon Cognito Authentication
+
+---
+
+# ✨ Features
+
+## Shopping Experience
+
+- Product Catalog
+- Product Details
+- Product Search
+- Shopping Cart
+- Update Cart Quantity
+- Remove Cart Items
+- Checkout
+- Place Order
+- Order Confirmation
+- Order History *(In Progress)*
+- Order Details *(In Progress)*
+- Store Locator
+
+---
+
+## Serverless Backend
+
+- Product APIs
+- Shopping Cart APIs
+- Order APIs
 - AWS Lambda
 - Amazon API Gateway
 - Amazon DynamoDB
 - CloudWatch Logging
 
-### Frontend
+---
+
+## Frontend
 
 - Next.js 16
 - React 19
@@ -123,6 +143,8 @@ This repository contains the complete application source code, including the fro
 | PUT | /cart | Update quantity |
 | DELETE | /cart | Remove cart item |
 | POST | /orders | Place customer order |
+| GET | /orders | Retrieve customer orders |
+| GET | /orders/{orderId} | Retrieve order details |
 
 ---
 
@@ -137,15 +159,17 @@ This repository contains the complete application source code, including the fro
 
 ## Backend
 
+- Node.js
 - AWS Lambda
 - Amazon API Gateway
 - Amazon DynamoDB
-- Node.js
 
 ## DevOps
 
 - Docker
-- Amazon ECS (Deployment)
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
 - CloudWatch
 - IAM
 
@@ -153,7 +177,7 @@ This repository contains the complete application source code, including the fro
 
 # 🌱 Database Seeding
 
-Populate DynamoDB with sample data.
+Populate Amazon DynamoDB with sample data.
 
 ## Products
 
@@ -161,7 +185,9 @@ Populate DynamoDB with sample data.
 node scripts/seed-products.js
 ```
 
-Additional seed scripts are included for expanding the sample application dataset.
+The script imports the sample product catalog from the **data/** directory into the **vlr-products** DynamoDB table.
+
+Additional seed scripts can be added to populate users, stores, favorites, addresses, payment methods, and other sample datasets.
 
 ---
 
@@ -197,7 +223,7 @@ Install dependencies
 npm install
 ```
 
-Run locally
+Run the application
 
 ```bash
 npm run dev
@@ -205,7 +231,7 @@ npm run dev
 
 Open
 
-```
+```text
 http://localhost:3000
 ```
 
@@ -225,6 +251,14 @@ Run
 docker run -p 3000:3000 vlr-ui
 ```
 
+The Docker image includes:
+
+- Multi-stage build
+- Production-ready image
+- Optimized Docker layers
+- .dockerignore
+- Health-check ready configuration
+
 ---
 
 # ☁️ AWS Services Used
@@ -232,11 +266,11 @@ docker run -p 3000:3000 vlr-ui
 - Amazon API Gateway
 - AWS Lambda
 - Amazon DynamoDB
-- CloudWatch
-- IAM
 - Amazon ECS
 - AWS Fargate
 - Amazon ECR
+- CloudWatch Logs
+- IAM
 
 Infrastructure provisioning is maintained in the companion Terraform repository.
 
@@ -247,6 +281,8 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - Next.js
 - React
 - TypeScript
+- Node.js
+- REST API Development
 - REST API Integration
 - AWS Lambda
 - Amazon API Gateway
@@ -255,6 +291,7 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - Serverless Architecture
 - Component-Based UI Design
 - Responsive Web Development
+- Cloud-Native Application Development
 
 ---
 
@@ -263,14 +300,17 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 This project demonstrates:
 
 - Modern React application architecture
-- Serverless backend integration
+- Cloud-native application development
+- Hybrid container and serverless architecture
 - AWS Lambda REST APIs
+- Amazon API Gateway integration
 - Amazon DynamoDB integration
 - Shopping cart workflow
-- Checkout process
+- Checkout workflow
 - Order placement workflow
 - Docker containerization
 - Production-style project organization
+- Infrastructure separation using Terraform
 
 ---
 
@@ -278,17 +318,19 @@ This project demonstrates:
 
 Planned improvements include:
 
+- Complete Order History UI
+- Complete Order Details UI
+- Favorites
+- Address Management
+- Payment Methods
+- User Profile
 - Amazon Cognito Authentication
 - JWT Authorization
-- Favorites APIs
-- Address APIs
-- Payment Method APIs
-- Order History
-- Order Details
 - Payment Gateway Integration
 - CloudFront CDN
 - Amazon S3 Image Hosting
 - GitHub Actions CI/CD
+- CloudWatch Monitoring & Dashboards
 - Performance Optimization
 - End-to-End Testing
 
@@ -296,23 +338,24 @@ Planned improvements include:
 
 # 🔗 Related Repositories
 
-## vinod-luxury-retail-local
-
-Local prototype built using JSON files without AWS services.
-
----
-
 ## terraform-aws-serverless-ecommerce-platform
 
 Infrastructure as Code repository provisioning:
 
 - Amazon ECS
-- AWS Lambda
-- API Gateway
-- Amazon DynamoDB
-- Networking
-- IAM
+- AWS Fargate
 - Application Load Balancer
+- AWS Lambda
+- Amazon API Gateway
+- Amazon DynamoDB
+- IAM
+- Networking
+
+---
+
+## vinod-luxury-retail-local
+
+Local prototype built using JSON files without AWS services.
 
 ---
 
@@ -336,7 +379,7 @@ No commercial use is intended.
 
 **Vinod Beriki**
 
-DevOps Engineer | AWS | Terraform | Kubernetes | Docker | React | Serverless
+DevOps Engineer | AWS | Terraform | Kubernetes | Docker | React | Next.js | TypeScript | Serverless
 
 GitHub
 

@@ -15,10 +15,10 @@ exports.handler = async (event) => {
 
     try {
 
-        const userId =
-            event.queryStringParameters?.userId;
+        const orderId =
+            event.pathParameters?.orderId;
 
-        if (!userId) {
+        if (!orderId) {
 
             return {
 
@@ -30,7 +30,7 @@ exports.handler = async (event) => {
 
                 body: JSON.stringify({
 
-                    message: "userId is required."
+                    message: "orderId is required."
 
                 })
 
@@ -41,24 +41,39 @@ exports.handler = async (event) => {
         const result =
             await ddb.send(
 
-                new QueryCommand({
+                new GetCommand({
 
                     TableName: "vlr-orders",
 
-                    IndexName: "userId-index",
+                    Key: {
 
-                    KeyConditionExpression:
-                        "userId = :userId",
-
-                    ExpressionAttributeValues: {
-
-                        ":userId": String(userId)
+                        orderId
 
                     }
 
                 })
 
             );
+
+        if (!result.Item) {
+
+            return {
+
+                statusCode: 404,
+
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
+                },
+
+                body: JSON.stringify({
+
+                    message: "Order not found."
+
+                })
+
+            };
+
+        }
 
         return {
 
@@ -68,11 +83,7 @@ exports.handler = async (event) => {
                 "Access-Control-Allow-Origin": "*"
             },
 
-            body: JSON.stringify(
-
-                result.Items || []
-
-            )
+            body: JSON.stringify(result.Item)
 
         };
 
