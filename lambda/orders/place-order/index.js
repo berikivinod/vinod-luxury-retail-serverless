@@ -22,15 +22,15 @@ exports.handler = async (event) => {
 
         const userId = String(body.userId);
 
-        const cartResult =
-            await ddb.send(
-                new GetCommand({
-                    TableName: "vlr-cart",
-                    Key: {
-                        userId
-                    }
-                })
-            );
+        // Get Shopping Cart
+        const cartResult = await ddb.send(
+            new GetCommand({
+                TableName: "vlr-cart",
+                Key: {
+                    userId
+                }
+            })
+        );
 
         const cart = cartResult.Item;
 
@@ -48,12 +48,12 @@ exports.handler = async (event) => {
 
         }
 
-        const productsResult =
-            await ddb.send(
-                new ScanCommand({
-                    TableName: "vlr-products"
-                })
-            );
+        // Get Products
+        const productsResult = await ddb.send(
+            new ScanCommand({
+                TableName: "vlr-products"
+            })
+        );
 
         const products = productsResult.Items || [];
 
@@ -61,10 +61,15 @@ exports.handler = async (event) => {
 
         const orderItems = cart.items.map(cartItem => {
 
-            const product =
-                products.find(
-                    p => p.id === cartItem.productId
+            const product = products.find(
+                p => p.id === cartItem.productId
+            );
+
+            if (!product) {
+                throw new Error(
+                    `Product ${cartItem.productId} not found.`
                 );
+            }
 
             const lineTotal =
                 product.price * cartItem.quantity;
@@ -73,21 +78,21 @@ exports.handler = async (event) => {
 
             return {
 
-    productId: product.id,
+                productId: product.id,
 
-    productName: product.productName,
+                productName: product.name,
 
-    brand: product.brand,
+                brand: product.brand,
 
-    image: product.image,
+                image: product.image,
 
-    quantity: cartItem.quantity,
+                quantity: cartItem.quantity,
 
-    price: product.price,
+                price: product.price,
 
-    lineTotal
+                lineTotal
 
-};
+            };
 
         });
 
@@ -108,10 +113,29 @@ exports.handler = async (event) => {
 
             userId,
 
-            orderDate:
-                new Date().toISOString(),
+            orderDate: new Date().toISOString(),
 
             status: "PLACED",
+
+            channel: "Online",
+
+            trackingNumber: "Pending",
+
+            paymentMethod: "Visa **** 4242",
+
+            shippingAddress: {
+
+                street: "123 Main Street",
+
+                city: "Franklin",
+
+                state: "TN",
+
+                zip: "37064"
+
+            },
+
+            store: null,
 
             subtotal,
 
@@ -125,6 +149,7 @@ exports.handler = async (event) => {
 
         };
 
+        // Save Order
         await ddb.send(
             new PutCommand({
 
@@ -135,6 +160,7 @@ exports.handler = async (event) => {
             })
         );
 
+        // Clear Shopping Cart
         await ddb.send(
             new DeleteCommand({
 
@@ -149,33 +175,33 @@ exports.handler = async (event) => {
 
         return {
 
-    statusCode: 200,
+            statusCode: 200,
 
-    headers: {
-        "Access-Control-Allow-Origin": "*"
-    },
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            },
 
-    body: JSON.stringify({
+            body: JSON.stringify({
 
-        success: true,
+                success: true,
 
-        orderId,
+                orderId,
 
-        orderDate: order.orderDate,
+                orderDate: order.orderDate,
 
-        status: order.status,
+                status: order.status,
 
-        subtotal,
+                subtotal,
 
-        tax,
+                tax,
 
-        shipping,
+                shipping,
 
-        total
+                total
 
-    })
+            })
 
-};
+        };
 
     }
     catch (error) {
