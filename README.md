@@ -13,18 +13,19 @@
 
 # 📖 Overview
 
-**Vinod Luxury Retail (VLR)** is a modern cloud-native luxury retail e-commerce application built using **Next.js**, **React**, **TypeScript**, and **AWS Serverless services**.
+**Vinod Luxury Retail (VLR)** is a cloud-native luxury retail e-commerce application built using **Next.js**, **React**, **TypeScript**, and **AWS Serverless** technologies.
 
-The application demonstrates how a modern frontend communicates with a scalable serverless backend using **Amazon API Gateway**, **AWS Lambda**, and **Amazon DynamoDB** while following production-style application architecture.
+The application demonstrates how a modern React frontend communicates with a scalable serverless backend using **Amazon API Gateway**, **AWS Lambda**, and **Amazon DynamoDB** while following production-style cloud architecture and software engineering best practices.
 
-This repository contains the complete application source code, including:
+This repository contains the complete application source code including:
 
-- Next.js frontend
-- AWS Lambda source code
-- API integrations
-- Sample datasets
-- Docker configuration
-- DynamoDB seed scripts
+- Next.js Frontend
+- AWS Lambda Source Code
+- REST API Integrations
+- Serverless Order Management
+- Sample Product Data
+- Docker Configuration
+- DynamoDB Seed Scripts
 
 Infrastructure provisioning is maintained separately using Terraform.
 
@@ -36,6 +37,8 @@ Infrastructure provisioning is maintained separately using Terraform.
 
 ## ✅ Completed
 
+### Shopping Experience
+
 - Product Catalog
 - Product Details
 - Product Search
@@ -45,7 +48,12 @@ Infrastructure provisioning is maintained separately using Terraform.
 - Checkout
 - Place Order
 - Order Confirmation
+- Order History
+- Order Details
 - Store Locator
+
+### Cloud Integration
+
 - REST API Integration
 - AWS Lambda Integration
 - Amazon API Gateway Integration
@@ -55,9 +63,7 @@ Infrastructure provisioning is maintained separately using Terraform.
 
 ## 🚧 Currently In Progress
 
-- Order History (Frontend)
-- Order Details (Frontend)
-- Favorites
+- Favorites (Wishlist)
 - Address Management
 - Payment Methods
 - Amazon Cognito Authentication
@@ -77,16 +83,35 @@ Infrastructure provisioning is maintained separately using Terraform.
 - Checkout
 - Place Order
 - Order Confirmation
-- Order History *(In Progress)*
-- Order Details *(In Progress)*
+- Order History
+- Order Details
 - Store Locator
+
+---
+
+## 📦 Order Management
+
+The application includes a complete serverless order management workflow.
+
+### Supported Features
+
+- Place customer orders
+- Order confirmation
+- Customer order history
+- Order details
+- Purchased product summary
+- Order status tracking
+- Shipping information
+- Payment information
+- Tracking information
+- Order totals
 
 ---
 
 ## Serverless Backend
 
 - Product APIs
-- Shopping Cart APIs
+- Search APIs
 - Order APIs
 - AWS Lambda
 - Amazon API Gateway
@@ -117,16 +142,47 @@ Infrastructure provisioning is maintained separately using Terraform.
                        ▼
                 Amazon API Gateway
                        │
-        ┌──────────────┼──────────────┐
-        ▼              ▼              ▼
-   Product APIs    Shopping Cart   Order APIs
-        │              │              │
-        └──────────────┼──────────────┘
+        ┌──────────────┼──────────────────────┐
+        ▼              ▼                      ▼
+   Product APIs    Search APIs          Order APIs
+        │              │                      │
+        └──────────────┼──────────────────────┘
                        ▼
                   AWS Lambda
                        │
-                       ▼
-                Amazon DynamoDB
+             ┌─────────┴─────────┐
+             ▼                   ▼
+      Products Table       Orders Table
+      Amazon DynamoDB     Amazon DynamoDB
+```
+
+---
+
+# 🔄 Order Workflow
+
+```text
+Shopping Cart
+      │
+      ▼
+Checkout
+      │
+      ▼
+Place Order API
+      │
+      ▼
+AWS Lambda
+      │
+      ▼
+Amazon DynamoDB
+      │
+      ▼
+Order Confirmation
+      │
+      ▼
+Order History
+      │
+      ▼
+Order Details
 ```
 
 ---
@@ -138,13 +194,9 @@ Infrastructure provisioning is maintained separately using Terraform.
 | GET | /products | Retrieve all products |
 | GET | /products/{id} | Retrieve product details |
 | GET | /products/search | Search products |
-| GET | /cart | Retrieve shopping cart |
-| POST | /cart | Add product to cart |
-| PUT | /cart | Update quantity |
-| DELETE | /cart | Remove cart item |
 | POST | /orders | Place customer order |
-| GET | /orders | Retrieve customer orders |
-| GET | /orders/{orderId} | Retrieve order details |
+| GET | /orders | Retrieve customer order history |
+| GET | /orders/{orderId} | Retrieve customer order details |
 
 ---
 
@@ -187,7 +239,14 @@ node scripts/seed-products.js
 
 The script imports the sample product catalog from the **data/** directory into the **vlr-products** DynamoDB table.
 
-Additional seed scripts can be added to populate users, stores, favorites, addresses, payment methods, and other sample datasets.
+Future seed scripts can populate:
+
+- Orders
+- Favorites
+- Stores
+- Addresses
+- Payment Methods
+- User Profiles
 
 ---
 
@@ -199,9 +258,9 @@ vinod-luxury-retail-serverless
 ├── components/
 ├── data/
 ├── lambda/
-│   ├── cart/
-│   ├── orders/
-│   └── products/
+│   ├── products/
+│   ├── search/
+│   └── orders/
 ├── pages/
 ├── public/
 ├── scripts/
@@ -229,7 +288,7 @@ Run the application
 npm run dev
 ```
 
-Open
+Open your browser
 
 ```text
 http://localhost:3000
@@ -253,11 +312,11 @@ docker run -p 3000:3000 vlr-ui
 
 The Docker image includes:
 
-- Multi-stage build
-- Production-ready image
-- Optimized Docker layers
+- Multi-stage Build
+- Production-ready Image
+- Optimized Docker Layers
 - .dockerignore
-- Health-check ready configuration
+- Health-check Ready Configuration
 
 ---
 
@@ -287,11 +346,13 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - AWS Lambda
 - Amazon API Gateway
 - Amazon DynamoDB
-- Docker
 - Serverless Architecture
+- Order Management Systems
+- DynamoDB Data Modeling
+- Docker
+- Cloud-Native Application Development
 - Component-Based UI Design
 - Responsive Web Development
-- Cloud-Native Application Development
 
 ---
 
@@ -301,16 +362,16 @@ This project demonstrates:
 
 - Modern React application architecture
 - Cloud-native application development
-- Hybrid container and serverless architecture
+- Production-style serverless architecture
 - AWS Lambda REST APIs
 - Amazon API Gateway integration
 - Amazon DynamoDB integration
-- Shopping cart workflow
-- Checkout workflow
-- Order placement workflow
+- Complete end-to-end order management workflow
+- Shopping cart and checkout workflow
+- Responsive UI using CSS Modules
 - Docker containerization
-- Production-style project organization
 - Infrastructure separation using Terraform
+- Real-world e-commerce application design
 
 ---
 
@@ -318,17 +379,18 @@ This project demonstrates:
 
 Planned improvements include:
 
-- Complete Order History UI
-- Complete Order Details UI
-- Favorites
+- Favorites (Wishlist)
 - Address Management
 - Payment Methods
 - User Profile
 - Amazon Cognito Authentication
 - JWT Authorization
 - Payment Gateway Integration
-- CloudFront CDN
+- Product Reviews
+- Inventory Management
+- Email Notifications
 - Amazon S3 Image Hosting
+- CloudFront CDN
 - GitHub Actions CI/CD
 - CloudWatch Monitoring & Dashboards
 - Performance Optimization
@@ -342,20 +404,21 @@ Planned improvements include:
 
 Infrastructure as Code repository provisioning:
 
-- Amazon ECS
-- AWS Fargate
-- Application Load Balancer
 - AWS Lambda
 - Amazon API Gateway
 - Amazon DynamoDB
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
 - IAM
 - Networking
+- CloudWatch
 
 ---
 
 ## vinod-luxury-retail-local
 
-Local prototype built using JSON files without AWS services.
+Local prototype built using JSON files before migrating to a serverless AWS architecture.
 
 ---
 
@@ -363,9 +426,9 @@ Local prototype built using JSON files without AWS services.
 
 This repository was created solely for educational, learning, and portfolio purposes.
 
-The application simulates a luxury retail e-commerce platform to demonstrate modern full-stack software engineering and cloud architecture.
+The application simulates a luxury retail e-commerce platform to demonstrate modern full-stack software engineering, cloud-native architecture, and AWS serverless application development.
 
-All products, product names, brands, descriptions, customers, stores, addresses, payment methods, favorites, shopping carts, and orders are **fictional sample data** created exclusively for learning and demonstration purposes.
+All products, brands, customers, stores, addresses, payment methods, shopping carts, favorites, and orders are fictional sample data created exclusively for learning and demonstration purposes.
 
 This project is **not affiliated with, endorsed by, sponsored by, or associated with any retailer, luxury brand, company, or organization**.
 
