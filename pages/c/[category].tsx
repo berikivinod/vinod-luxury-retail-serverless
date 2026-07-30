@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-
+import useFavorites from "@/hooks/useFavorites";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import ProductCard from "@/components/Product/ProductCard";
@@ -9,6 +9,10 @@ import styles from "@/styles/PLP.module.css";
 
 export default function CategoryPage() {
   const router = useRouter();
+  const {
+    favoriteIds,
+    toggleFavorite
+} = useFavorites();
 
   const { category } = router.query;
   const [products, setProducts] =
@@ -79,9 +83,15 @@ if (loading) {
         <div className={styles.grid}>
           {products.map((product) => (
             <ProductCard
-              key={product.id}
-              product={product}
-            />
+    key={product.id}
+    product={product}
+    isFavorite={
+        favoriteIds.has(product.id)
+    }
+    onFavoriteToggle={
+        toggleFavorite
+    }
+/>
           ))}
         </div>
       </div>

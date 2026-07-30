@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-
+import useFavorites from "@/hooks/useFavorites";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 
@@ -24,6 +24,10 @@ export default function ProductDetail() {
         useState<any>(null);
     const [loading, setLoading] =
         useState(true);
+    const {
+    favoriteIds,
+    toggleFavorite,
+} = useFavorites();
 
     useEffect(() => {
         if (!id) return;
@@ -104,13 +108,12 @@ export default function ProductDetail() {
     }, [product]);
 
     useEffect(() => {
-        const storedUser =
-            localStorage.getItem("user");
+    const storedUser = localStorage.getItem("user");
 
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
+    if (storedUser) {
+        setUser(JSON.parse(storedUser));
+    }
+}, []);
 
     if (loading) {
         return (
@@ -144,53 +147,6 @@ export default function ProductDetail() {
             </>
         );
     }
-
-    const handleAddToFavorites = () => {
-        if (!user) {
-            alert(
-                "Please sign in to add favorites."
-            );
-
-            return;
-        }
-
-        const favoritesKey =
-            `favorites_${user.id}`;
-
-        const existingFavorites =
-            JSON.parse(
-                localStorage.getItem(
-                    favoritesKey
-                ) || "[]"
-            );
-
-        const alreadyExists =
-            existingFavorites.some(
-                (item: any) =>
-                    item.id === product.id
-            );
-
-        if (alreadyExists) {
-            alert(
-                "Already in favorites."
-            );
-
-            return;
-        }
-
-        existingFavorites.push(product);
-
-        localStorage.setItem(
-            favoritesKey,
-            JSON.stringify(
-                existingFavorites
-            )
-        );
-
-        alert(
-            "Added to favorites."
-        );
-    };
 
     const handleAddToBag = async () => {
 
@@ -298,11 +254,13 @@ export default function ProductDetail() {
                     </button>
 
                     <button
-                        className={styles.addToFavorites}
-                        onClick={handleAddToFavorites}
-                    >
-                        ADD TO FAVORITES
-                    </button>
+    className={styles.addToFavorites}
+    onClick={() => toggleFavorite(product.id)}
+>
+    {favoriteIds.has(product.id)
+        ? "REMOVE FROM FAVORITES"
+        : "ADD TO FAVORITES"}
+</button>
                 </div>
             </div>
             <RecentlyViewed />

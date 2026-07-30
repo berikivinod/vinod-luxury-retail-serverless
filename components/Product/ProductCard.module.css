@@ -10,6 +10,7 @@
 }
 
 .imageContainer {
+  position: relative;
   width: 100%;
   overflow: hidden;
   background: #f8f8f8;
@@ -42,4 +43,35 @@
 .price {
   font-size: 18px;
   font-weight: 600;
+}
+
+.favoriteButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+.favoriteButton:hover {
+  background: #ffffff;
+}
+
+.favoriteFilled {
+  color: #c8102e;
+  font-size: 20px;
+}
+
+.favoriteOutline {
+  color: #555;
+  font-size: 20px;
 }

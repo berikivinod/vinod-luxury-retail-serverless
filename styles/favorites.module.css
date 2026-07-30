@@ -65,3 +65,22 @@
   font-size: 18px;
   font-weight: 600;
 }
+
+.favoriteCard {
+    cursor: pointer;
+}
+
+.removeButton {
+    margin-top: 12px;
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 1px solid #000;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.removeButton:hover {
+    background: black;
+    color: white;
+}

@@ -63,7 +63,6 @@ Infrastructure provisioning is maintained separately using Terraform.
 
 ## 🚧 Currently In Progress
 
-- Favorites (Wishlist)
 - Address Management
 - Payment Methods
 - Amazon Cognito Authentication
@@ -80,6 +79,7 @@ Infrastructure provisioning is maintained separately using Terraform.
 - Shopping Cart
 - Update Cart Quantity
 - Remove Cart Items
+- Favorites (Wishlist)
 - Checkout
 - Place Order
 - Order Confirmation
@@ -108,10 +108,24 @@ The application includes a complete serverless order management workflow.
 
 ---
 
+## ❤️ Favorites Management
+
+The application includes a complete serverless favorites (wishlist) experience.
+
+### Supported Features
+
+- Add products to favorites
+- Remove products from favorites
+- View favorite products
+- Persistent favorites using Amazon DynamoDB
+- Synchronization across Product Listing Page, Product Detail Page, and Favorites page
+- React custom hook (`useFavorites`)
+
 ## Serverless Backend
 
 - Product APIs
 - Search APIs
+- Favorites APIs
 - Order APIs
 - AWS Lambda
 - Amazon API Gateway
@@ -126,6 +140,7 @@ The application includes a complete serverless order management workflow.
 - React 19
 - TypeScript
 - CSS Modules
+- Custom React Hooks
 - Responsive Design
 - Component-Based Architecture
 
@@ -142,20 +157,20 @@ The application includes a complete serverless order management workflow.
                        ▼
                 Amazon API Gateway
                        │
-        ┌──────────────┼──────────────────────┐
-        ▼              ▼                      ▼
-   Product APIs    Search APIs          Order APIs
-        │              │                      │
-        └──────────────┼──────────────────────┘
-                       ▼
-                  AWS Lambda
-                       │
-             ┌─────────┴─────────┐
-             ▼                   ▼
-      Products Table       Orders Table
-      Amazon DynamoDB     Amazon DynamoDB
+      ┌──────────┬──────────┬────────────┬──────────┐
+      ▼          ▼          ▼            ▼
+ Product APIs Search APIs Favorites APIs Order APIs
+      │          │          │            │
+      └──────────┴──────────┴────────────┘
+                     │
+                     ▼
+                AWS Lambda
+                     │
+      ┌──────────────┼──────────────┐
+      ▼              ▼              ▼
+ Products Table Favorites Table Orders Table
+ Amazon DynamoDB Amazon DynamoDB Amazon DynamoDB
 ```
-
 ---
 
 # 🔄 Order Workflow
@@ -197,6 +212,9 @@ Order Details
 | POST | /orders | Place customer order |
 | GET | /orders | Retrieve customer order history |
 | GET | /orders/{orderId} | Retrieve customer order details |
+| POST | /favorites | Add product to favorites |
+| GET | /favorites | Retrieve favorite products |
+| DELETE | /favorites/{productId} | Remove favorite product |
 
 ---
 
@@ -242,7 +260,6 @@ The script imports the sample product catalog from the **data/** directory into 
 Future seed scripts can populate:
 
 - Orders
-- Favorites
 - Stores
 - Addresses
 - Payment Methods
@@ -261,6 +278,7 @@ vinod-luxury-retail-serverless
 │   ├── products/
 │   ├── search/
 │   └── orders/
+│   └── favorites/
 ├── pages/
 ├── public/
 ├── scripts/
@@ -353,8 +371,26 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - Cloud-Native Application Development
 - Component-Based UI Design
 - Responsive Web Development
+- React Custom Hooks
+- CRUD REST APIs
+- API Gateway CORS
+- Favorites Management
+- DynamoDB Composite Keys
+- State Synchronization
 
 ---
+# 🏆 Key Accomplishments
+
+- Complete cloud-native luxury retail application
+- Serverless REST APIs using AWS Lambda
+- Product Catalog and Search
+- Shopping Cart and Checkout
+- Order Management
+- Favorites (Wishlist)
+- Amazon DynamoDB integration
+- React custom hooks
+- Dockerized Next.js application
+- Infrastructure managed with Terraform
 
 # 🌟 Portfolio Highlights
 
@@ -372,6 +408,10 @@ This project demonstrates:
 - Docker containerization
 - Infrastructure separation using Terraform
 - Real-world e-commerce application design
+- Backend-powered Favorites (Wishlist)
+- React custom hook architecture
+- Cross-page state synchronization
+- Serverless CRUD APIs
 
 ---
 
@@ -379,7 +419,6 @@ This project demonstrates:
 
 Planned improvements include:
 
-- Favorites (Wishlist)
 - Address Management
 - Payment Methods
 - User Profile
