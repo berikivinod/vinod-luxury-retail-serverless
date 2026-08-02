@@ -417,6 +417,53 @@ This project demonstrates:
 
 # 🔄 Future Enhancements
 
+The following enhancements are planned as the application continues to evolve into a production-style cloud-native e-commerce platform.
+
+---
+
+## 🛒 Shopping Cart Backend (Planned)
+
+The current shopping cart experience will be migrated from client-side storage to a fully serverless backend.
+
+### Planned Features
+
+- Persist shopping carts in Amazon DynamoDB
+- Serverless CRUD APIs using AWS Lambda
+- REST endpoints exposed through Amazon API Gateway
+- React `useCart` custom hook for centralized state management
+- Real-time synchronization across Product Detail, Shopping Cart, and Checkout pages
+- Quantity updates and item removal through REST APIs
+- Automatic cart persistence across devices after user sign-in
+
+### Planned REST APIs
+
+| Method | Endpoint | Description |
+|---------|----------|-------------|
+| POST | /cart | Add item to cart |
+| GET | /cart | Retrieve shopping cart |
+| PUT | /cart/{productId} | Update quantity |
+| DELETE | /cart/{productId} | Remove item |
+
+### Planned Architecture
+
+```text
+React Components
+        │
+        ▼
+    useCart Hook
+        │
+        ▼
+ Amazon API Gateway
+        │
+        ▼
+    AWS Lambda
+        │
+        ▼
+ Amazon DynamoDB
+```
+
+---
+
 Planned improvements include:
 
 - Address Management
@@ -434,6 +481,7 @@ Planned improvements include:
 - CloudWatch Monitoring & Dashboards
 - Performance Optimization
 - End-to-End Testing
+
 
 ---
 

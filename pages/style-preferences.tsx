@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import AccountSidebar from "@/components/Account/AccountSidebar";
+
+import useAuth from "@/hooks/useAuth";
+
 import styles from "@/styles/StylePreferences.module.css";
 
 export default function StylePreferences() {
+
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const { user, loading } = useAuth();
+
     const [shoppingPreference, setShoppingPreference] =
         useState("");
+
     const [showDesignerModal, setShowDesignerModal] =
         useState(false);
 
@@ -30,23 +37,18 @@ export default function StylePreferences() {
         useState<string[]>([]);
 
     useEffect(() => {
-        const storedUser = localStorage.getItem("user");
 
-        if (!storedUser) {
-            router.push("/");
+        if (loading || !user) {
             return;
         }
 
-        const currentUser = JSON.parse(storedUser);
-
-        setUser(currentUser);
-
         const savedPreferences =
             localStorage.getItem(
-                `stylePreferences_${currentUser.id}`
+                `stylePreferences_${user.id}`
             );
 
         if (savedPreferences) {
+
             const preferences =
                 JSON.parse(savedPreferences);
 
@@ -73,10 +75,13 @@ export default function StylePreferences() {
             setSelectedStyles(
                 preferences.styles || []
             );
+
         }
-    }, [router]);
+
+    }, [loading, user]);
 
     useEffect(() => {
+
         if (!user) return;
 
         localStorage.setItem(
@@ -90,6 +95,7 @@ export default function StylePreferences() {
                 styles: selectedStyles,
             })
         );
+
     }, [
         user,
         shoppingPreference,
@@ -100,8 +106,31 @@ export default function StylePreferences() {
         selectedStyles,
     ]);
 
-    if (!user) return null;
+    if (loading) {
 
+        return (
+            <>
+                <Header />
+
+                <div
+                    style={{
+                        padding: "80px",
+                        textAlign: "center",
+                        fontSize: "22px",
+                    }}
+                >
+                    Loading your style preferences...
+                </div>
+
+                <Footer />
+            </>
+        );
+
+    }
+
+    if (!user) {
+        return null;
+    }
     const completed =
         (shoppingPreference ? 1 : 0) +
         (selectedDesigners.length > 0 ? 1 : 0) +

@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import AccountSidebar from "@/components/Account/AccountSidebar";
-
+import useAuth from "@/hooks/useAuth";
+import Image from "next/image";
 import styles from "@/styles/OrderHistory.module.css";
 
-import Image from "next/image";
 
 export default function OrderHistory() {
 
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const { user, loading } = useAuth();
 
     const [searchText, setSearchText] = useState("");
 
@@ -25,62 +24,42 @@ export default function OrderHistory() {
 
     useEffect(() => {
 
-        const loadOrders = async () => {
+    if (loading || !user) {
+        return;
+    }
 
-            const storedUser =
-                localStorage.getItem("user");
+    const loadOrders = async () => {
 
-            if (!storedUser) {
+        try {
 
-                router.push(
-                    "/guest-order-history"
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders?userId=${user.id}`
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load orders."
                 );
-
-                return;
-
             }
 
-            const currentUser =
-                JSON.parse(storedUser);
+            const data =
+                await response.json();
 
-            setUser(currentUser);
+            setAllOrders(data);
 
-            try {
+        } catch (error) {
 
-                const response =
-                    await fetch(
+            console.error(error);
 
-                        `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders?userId=${currentUser.id}`
+            setAllOrders([]);
 
-                    );
+        }
 
-                if (!response.ok) {
+    };
 
-                    throw new Error(
-                        "Unable to load orders."
-                    );
+    loadOrders();
 
-                }
-
-                const data =
-                    await response.json();
-
-                setAllOrders(data);
-
-            }
-            catch (error) {
-
-                console.error(error);
-
-                setAllOrders([]);
-
-            }
-
-        };
-
-        loadOrders();
-
-    }, [router]);
+}, [loading, user]);
 
     const userOrders =
         allOrders.filter((order) => {
@@ -108,11 +87,31 @@ export default function OrderHistory() {
 
         });
 
-    if (!user) {
+    if (loading) {
 
-        return null;
+    return (
+        <>
+            <Header />
 
-    }
+            <div
+                style={{
+                    padding: "80px",
+                    textAlign: "center",
+                    fontSize: "22px",
+                }}
+            >
+                Loading your orders...
+            </div>
+
+            <Footer />
+        </>
+    );
+
+}
+
+if (!user) {
+    return null;
+}
 
     return (
 
@@ -124,7 +123,7 @@ export default function OrderHistory() {
 
                 <AccountSidebar
                     user={user}
-                    activePage="account"
+                    activePage="orders"
                 />
 
                 <div className={styles.content}>

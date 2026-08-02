@@ -1,87 +1,225 @@
 // pages/register.tsx
 
+import { useState } from "react";
 import { useRouter } from "next/router";
-import { FiArrowLeft } from "react-icons/fi";
+
+import { registerUser } from "@/services/auth";
+import AuthLayout from "@/components/Auth/AuthLayout";
+
 import styles from "@/styles/Register.module.css";
 
 export default function Register() {
+
     const router = useRouter();
+
+    const [form, setForm] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        phone: "",
+    });
+
+    const [loading, setLoading] = useState(false);
+
+    const [error, setError] = useState("");
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+
+        setForm({
+            ...form,
+            [e.target.name]: e.target.value,
+        });
+
+    };
+
+    const handleRegister = async () => {
+
+        setError("");
+
+        if (
+            !form.firstName ||
+            !form.lastName ||
+            !form.email ||
+            !form.password
+        ) {
+
+            setError(
+                "Please complete all required fields."
+            );
+
+            return;
+
+        }
+
+        try {
+
+            setLoading(true);
+
+            await registerUser({
+
+                firstName: form.firstName,
+                lastName: form.lastName,
+                email: form.email,
+                password: form.password,
+
+            });
+
+            router.push({
+
+                pathname: "/verify",
+
+                query: {
+
+                    email: form.email,
+
+                },
+
+            });
+
+        } catch (err: any) {
+
+            setError(
+                err.message || "Registration failed."
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
     return (
-        <>
 
-            <div className={styles.page}>
-                <div className={styles.header}>
+        <AuthLayout title="Register With Us">
 
-                    <button
-                        className={styles.backButton}
-                        onClick={() => router.push("/")}
-                    >
-                        <FiArrowLeft />
-                        Back
-                    </button>
+            <div className={styles.container}>
 
-                    <div className={styles.logo}>
-                        Vinod Luxury Retailer
+                <div className={styles.row}>
+
+                    <div>
+
+                        <label>First Name</label>
+
+                        <input
+                            type="text"
+                            name="firstName"
+                            value={form.firstName}
+                            onChange={handleChange}
+                            autoComplete="given-name"
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <label>Last Name</label>
+
+                        <input
+                            type="text"
+                            name="lastName"
+                            value={form.lastName}
+                            onChange={handleChange}
+                            autoComplete="family-name"
+                        />
+
                     </div>
 
                 </div>
-                <div className={styles.container}>
 
-                    <h1>Register With Us</h1>
+                <label>Email</label>
 
-                    <div className={styles.row}>
-                        <div>
-                            <label>First Name</label>
-                            <input type="text" />
-                        </div>
+                <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    autoComplete="email"
+                />
 
-                        <div>
-                            <label>Last Name</label>
-                            <input type="text" />
-                        </div>
-                    </div>
+                <label>Password</label>
 
-                    <label>Email</label>
-                    <input type="email" />
+                <input
+                    type="password"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    autoComplete="new-password"
+                />
 
-                    <label>Password</label>
-                    <input type="password" />
+                <label>Phone Number (Optional)</label>
 
-                    <label>Phone Number (Optional)</label>
+                <div className={styles.phoneRow}>
 
-                    <div className={styles.phoneRow}>
-                        <select>
-                            <option>US +1</option>
-                        </select>
+                    <select>
+                        <option>US +1</option>
+                    </select>
 
-                        <input type="text" />
-                    </div>
-
-                    <button className={styles.registerButton}>
-                        REGISTER
-                    </button>
-
-                    <div className={styles.checkbox}>
-                        <input type="checkbox" />
-                        <span>Keep me signed in</span>
-                    </div>
-
-                    <div className={styles.checkbox}>
-                        <input type="checkbox" />
-                        <span>
-                            Verify my phone number via text message and enable alerts for suspicious activity.
-                        </span>
-                    </div>
-
-                    <div className={styles.footerLinks}>
-                        © 2026, Vinod Luxury Retailer |
-                        Site Terms and Privacy Policy |
-                        Do Not Sell My Personal Information
-                    </div>
+                    <input
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        autoComplete="tel"
+                    />
 
                 </div>
+
+                {error && (
+                    <div className={styles.error}>
+                        {error}
+                    </div>
+                )}
+
+                <button
+                    type="button"
+                    className={styles.registerButton}
+                    onClick={handleRegister}
+                    disabled={loading}
+                >
+
+                    {loading
+                        ? "REGISTERING..."
+                        : "REGISTER"}
+
+                </button>
+
+                <div className={styles.checkbox}>
+
+                    <input type="checkbox" />
+
+                    <span>
+                        Keep me signed in
+                    </span>
+
+                </div>
+
+                <div className={styles.checkbox}>
+
+                    <input type="checkbox" />
+
+                    <span>
+                        Verify my phone number via text message and enable alerts for suspicious activity.
+                    </span>
+
+                </div>
+
+                <div className={styles.footerLinks}>
+
+                    © 2026, Vinod Luxury Retailer |
+                    Site Terms and Privacy Policy |
+                    Do Not Sell My Personal Information
+
+                </div>
+
             </div>
 
-        </>
+        </AuthLayout>
+
     );
+
 }

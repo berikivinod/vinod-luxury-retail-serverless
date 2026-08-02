@@ -1,73 +1,121 @@
-import styles from "@/styles/favorites.module.css";
+import { useRouter } from "next/router";
+
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 import AccountSidebar from "@/components/Account/AccountSidebar";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+
+import useAuth from "@/hooks/useAuth";
 import useFavorites from "@/hooks/useFavorites";
+
+import styles from "@/styles/favorites.module.css";
+
 export default function Favorites() {
+
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const { user, loading: authLoading } = useAuth();
 
     const {
-    favorites,
-    loading,
-    toggleFavorite,
-} = useFavorites();
+        favorites,
+        loading: favoritesLoading,
+        toggleFavorite,
+    } = useFavorites();
 
-    useEffect(() => {
-        const storedUser =
-            localStorage.getItem("user");
+    if (authLoading) {
 
-        if (!storedUser) {
-            router.push("/");
-            return;
-        }
+        return (
+            <>
+                <Header />
 
-        setUser(JSON.parse(storedUser));
+                <div
+                    className={styles.content}
+                    style={{
+                        padding: "80px",
+                        textAlign: "center",
+                        fontSize: "22px",
+                    }}
+                >
+                    Loading your account...
+                </div>
 
-    }, [router]);
+                <Footer />
+            </>
+        );
 
-    if (loading) {
+    }
+
+    if (!user) {
+        return null;
+    }
+
+    if (favoritesLoading) {
+
+        return (
+            <>
+                <Header />
+
+                <div
+                    className={styles.content}
+                    style={{
+                        padding: "80px",
+                        textAlign: "center",
+                        fontSize: "22px",
+                    }}
+                >
+                    Loading your favorites...
+                </div>
+
+                <Footer />
+            </>
+        );
+
+    }
+
     return (
         <>
             <Header />
-            <div className={styles.content}>
-                Loading favorites...
-            </div>
-            <Footer />
-        </>
-    );
-}
 
-    if (!user) return null;
-    return (
-        <>
-            <Header />
             <div className={styles.wrapper}>
+
                 <AccountSidebar
                     user={user}
                     activePage="favorites"
                 />
+
                 <div className={styles.content}>
+
                     <h1>Favorites</h1>
 
                     {favorites.length === 0 ? (
+
                         <div className={styles.emptyState}>
-                            You currently have no favorited items.
-                            You can add favorites from any product page.
+
+                            <h3>
+                                No favorites yet
+                            </h3>
+
+                            <p>
+                                You currently have no favorite items.
+                                Browse products and click the heart icon
+                                to save them here.
+                            </p>
+
                         </div>
+
                     ) : (
+
                         <div className={styles.productsGrid}>
+
                             {favorites.map((product: any) => (
+
                                 <div
-    key={product.id}
-    className={styles.favoriteCard}
-    onClick={() =>
-        router.push(`/product/${product.id}`)
-    }
->
+                                    key={product.id}
+                                    className={styles.favoriteCard}
+                                    onClick={() =>
+                                        router.push(`/product/${product.id}`)
+                                    }
+                                >
+
                                     <img
                                         src={
                                             product.image ||
@@ -89,22 +137,35 @@ export default function Favorites() {
                                         $
                                         {product.price.toLocaleString()}
                                     </div>
+
                                     <button
-    className={styles.removeButton}
-    onClick={(e) => {
-        e.stopPropagation();
-        toggleFavorite(product.id);
-    }}
->
-    Remove
-</button>
+                                        className={styles.removeButton}
+                                        onClick={(e) => {
+
+                                            e.stopPropagation();
+
+                                            toggleFavorite(product.id);
+
+                                        }}
+                                    >
+                                        Remove
+                                    </button>
+
                                 </div>
+
                             ))}
+
                         </div>
+
                     )}
+
                 </div>
+
             </div>
+
             <Footer />
+
         </>
     );
+
 }

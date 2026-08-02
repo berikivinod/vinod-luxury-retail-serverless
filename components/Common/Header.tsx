@@ -103,6 +103,11 @@ import { useEffect, useState } from "react";
 import SideDrawer from "./SideDrawer";
 import { Store } from "@/types/store";
 import Image from "next/image";
+import {
+  loginUser,
+  logoutUser,
+  getLoggedInUser,
+} from "@/services/auth";
 
 
 type DrawerMode = "signin" | "stores" | "auth" | "account" | "cart" | null;
@@ -153,27 +158,41 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, [storeQuery]);
 
-  useEffect(() => {
+ useEffect(() => {
 
-    const loadUser = async () => {
+  const loadUser = async () => {
 
-      const storedUser =
-        localStorage.getItem("user");
-
-      if (!storedUser) return;
+    try {
 
       const user =
-        JSON.parse(storedUser);
+        await getLoggedInUser();
 
       setLoggedInUser(user);
 
-      await loadCart(user.id);
+      // Keep localStorage temporarily for existing pages
+      localStorage.setItem(
+        "user",
+        JSON.stringify(user)
+      );
 
-    };
+      await loadCart(user.id); // tempororily using Number(user.id) since user.id is a string
+    } catch {
 
-    loadUser();
+      localStorage.removeItem("user");
 
-  }, []);
+      setLoggedInUser(null);
+
+      setCartItems([]);
+
+      setCartCount(0);
+
+    }
+
+  };
+
+  loadUser();
+
+}, []);
 
   function getDistance(
     lat1: number,
@@ -213,75 +232,77 @@ export default function Header() {
     }
   };
 
-  const handleLogin = async () => {
-    try {
-      setLoginError("");
+ const handleLogin = async () => {
+  try {
+    setLoginError("");
 
-      const response = await fetch(
-        "/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+    // Authenticate with Cognito
+    await loginUser(email, password);
 
-      const data = await response.json();
+    // Get the authenticated user's profile
+    const user = await getLoggedInUser();
 
-      if (!response.ok) {
-        setLoginError(data.message);
-        return;
-      }
+    // Keep localStorage for now so existing pages continue to work
+    localStorage.setItem(
+      "user",
+      JSON.stringify(user)
+    );
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data)
-      );
+    setLoggedInUser(user);
 
-      setLoggedInUser(data);
+    // Load existing cart
+    const cart = JSON.parse(
+      localStorage.getItem(
+        `cart_${user.id}`
+      ) || "[]"
+    );
 
-      const cart =
-        JSON.parse(
-          localStorage.getItem(
-            `cart_${data.id}`
-          ) || "[]"
-        );
+    const count = cart.reduce(
+      (sum: number, item: any) =>
+        sum + item.quantity,
+      0
+    );
 
-      const count = cart.reduce(
-        (sum: number, item: any) =>
-          sum + item.quantity,
-        0
-      );
+    setCartCount(count);
 
-      setCartCount(count);
-
-      {/*alert(
-        `Welcome ${data.firstName} ${data.lastName}`
-      );*/}
-
-      setDrawerMode(null);
-    } catch (error) {
-      setLoginError(
-        "Something went wrong"
-      );
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    setLoggedInUser(null);
-    setCartCount(0);
+    // Close drawer
     setDrawerMode(null);
-    router.push("/");
-  };
 
-  const loadCart = async (userId: number) => {
+  } catch (error: any) {
+
+    setLoginError(
+      error?.message ||
+      "Invalid email or password."
+    );
+
+  }
+};
+
+  const handleLogout = async () => {
+  try {
+
+    await logoutUser();
+
+    localStorage.removeItem("user");
+
+    setLoggedInUser(null);
+
+    setCartItems([]);
+
+    setCartCount(0);
+
+    setDrawerMode(null);
+
+    router.push("/");
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+};
+
+  const loadCart = async (userId: string) => {
 
     try {
 
@@ -829,9 +850,15 @@ export default function Header() {
               className={styles.authInput}
             />
 
-            <div className={styles.forgotPassword}>
-              Forgot Password?
-            </div>
+            <div
+  className={styles.forgotPassword}
+  onClick={() => {
+    setDrawerMode(null);
+    router.push("/forgot-password");
+  }}
+>
+  Forgot Password?
+</div>
 
             <button
               className={styles.signInButton}

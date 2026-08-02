@@ -1,122 +1,167 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
-import addresses from "@/data/addresses.json";
-import styles from "@/styles/AddressBook.module.css";
 import AccountSidebar from "@/components/Account/AccountSidebar";
 
+import useAuth from "@/hooks/useAuth";
+
+import addresses from "@/data/addresses.json";
+
+import styles from "@/styles/AddressBook.module.css";
+
 export default function AddressBook() {
+
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const { user, loading } = useAuth();
+
     const [userAddresses, setUserAddresses] =
         useState<any[]>([]);
 
     useEffect(() => {
-        const storedUser =
-            localStorage.getItem("user");
 
-        if (!storedUser) {
-            router.push("/");
+        if (loading || !user) {
             return;
         }
-
-        const currentUser =
-            JSON.parse(storedUser);
-
-        setUser(currentUser);
 
         const filteredAddresses =
             addresses.filter(
                 (address: any) =>
-                    address.userId === currentUser.id
+                    address.userId === user.id
             );
 
-        setUserAddresses(
-            filteredAddresses
-        );
-    }, [router]);
+        setUserAddresses(filteredAddresses);
 
-    if (!user) return null;
+    }, [loading, user]);
+
+    if (loading) {
+
+        return (
+            <>
+                <Header />
+
+                <div
+                    style={{
+                        padding: "80px",
+                        textAlign: "center",
+                        fontSize: "22px",
+                    }}
+                >
+                    Loading your addresses...
+                </div>
+
+                <Footer />
+            </>
+        );
+
+    }
+
+    if (!user) {
+        return null;
+    }
 
     return (
         <>
             <Header />
 
             <div className={styles.wrapper}>
+
                 <AccountSidebar
                     user={user}
-                    activePage="account"
+                    activePage="address"
                 />
 
                 <div className={styles.content}>
+
                     <h1>Address Book</h1>
 
                     <button
-                        className={
-                            styles.addButton
+                        className={styles.addButton}
+                        onClick={() =>
+                            router.push(
+                                "/address-book/add"
+                            )
                         }
                     >
                         ADD NEW ADDRESS
                     </button>
 
                     <div
-                        className={
-                            styles.addressList
-                        }
+                        className={styles.addressList}
                     >
+
+                        {userAddresses.length === 0 && (
+
+                            <div
+                                style={{
+                                    textAlign: "center",
+                                    padding: "60px 20px",
+                                    color: "#666",
+                                }}
+                            >
+
+                                <h3>
+                                    No addresses found
+                                </h3>
+
+                                <p>
+                                    Add your first shipping
+                                    or billing address.
+                                </p>
+
+                            </div>
+
+                        )}
+
                         {userAddresses.map(
                             (address) => (
+
                                 <div
                                     key={address.id}
                                     className={
                                         styles.addressCard
                                     }
                                 >
+
                                     <div
                                         className={
                                             styles.addressHeader
                                         }
                                     >
+
                                         <h3>
                                             {address.type}
                                         </h3>
 
                                         {address.isDefault && (
+
                                             <span>
                                                 Default
                                             </span>
+
                                         )}
+
                                     </div>
 
                                     <p>
-                                        {
-                                            address.firstName
-                                        }{" "}
-                                        {
-                                            address.lastName
-                                        }
+                                        {address.firstName}{" "}
+                                        {address.lastName}
                                     </p>
 
                                     <p>
-                                        {
-                                            address.street
-                                        }
+                                        {address.street}
                                     </p>
 
                                     <p>
                                         {address.city},{" "}
-                                        {
-                                            address.state
-                                        }{" "}
+                                        {address.state}{" "}
                                         {address.zip}
                                     </p>
 
                                     <p>
-                                        {
-                                            address.phone
-                                        }
+                                        {address.phone}
                                     </p>
 
                                     <div
@@ -124,22 +169,45 @@ export default function AddressBook() {
                                             styles.actions
                                         }
                                     >
-                                        <button>
+
+                                        <button
+                                            onClick={() =>
+                                                router.push(
+                                                    `/address-book/edit/${address.id}`
+                                                )
+                                            }
+                                        >
                                             Edit
                                         </button>
 
-                                        <button>
+                                        <button
+                                            onClick={() => {
+
+                                                alert(
+                                                    "Delete Address feature will be implemented in the next phase."
+                                                );
+
+                                            }}
+                                        >
                                             Delete
                                         </button>
+
                                     </div>
+
                                 </div>
+
                             )
                         )}
+
                     </div>
+
                 </div>
+
             </div>
 
             <Footer />
+
         </>
     );
+
 }

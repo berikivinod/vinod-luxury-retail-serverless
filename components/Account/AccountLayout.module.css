@@ -1,0 +1,37 @@
+.wrapper {
+
+    display: flex;
+
+    max-width: 1600px;
+
+    margin: 40px auto;
+
+    padding: 0 30px;
+
+    gap: 40px;
+
+}
+
+.content {
+
+    flex: 1;
+
+    min-width: 0;
+
+}
+
+.loading {
+
+    min-height: 60vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 22px;
+
+    color: #555;
+
+}

@@ -1,25 +1,37 @@
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
-import styles from "@/styles/Account.module.css";
 import AccountSidebar from "@/components/Account/AccountSidebar";
+import useAuth from "@/hooks/useAuth";
+
+import styles from "@/styles/Account.module.css";
 
 export default function Account() {
+
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const { user, loading } = useAuth();
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem("user");
+    if (loading) {
+        return (
+            <>
+                <Header />
 
-        if (!storedUser) {
-            router.push("/");
-            return;
-        }
+                <div
+                    style={{
+                        padding: "80px",
+                        textAlign: "center",
+                        fontSize: "22px",
+                    }}
+                >
+                    Loading your account...
+                </div>
 
-        setUser(JSON.parse(storedUser));
-    }, [router]);
+                <Footer />
+            </>
+        );
+    }
 
     if (!user) {
         return null;
@@ -30,15 +42,18 @@ export default function Account() {
             <Header />
 
             <div className={styles.wrapper}>
+
                 <AccountSidebar
                     user={user}
                     activePage="account"
                 />
 
                 <div className={styles.content}>
+
                     <h1>Account Overview</h1>
 
                     <div className={styles.profileSection}>
+
                         <div className={styles.profileRow}>
                             <span>Name</span>
 
@@ -75,9 +90,11 @@ export default function Account() {
 
                             <button>Edit</button>
                         </div>
+
                     </div>
 
                     <div className={styles.section}>
+
                         <h2>Order History</h2>
 
                         <p>
@@ -92,9 +109,11 @@ export default function Account() {
                         >
                             VIEW MORE
                         </button>
+
                     </div>
 
                     <div className={styles.section}>
+
                         <h2>Address Book</h2>
 
                         <p>
@@ -109,9 +128,11 @@ export default function Account() {
                         >
                             VIEW MORE
                         </button>
+
                     </div>
 
                     <div className={styles.section}>
+
                         <h2>Payment Information</h2>
 
                         <p>
@@ -128,8 +149,11 @@ export default function Account() {
                         >
                             VIEW MORE
                         </button>
+
                     </div>
+
                 </div>
+
             </div>
 
             <Footer />
