@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
-import useAuth from "@/hooks/useAuth";
 import Image from "next/image";
-import styles from "@/styles/OrderHistory.module.css";
 
+import AccountLayout from "@/components/Account/AccountLayout";
+import useAuth from "@/hooks/useAuth";
+
+import styles from "@/styles/OrderHistory.module.css";
 
 export default function OrderHistory() {
 
@@ -14,7 +13,8 @@ export default function OrderHistory() {
 
     const { user, loading } = useAuth();
 
-    const [searchText, setSearchText] = useState("");
+    const [searchText, setSearchText] =
+        useState("");
 
     const [activeTab, setActiveTab] =
         useState("All");
@@ -24,42 +24,48 @@ export default function OrderHistory() {
 
     useEffect(() => {
 
-    if (loading || !user) {
-        return;
-    }
+        if (!user) return;
 
-    const loadOrders = async () => {
+        const loadOrders = async () => {
 
-        try {
+            try {
 
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders?userId=${user.id}`
-            );
-
-            if (!response.ok) {
-                throw new Error(
-                    "Unable to load orders."
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders?userId=${user.id}`
                 );
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Unable to load orders."
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                setAllOrders(data);
+
+            } catch (error) {
+
+                console.error(error);
+
+                setAllOrders([]);
+
             }
 
-            const data =
-                await response.json();
+        };
 
-            setAllOrders(data);
+        loadOrders();
 
-        } catch (error) {
+    }, [user]);
 
-            console.error(error);
+    if (loading) {
+        return null;
+    }
 
-            setAllOrders([]);
-
-        }
-
-    };
-
-    loadOrders();
-
-}, [loading, user]);
+    if (!user) {
+        return null;
+    }
 
     const userOrders =
         allOrders.filter((order) => {
@@ -75,10 +81,10 @@ export default function OrderHistory() {
                 searchText === ""
                     ? true
                     : order.orderId
-                        .toLowerCase()
-                        .includes(
-                            searchText.toLowerCase()
-                        );
+                          .toLowerCase()
+                          .includes(
+                              searchText.toLowerCase()
+                          );
 
             return (
                 matchesTab &&
@@ -87,145 +93,129 @@ export default function OrderHistory() {
 
         });
 
-    if (loading) {
-
-    return (
-        <>
-            <Header />
-
-            <div
-                style={{
-                    padding: "80px",
-                    textAlign: "center",
-                    fontSize: "22px",
-                }}
-            >
-                Loading your orders...
-            </div>
-
-            <Footer />
-        </>
-    );
-
-}
-
-if (!user) {
-    return null;
-}
-
     return (
 
-        <>
+        <AccountLayout activePage="orders">
 
-            <Header />
+            <div className={styles.content}>
 
-            <div className={styles.wrapper}>
+                <h1>
+                    Order History
+                </h1>
 
-                <AccountSidebar
-                    user={user}
-                    activePage="orders"
-                />
+                <div className={styles.searchSection}>
 
-                <div className={styles.content}>
+                    <input
+                        type="text"
+                        placeholder="Search Orders"
+                        value={searchText}
+                        onChange={(e) =>
+                            setSearchText(
+                                e.target.value
+                            )
+                        }
+                    />
 
-                    <h1>
-                        Order History
-                    </h1>
+                </div>
 
-                    <div className={styles.searchSection}>
+                <div className={styles.tabs}>
 
-                        <input
-                            type="text"
-                            placeholder="Search Orders"
-                            value={searchText}
-                            onChange={(e) =>
-                                setSearchText(
-                                    e.target.value
-                                )
-                            }
-                        />
+                    <div
+                        className={
+                            activeTab === "All"
+                                ? styles.activeTab
+                                : ""
+                        }
+                        onClick={() =>
+                            setActiveTab("All")
+                        }
+                    >
+                        All Orders
+                    </div>
+
+                    <div
+                        className={
+                            activeTab === "Online"
+                                ? styles.activeTab
+                                : ""
+                        }
+                        onClick={() =>
+                            setActiveTab("Online")
+                        }
+                    >
+                        Online
+                    </div>
+
+                    <div
+                        className={
+                            activeTab === "In-Store"
+                                ? styles.activeTab
+                                : ""
+                        }
+                        onClick={() =>
+                            setActiveTab(
+                                "In-Store"
+                            )
+                        }
+                    >
+                        In-Store
+                    </div>
+
+                </div>
+
+                {userOrders.length === 0 ? (
+
+                    <div
+                        className={
+                            styles.emptyState
+                        }
+                    >
+
+                        <h3>
+                            No Orders Found
+                        </h3>
+
+                        <p>
+                            Looks like you don't
+                            have any orders with us
+                            yet — visit us online
+                            or in our stores to
+                            find something you'll
+                            love.
+                        </p>
 
                     </div>
 
-                    <div className={styles.tabs}>
+                ) : (
 
-                        <div
-                            className={
-                                activeTab === "All"
-                                    ? styles.activeTab
-                                    : ""
-                            }
-                            onClick={() =>
-                                setActiveTab("All")
-                            }
-                        >
-                            All Orders
-                        </div>
+                    <div
+                        className={
+                            styles.ordersList
+                        }
+                    >
 
-                        <div
-                            className={
-                                activeTab === "Online"
-                                    ? styles.activeTab
-                                    : ""
-                            }
-                            onClick={() =>
-                                setActiveTab("Online")
-                            }
-                        >
-                            Online
-                        </div>
-
-                        <div
-                            className={
-                                activeTab === "In-Store"
-                                    ? styles.activeTab
-                                    : ""
-                            }
-                            onClick={() =>
-                                setActiveTab("In-Store")
-                            }
-                        >
-                            In-Store
-                        </div>
-
-                    </div>
-
-                    {userOrders.length === 0 ? (
-
-                        <div className={styles.emptyState}>
-
-                            <h3>
-                                No Orders Found
-                            </h3>
-
-                            <p>
-                                Looks like you don't have any
-                                orders with us yet — visit us
-                                online or in our stores to
-                                find something you'll love.
-                            </p>
-
-                        </div>
-
-                    ) : (
-
-                        <div className={styles.ordersList}>
-
-                            {userOrders.map((order) => (
+                        {userOrders.map(
+                            (order) => (
 
                                 <div
-                                    key={order.orderId}
-                                    className={styles.orderCard}
+                                    key={
+                                        order.orderId
+                                    }
+                                    className={
+                                        styles.orderCard
+                                    }
                                 >
 
                                     <Image
                                         src={
-                                            order.items?.[0]
+                                            order
+                                                .items?.[0]
                                                 ?.image ||
                                             "/images/no-image.png"
                                         }
                                         alt={
-                                            order.items?.[0]
+                                            order
+                                                .items?.[0]
                                                 ?.productName ||
                                             "Product"
                                         }
@@ -236,12 +226,27 @@ if (!user) {
                                         }
                                     />
 
-                                    <div className={styles.orderContent}>
+                                    <div
+                                        className={
+                                            styles.orderContent
+                                        }
+                                    >
 
-                                        <div className={styles.orderHeader}>
+                                        <div
+                                            className={
+                                                styles.orderHeader
+                                            }
+                                        >
 
-                                            <div className={styles.orderNumber}>
-                                                Order #{order.orderId}
+                                            <div
+                                                className={
+                                                    styles.orderNumber
+                                                }
+                                            >
+                                                Order #
+                                                {
+                                                    order.orderId
+                                                }
                                             </div>
 
                                             <div
@@ -251,23 +256,35 @@ if (!user) {
                                                     ]
                                                 }`}
                                             >
-                                                {order.status}
+                                                {
+                                                    order.status
+                                                }
                                             </div>
 
                                         </div>
 
-                                        <div className={styles.productName}>
+                                        <div
+                                            className={
+                                                styles.productName
+                                            }
+                                        >
                                             {
-                                                order.items?.[0]
+                                                order
+                                                    .items?.[0]
                                                     ?.productName
                                             }
                                         </div>
 
-                                        <div className={styles.orderInfo}>
+                                        <div
+                                            className={
+                                                styles.orderInfo
+                                            }
+                                        >
 
                                             <div>
-                                                {order.channel}
-                                                {" "}
+                                                {
+                                                    order.channel
+                                                }{" "}
                                                 Order
                                             </div>
 
@@ -279,41 +296,47 @@ if (!user) {
 
                                         </div>
 
-                                        <div className={styles.total}>
+                                        <div
+                                            className={
+                                                styles.total
+                                            }
+                                        >
                                             Total: $
                                             {Number(
                                                 order.total
-                                            ).toFixed(2)}
+                                            ).toFixed(
+                                                2
+                                            )}
                                         </div>
 
                                         <button
-                                            className={styles.viewDetails}
+                                            className={
+                                                styles.viewDetails
+                                            }
                                             onClick={() =>
                                                 router.push(
                                                     `/order-details/${order.orderId}`
                                                 )
                                             }
                                         >
-                                            VIEW DETAILS
+                                            VIEW
+                                            DETAILS
                                         </button>
 
                                     </div>
 
                                 </div>
 
-                            ))}
+                            )
+                        )}
 
-                        </div>
+                    </div>
 
-                    )}
-
-                </div>
+                )}
 
             </div>
 
-            <Footer />
-
-        </>
+        </AccountLayout>
 
     );
 

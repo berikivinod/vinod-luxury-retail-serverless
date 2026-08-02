@@ -91,11 +91,10 @@ Infrastructure as Code provisioning for:
 
 ## 🚧 Currently In Progress
 
-- Shared Account Layout
+- Shopping Cart Backend Migration
 - Address Drawer Components
 - Payment Method Management
 - Customer Profile Editing
-- Shopping Cart Backend Migration
 - Checkout Enhancements
 
 ### Authentication
@@ -137,6 +136,93 @@ The application now includes a complete AWS Cognito authentication workflow.
 - AWS Amplify Authentication
 - Cognito User Attributes
 - React `useAuth` custom hook
+
+---
+
+# 👤 Customer Account Architecture
+
+The customer account module has been refactored to use a centralized authentication model and a reusable layout architecture, reducing duplicated code and improving maintainability.
+
+## Architecture Overview
+
+A shared **AuthProvider** and **AccountLayout** are now responsible for authentication, loading state, and common account UI.
+
+```text
+AuthProvider
+      │
+      ▼
+React Context
+      │
+      ▼
+useAuth()
+      │
+      ▼
+AccountLayout
+ ├── Header
+ ├── Footer
+ ├── Account Sidebar
+ ├── Authentication
+ └── Loading State
+      │
+      ▼
+Account Pages
+```
+
+---
+
+## Authentication
+
+Authentication is centralized using **React Context** and **AWS Cognito**.
+
+### Features
+
+- Centralized authentication state
+- Automatic session restoration
+- Protected account pages
+- Shared authenticated user context
+- Reduced duplicate Cognito authentication logic
+- Shared loading state across account pages
+
+---
+
+## Shared Account Layout
+
+A reusable `AccountLayout` component provides a consistent customer experience across all account pages.
+
+### Responsibilities
+
+- Header
+- Footer
+- Account Sidebar
+- Authentication
+- Loading Screen
+- Protected Routes
+
+---
+
+## Refactored Customer Pages
+
+The following pages now share the same authentication and layout architecture:
+
+- Account Overview
+- Order History
+- Address Book
+- Payment Information
+- Favorites
+- Style Preferences
+- My Store
+
+---
+
+## Benefits
+
+- Eliminated duplicated authentication code
+- Reduced repeated Header/Footer rendering
+- Centralized account navigation
+- Improved maintainability
+- Consistent user experience
+- Cleaner React component hierarchy
+- Easier future enhancements
 
 ## Shopping Experience
 
@@ -451,11 +537,20 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - Authentication & Authorization
 - Protected Routes
 - React Authentication Hooks
+- React Context API
+- Context-Based Authentication
+- Shared Layout Architecture
+- Component Refactoring
+- React Composition Patterns
 
 ---
 # 🏆 Key Accomplishments
 
 - Complete cloud-native luxury retail application
+- Centralized React Authentication Context
+- Shared Account Layout Architecture
+- Protected Customer Account Module
+- Reusable React Layout Components
 - Serverless REST APIs using AWS Lambda
 - Product Catalog and Search
 - Shopping Cart and Checkout

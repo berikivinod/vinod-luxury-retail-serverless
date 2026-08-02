@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
-
+import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
 import addresses from "@/data/addresses.json";
@@ -22,9 +19,7 @@ export default function AddressBook() {
 
     useEffect(() => {
 
-        if (loading || !user) {
-            return;
-        }
+        if (!user) return;
 
         const filteredAddresses =
             addresses.filter(
@@ -34,28 +29,10 @@ export default function AddressBook() {
 
         setUserAddresses(filteredAddresses);
 
-    }, [loading, user]);
+    }, [user]);
 
     if (loading) {
-
-        return (
-            <>
-                <Header />
-
-                <div
-                    style={{
-                        padding: "80px",
-                        textAlign: "center",
-                        fontSize: "22px",
-                    }}
-                >
-                    Loading your addresses...
-                </div>
-
-                <Footer />
-            </>
-        );
-
+        return null;
     }
 
     if (!user) {
@@ -63,151 +40,129 @@ export default function AddressBook() {
     }
 
     return (
-        <>
-            <Header />
 
-            <div className={styles.wrapper}>
+        <AccountLayout activePage="address">
 
-                <AccountSidebar
-                    user={user}
-                    activePage="address"
-                />
+            <div className={styles.content}>
 
-                <div className={styles.content}>
+                <h1>Address Book</h1>
 
-                    <h1>Address Book</h1>
+                <button
+                    className={styles.addButton}
+                    onClick={() =>
+                        router.push("/address-book/add")
+                    }
+                >
+                    ADD NEW ADDRESS
+                </button>
 
-                    <button
-                        className={styles.addButton}
-                        onClick={() =>
-                            router.push(
-                                "/address-book/add"
-                            )
-                        }
-                    >
-                        ADD NEW ADDRESS
-                    </button>
+                <div className={styles.addressList}>
 
-                    <div
-                        className={styles.addressList}
-                    >
+                    {userAddresses.length === 0 && (
 
-                        {userAddresses.length === 0 && (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                padding: "60px 20px",
+                                color: "#666",
+                            }}
+                        >
+
+                            <h3>
+                                No addresses found
+                            </h3>
+
+                            <p>
+                                Add your first shipping
+                                or billing address.
+                            </p>
+
+                        </div>
+
+                    )}
+
+                    {userAddresses.map((address) => (
+
+                        <div
+                            key={address.id}
+                            className={styles.addressCard}
+                        >
 
                             <div
-                                style={{
-                                    textAlign: "center",
-                                    padding: "60px 20px",
-                                    color: "#666",
-                                }}
+                                className={styles.addressHeader}
                             >
 
                                 <h3>
-                                    No addresses found
+                                    {address.type}
                                 </h3>
 
-                                <p>
-                                    Add your first shipping
-                                    or billing address.
-                                </p>
+                                {address.isDefault && (
+
+                                    <span>
+                                        Default
+                                    </span>
+
+                                )}
 
                             </div>
 
-                        )}
+                            <p>
+                                {address.firstName}{" "}
+                                {address.lastName}
+                            </p>
 
-                        {userAddresses.map(
-                            (address) => (
+                            <p>
+                                {address.street}
+                            </p>
 
-                                <div
-                                    key={address.id}
-                                    className={
-                                        styles.addressCard
+                            <p>
+                                {address.city},{" "}
+                                {address.state}{" "}
+                                {address.zip}
+                            </p>
+
+                            <p>
+                                {address.phone}
+                            </p>
+
+                            <div
+                                className={styles.actions}
+                            >
+
+                                <button
+                                    onClick={() =>
+                                        router.push(
+                                            `/address-book/edit/${address.id}`
+                                        )
                                     }
                                 >
+                                    Edit
+                                </button>
 
-                                    <div
-                                        className={
-                                            styles.addressHeader
-                                        }
-                                    >
+                                <button
+                                    onClick={() => {
 
-                                        <h3>
-                                            {address.type}
-                                        </h3>
+                                        alert(
+                                            "Delete Address feature will be implemented in the next phase."
+                                        );
 
-                                        {address.isDefault && (
+                                    }}
+                                >
+                                    Delete
+                                </button>
 
-                                            <span>
-                                                Default
-                                            </span>
+                            </div>
 
-                                        )}
+                        </div>
 
-                                    </div>
-
-                                    <p>
-                                        {address.firstName}{" "}
-                                        {address.lastName}
-                                    </p>
-
-                                    <p>
-                                        {address.street}
-                                    </p>
-
-                                    <p>
-                                        {address.city},{" "}
-                                        {address.state}{" "}
-                                        {address.zip}
-                                    </p>
-
-                                    <p>
-                                        {address.phone}
-                                    </p>
-
-                                    <div
-                                        className={
-                                            styles.actions
-                                        }
-                                    >
-
-                                        <button
-                                            onClick={() =>
-                                                router.push(
-                                                    `/address-book/edit/${address.id}`
-                                                )
-                                            }
-                                        >
-                                            Edit
-                                        </button>
-
-                                        <button
-                                            onClick={() => {
-
-                                                alert(
-                                                    "Delete Address feature will be implemented in the next phase."
-                                                );
-
-                                            }}
-                                        >
-                                            Delete
-                                        </button>
-
-                                    </div>
-
-                                </div>
-
-                            )
-                        )}
-
-                    </div>
+                    ))}
 
                 </div>
 
             </div>
 
-            <Footer />
+        </AccountLayout>
 
-        </>
     );
 
 }

@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
-
+import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
 import paymentMethods from "@/data/payment-methods.json";
@@ -22,9 +19,7 @@ export default function PaymentInformation() {
 
     useEffect(() => {
 
-        if (loading || !user) {
-            return;
-        }
+        if (!user) return;
 
         const userCards =
             paymentMethods.filter(
@@ -34,28 +29,10 @@ export default function PaymentInformation() {
 
         setCards(userCards);
 
-    }, [loading, user]);
+    }, [user]);
 
     if (loading) {
-
-        return (
-            <>
-                <Header />
-
-                <div
-                    style={{
-                        padding: "80px",
-                        textAlign: "center",
-                        fontSize: "22px",
-                    }}
-                >
-                    Loading your payment methods...
-                </div>
-
-                <Footer />
-            </>
-        );
-
+        return null;
     }
 
     if (!user) {
@@ -63,128 +40,118 @@ export default function PaymentInformation() {
     }
 
     return (
-        <>
-            <Header />
 
-            <div className={styles.wrapper}>
+        <AccountLayout activePage="payment">
 
-                <AccountSidebar
-                    user={user}
-                    activePage="payment"
-                />
+            <div className={styles.content}>
 
-                <div className={styles.content}>
+                <h1>Payment Information</h1>
 
-                    <h1>Payment Information</h1>
+                <button
+                    className={styles.addButton}
+                    onClick={() =>
+                        alert(
+                            "Add Payment Method drawer will be implemented in the next phase."
+                        )
+                    }
+                >
+                    ADD PAYMENT METHOD
+                </button>
 
-                    <button
-                        className={styles.addButton}
-                        onClick={() =>
-                            alert(
-                                "Add Payment Method drawer will be implemented in the next phase."
-                            )
-                        }
-                    >
-                        ADD PAYMENT METHOD
-                    </button>
+                <div className={styles.cardList}>
 
-                    <div className={styles.cardList}>
+                    {cards.length === 0 && (
 
-                        {cards.length === 0 && (
+                        <div
+                            style={{
+                                textAlign: "center",
+                                padding: "60px 20px",
+                                color: "#666",
+                            }}
+                        >
 
-                            <div
-                                style={{
-                                    textAlign: "center",
-                                    padding: "60px 20px",
-                                    color: "#666",
-                                }}
-                            >
+                            <h3>
+                                No payment methods found
+                            </h3>
+
+                            <p>
+                                Add your first payment method.
+                            </p>
+
+                        </div>
+
+                    )}
+
+                    {cards.map((card) => (
+
+                        <div
+                            key={card.id}
+                            className={styles.card}
+                        >
+
+                            <div className={styles.cardHeader}>
 
                                 <h3>
-                                    No payment methods found
+                                    {card.cardType}
                                 </h3>
 
-                                <p>
-                                    Add your first payment method.
-                                </p>
+                                {card.isDefault && (
+
+                                    <span>
+                                        Default
+                                    </span>
+
+                                )}
 
                             </div>
 
-                        )}
+                            <p>
+                                {card.cardNumber}
+                            </p>
 
-                        {cards.map((card) => (
+                            <p>
+                                Expires: {card.expiryMonth}/
+                                {card.expiryYear}
+                            </p>
 
-                            <div
-                                key={card.id}
-                                className={styles.card}
-                            >
+                            <p>
+                                {card.nameOnCard}
+                            </p>
 
-                                <div className={styles.cardHeader}>
+                            <div className={styles.actions}>
 
-                                    <h3>
-                                        {card.cardType}
-                                    </h3>
+                                <button
+                                    onClick={() =>
+                                        alert(
+                                            "Edit Payment Method drawer will be implemented in the next phase."
+                                        )
+                                    }
+                                >
+                                    Edit
+                                </button>
 
-                                    {card.isDefault && (
-
-                                        <span>
-                                            Default
-                                        </span>
-
-                                    )}
-
-                                </div>
-
-                                <p>
-                                    {card.cardNumber}
-                                </p>
-
-                                <p>
-                                    Expires: {card.expiryMonth}/
-                                    {card.expiryYear}
-                                </p>
-
-                                <p>
-                                    {card.nameOnCard}
-                                </p>
-
-                                <div className={styles.actions}>
-
-                                    <button
-                                        onClick={() =>
-                                            alert(
-                                                "Edit Payment Method drawer will be implemented in the next phase."
-                                            )
-                                        }
-                                    >
-                                        Edit
-                                    </button>
-
-                                    <button
-                                        onClick={() =>
-                                            alert(
-                                                "Delete Payment Method feature will be implemented in the next phase."
-                                            )
-                                        }
-                                    >
-                                        Delete
-                                    </button>
-
-                                </div>
+                                <button
+                                    onClick={() =>
+                                        alert(
+                                            "Delete Payment Method feature will be implemented in the next phase."
+                                        )
+                                    }
+                                >
+                                    Delete
+                                </button>
 
                             </div>
 
-                        ))}
+                        </div>
 
-                    </div>
+                    ))}
 
                 </div>
 
             </div>
 
-            <Footer />
+        </AccountLayout>
 
-        </>
     );
 
 }

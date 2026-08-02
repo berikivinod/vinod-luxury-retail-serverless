@@ -55,14 +55,13 @@ export default function AccountLayout({
                     activePage={activePage}
                 />
 
-                <div className={styles.content}>
+                <div className={styles.page}>
                     {children}
                 </div>
 
             </div>
 
             <Footer />
-
         </>
     );
 }

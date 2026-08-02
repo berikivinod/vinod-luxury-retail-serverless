@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
 
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
+import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
 import styles from "@/styles/Account.module.css";
@@ -11,152 +9,126 @@ export default function Account() {
 
     const router = useRouter();
 
-    const { user, loading } = useAuth();
-
-    if (loading) {
-        return (
-            <>
-                <Header />
-
-                <div
-                    style={{
-                        padding: "80px",
-                        textAlign: "center",
-                        fontSize: "22px",
-                    }}
-                >
-                    Loading your account...
-                </div>
-
-                <Footer />
-            </>
-        );
-    }
+    const { user } = useAuth();
 
     if (!user) {
         return null;
     }
 
     return (
-        <>
-            <Header />
 
-            <div className={styles.wrapper}>
+        <AccountLayout activePage="account">
 
-                <AccountSidebar
-                    user={user}
-                    activePage="account"
-                />
+            <h1>Account Overview</h1>
 
-                <div className={styles.content}>
+            <div className={styles.profileSection}>
 
-                    <h1>Account Overview</h1>
+                <div className={styles.profileRow}>
 
-                    <div className={styles.profileSection}>
+                    <span>Name</span>
 
-                        <div className={styles.profileRow}>
-                            <span>Name</span>
+                    <span>
+                        {user.firstName} {user.lastName}
+                    </span>
 
-                            <span>
-                                {user.firstName} {user.lastName}
-                            </span>
+                    <button>Edit</button>
 
-                            <button>Edit</button>
-                        </div>
+                </div>
 
-                        <div className={styles.profileRow}>
-                            <span>Email Address</span>
+                <div className={styles.profileRow}>
 
-                            <span>{user.email}</span>
+                    <span>Email Address</span>
 
-                            <button>Edit</button>
-                        </div>
+                    <span>{user.email}</span>
 
-                        <div className={styles.profileRow}>
-                            <span>Password</span>
+                    <button>Edit</button>
 
-                            <span>••••••••••</span>
+                </div>
 
-                            <button>Edit</button>
-                        </div>
+                <div className={styles.profileRow}>
 
-                        <div className={styles.profileRow}>
-                            <span>Contact Number</span>
+                    <span>Password</span>
 
-                            <span>
-                                {user.phone ||
-                                    "(555) 555-5555"}
-                            </span>
+                    <span>••••••••••</span>
 
-                            <button>Edit</button>
-                        </div>
+                    <button>Edit</button>
 
-                    </div>
+                </div>
 
-                    <div className={styles.section}>
+                <div className={styles.profileRow}>
 
-                        <h2>Order History</h2>
+                    <span>Contact Number</span>
 
-                        <p>
-                            View your recent online and
-                            in-store purchases.
-                        </p>
+                    <span>
+                        {user.phone ||
+                            "(555) 555-5555"}
+                    </span>
 
-                        <button
-                            onClick={() =>
-                                router.push("/order-history")
-                            }
-                        >
-                            VIEW MORE
-                        </button>
-
-                    </div>
-
-                    <div className={styles.section}>
-
-                        <h2>Address Book</h2>
-
-                        <p>
-                            Manage shipping and billing
-                            addresses.
-                        </p>
-
-                        <button
-                            onClick={() =>
-                                router.push("/address-book")
-                            }
-                        >
-                            VIEW MORE
-                        </button>
-
-                    </div>
-
-                    <div className={styles.section}>
-
-                        <h2>Payment Information</h2>
-
-                        <p>
-                            Manage saved credit cards and
-                            payment methods.
-                        </p>
-
-                        <button
-                            onClick={() =>
-                                router.push(
-                                    "/payment-information"
-                                )
-                            }
-                        >
-                            VIEW MORE
-                        </button>
-
-                    </div>
+                    <button>Edit</button>
 
                 </div>
 
             </div>
 
-            <Footer />
-        </>
+            <div className={styles.section}>
+
+                <h2>Order History</h2>
+
+                <p>
+                    View your recent online and
+                    in-store purchases.
+                </p>
+
+                <button
+                    onClick={() =>
+                        router.push("/order-history")
+                    }
+                >
+                    VIEW MORE
+                </button>
+
+            </div>
+
+            <div className={styles.section}>
+
+                <h2>Address Book</h2>
+
+                <p>
+                    Manage shipping and billing
+                    addresses.
+                </p>
+
+                <button
+                    onClick={() =>
+                        router.push("/address-book")
+                    }
+                >
+                    VIEW MORE
+                </button>
+
+            </div>
+
+            <div className={styles.section}>
+
+                <h2>Payment Information</h2>
+
+                <p>
+                    Manage saved credit cards and
+                    payment methods.
+                </p>
+
+                <button
+                    onClick={() =>
+                        router.push("/payment-information")
+                    }
+                >
+                    VIEW MORE
+                </button>
+
+            </div>
+
+        </AccountLayout>
+
     );
+
 }

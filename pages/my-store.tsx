@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
-
+import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
 import addresses from "@/data/addresses.json";
@@ -14,8 +10,6 @@ import styles from "@/styles/MyStore.module.css";
 
 export default function MyStore() {
 
-    const router = useRouter();
-
     const { user, loading } = useAuth();
 
     const [store, setStore] =
@@ -23,7 +17,7 @@ export default function MyStore() {
 
     useEffect(() => {
 
-        if (loading || !user) {
+        if (!user) {
             return;
         }
 
@@ -43,35 +37,17 @@ export default function MyStore() {
             stores.find(
                 (store: any) =>
                     store.city.toLowerCase() ===
-                    defaultAddress.city.toLowerCase() &&
+                        defaultAddress.city.toLowerCase() &&
                     store.state.toLowerCase() ===
-                    defaultAddress.state.toLowerCase()
+                        defaultAddress.state.toLowerCase()
             );
 
         setStore(matchedStore || null);
 
-    }, [loading, user]);
+    }, [user]);
 
     if (loading) {
-
-        return (
-            <>
-                <Header />
-
-                <div
-                    style={{
-                        padding: "80px",
-                        textAlign: "center",
-                        fontSize: "22px",
-                    }}
-                >
-                    Loading your preferred store...
-                </div>
-
-                <Footer />
-            </>
-        );
-
+        return null;
     }
 
     if (!user) {
@@ -79,32 +55,58 @@ export default function MyStore() {
     }
 
     return (
-        <>
-            <Header />
 
-            <div className={styles.wrapper}>
+        <AccountLayout activePage="store">
 
-                <AccountSidebar
-                    user={user}
-                    activePage="store"
-                />
+            <div className={styles.content}>
 
-                <div className={styles.content}>
+                <h1>My Store</h1>
 
-                    <h1>My Store</h1>
+                {!store ? (
 
-                    {!store ? (
+                    <div className={styles.emptyState}>
 
-                        <div className={styles.emptyState}>
+                        <h3>
+                            No Preferred Store
+                        </h3>
 
-                            <h3>
-                                No Preferred Store
-                            </h3>
+                        <p>
+                            We couldn't determine a
+                            preferred store from your
+                            default address.
+                        </p>
+
+                        <button
+                            className={styles.changeStoreButton}
+                            onClick={() =>
+                                alert(
+                                    "Store selector drawer will be implemented in the next phase."
+                                )
+                            }
+                        >
+                            SELECT STORE
+                        </button>
+
+                    </div>
+
+                ) : (
+
+                    <div className={styles.storeGrid}>
+
+                        <div>
+
+                            <h2>
+                                {store.name}
+                            </h2>
 
                             <p>
-                                We couldn't determine a
-                                preferred store from your
-                                default address.
+                                {store.address}
+                                <br />
+                                {store.city}, {store.state} {store.zip}
+                            </p>
+
+                            <p>
+                                {store.phone}
                             </p>
 
                             <button
@@ -115,113 +117,77 @@ export default function MyStore() {
                                     )
                                 }
                             >
-                                SELECT STORE
+                                CHANGE STORE
                             </button>
 
                         </div>
 
-                    ) : (
+                        <div>
 
-                        <div className={styles.storeGrid}>
+                            <h2>
+                                Store Hours
+                            </h2>
 
-                            <div>
-
-                                <h2>
-                                    {store.name}
-                                </h2>
-
-                                <p>
-                                    {store.address}
-                                    <br />
-                                    {store.city}, {store.state} {store.zip}
-                                </p>
-
-                                <p>
-                                    {store.phone}
-                                </p>
-
-                                <button
-                                    className={styles.changeStoreButton}
-                                    onClick={() =>
-                                        alert(
-                                            "Store selector drawer will be implemented in the next phase."
-                                        )
-                                    }
-                                >
-                                    CHANGE STORE
-                                </button>
-
-                            </div>
-
-                            <div>
-
-                                <h2>
-                                    Store Hours
-                                </h2>
-
-                                <p>Mon: {store.hours.mon}</p>
-                                <p>Tue: {store.hours.tue}</p>
-                                <p>Wed: {store.hours.wed}</p>
-                                <p>Thu: {store.hours.thu}</p>
-                                <p>Fri: {store.hours.fri}</p>
-                                <p>Sat: {store.hours.sat}</p>
-                                <p>Sun: {store.hours.sun}</p>
-
-                            </div>
-
-                            <div>
-
-                                <h2>
-                                    Restaurants
-                                </h2>
-
-                                {store.restaurants.map(
-                                    (
-                                        restaurant: string,
-                                        index: number
-                                    ) => (
-
-                                        <p key={index}>
-                                            {restaurant}
-                                        </p>
-
-                                    )
-                                )}
-
-                            </div>
-
-                            <div>
-
-                                <h2>
-                                    Services
-                                </h2>
-
-                                {store.services.map(
-                                    (
-                                        service: string,
-                                        index: number
-                                    ) => (
-
-                                        <p key={index}>
-                                            {service}
-                                        </p>
-
-                                    )
-                                )}
-
-                            </div>
+                            <p>Mon: {store.hours.mon}</p>
+                            <p>Tue: {store.hours.tue}</p>
+                            <p>Wed: {store.hours.wed}</p>
+                            <p>Thu: {store.hours.thu}</p>
+                            <p>Fri: {store.hours.fri}</p>
+                            <p>Sat: {store.hours.sat}</p>
+                            <p>Sun: {store.hours.sun}</p>
 
                         </div>
 
-                    )}
+                        <div>
 
-                </div>
+                            <h2>
+                                Restaurants
+                            </h2>
+
+                            {store.restaurants.map(
+                                (
+                                    restaurant: string,
+                                    index: number
+                                ) => (
+
+                                    <p key={index}>
+                                        {restaurant}
+                                    </p>
+
+                                )
+                            )}
+
+                        </div>
+
+                        <div>
+
+                            <h2>
+                                Services
+                            </h2>
+
+                            {store.services.map(
+                                (
+                                    service: string,
+                                    index: number
+                                ) => (
+
+                                    <p key={index}>
+                                        {service}
+                                    </p>
+
+                                )
+                            )}
+
+                        </div>
+
+                    </div>
+
+                )}
 
             </div>
 
-            <Footer />
+        </AccountLayout>
 
-        </>
     );
 
 }

@@ -1,7 +1,23 @@
 import "@/styles/globals.css";
 import "@/services/amplify";
+
 import type { AppProps } from "next/app";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+import { AuthProvider } from "@/context/AuthContext";
+
+export default function App({
+    Component,
+    pageProps,
+}: AppProps) {
+
+    return (
+
+        <AuthProvider>
+
+            <Component {...pageProps} />
+
+        </AuthProvider>
+
+    );
+
 }

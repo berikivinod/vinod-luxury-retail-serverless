@@ -1,17 +1,10 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-
-import Header from "@/components/Common/Header";
-import Footer from "@/components/Common/Footer";
-import AccountSidebar from "@/components/Account/AccountSidebar";
-
+import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
 import styles from "@/styles/StylePreferences.module.css";
 
 export default function StylePreferences() {
-
-    const router = useRouter();
 
     const { user, loading } = useAuth();
 
@@ -38,9 +31,9 @@ export default function StylePreferences() {
 
     useEffect(() => {
 
-        if (loading || !user) {
-            return;
-        }
+        if (!user) {
+    return;
+}
 
         const savedPreferences =
             localStorage.getItem(
@@ -78,7 +71,7 @@ export default function StylePreferences() {
 
         }
 
-    }, [loading, user]);
+    }, [user]);
 
     useEffect(() => {
 
@@ -108,24 +101,7 @@ export default function StylePreferences() {
 
     if (loading) {
 
-        return (
-            <>
-                <Header />
-
-                <div
-                    style={{
-                        padding: "80px",
-                        textAlign: "center",
-                        fontSize: "22px",
-                    }}
-                >
-                    Loading your style preferences...
-                </div>
-
-                <Footer />
-            </>
-        );
-
+        return null;
     }
 
     if (!user) {
@@ -171,14 +147,7 @@ export default function StylePreferences() {
     };
 
     return (
-        <>
-            <Header />
-
-            <div className={styles.wrapper}>
-                <AccountSidebar
-                    user={user}
-                    activePage="style"
-                />
+         <AccountLayout activePage="style">
 
                 <div className={styles.content}>
                     <div className={styles.headerRow}>
@@ -424,26 +393,18 @@ export default function StylePreferences() {
                         </div>
                     </div>
                 </div>
-            </div>
             {showDesignerModal && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modal}>
-                        <h2>
-                            Select Favorite Designers
-                        </h2>
+                    <div className={styles.modalOverlay}>
+                        <div className={styles.modal}>
+                            <h2>
+                                Select Favorite Designers
+                            </h2>
 
-                        <div
-                            className={
-                                styles.designerGrid
-                            }
-                        >
-                            {designers.map(
-                                (designer) => (
+                            <div className={styles.designerGrid}>
+                                {designers.map((designer) => (
                                     <label
                                         key={designer}
-                                        className={
-                                            styles.checkboxRow
-                                        }
+                                        className={styles.checkboxRow}
                                     >
                                         <input
                                             type="checkbox"
@@ -451,37 +412,29 @@ export default function StylePreferences() {
                                                 designer
                                             )}
                                             onChange={() =>
-                                                toggleDesigner(
-                                                    designer
-                                                )
+                                                toggleDesigner(designer)
                                             }
                                         />
 
                                         {designer}
                                     </label>
-                                )
-                            )}
-                        </div>
+                                ))}
+                            </div>
 
-                        <div
-                            className={
-                                styles.modalActions
-                            }
-                        >
-                            <button
-                                onClick={() =>
-                                    setShowDesignerModal(
-                                        false
-                                    )
-                                }
-                            >
-                                Save
-                            </button>
+                            <div className={styles.modalActions}>
+                                <button
+                                    onClick={() =>
+                                        setShowDesignerModal(false)
+                                    }
+                                >
+                                    Save
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-            <Footer />
-        </>
+                )}
+
+        </AccountLayout>
+
     );
 }

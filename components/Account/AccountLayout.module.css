@@ -4,7 +4,7 @@
 
     max-width: 1600px;
 
-    margin: 40px auto;
+    margin:30px auto 60px;
 
     padding: 0 30px;
 
@@ -12,7 +12,7 @@
 
 }
 
-.content {
+.page{
 
     flex: 1;
 
