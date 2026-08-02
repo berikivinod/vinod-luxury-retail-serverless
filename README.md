@@ -27,7 +27,35 @@ This repository contains the complete application source code including:
 - Docker Configuration
 - DynamoDB Seed Scripts
 
-Infrastructure provisioning is maintained separately using Terraform.
+## 🔗 Project Architecture
+
+This solution is organized into two repositories:
+
+### 1. vinod-luxury-retail-serverless
+
+Application source code including:
+
+- Next.js Frontend
+- AWS Lambda Functions
+- REST API Integrations
+- React Components
+- Customer Authentication
+- Shopping Experience
+
+### 2. terraform-aws-serverless-ecommerce-platform
+
+Infrastructure as Code provisioning for:
+
+- Amazon Cognito
+- Amazon API Gateway
+- AWS Lambda
+- Amazon DynamoDB
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
+- IAM
+- Networking
+- CloudWatch
 
 ---
 
@@ -63,13 +91,52 @@ Infrastructure provisioning is maintained separately using Terraform.
 
 ## 🚧 Currently In Progress
 
-- Address Management
-- Payment Methods
+- Shared Account Layout
+- Address Drawer Components
+- Payment Method Management
+- Customer Profile Editing
+- Shopping Cart Backend Migration
+- Checkout Enhancements
+
+### Authentication
+
 - Amazon Cognito Authentication
+- AWS Amplify Integration
+- Protected Customer Pages
+- Session Restoration
+- Customer Account Module
+
+### Customer Account
+
+- Account Overview
+- Order History
+- Address Book
+- Payment Information
+- Favorites
+- Style Preferences
+- My Store
 
 ---
 
 # ✨ Features
+
+## 🔐 Authentication & Customer Identity
+
+The application now includes a complete AWS Cognito authentication workflow.
+
+### Supported Features
+
+- User Registration
+- Email Verification
+- Secure Sign In
+- Secure Sign Out
+- Forgot Password
+- Reset Password
+- Automatic Session Restoration
+- Protected Customer Pages
+- AWS Amplify Authentication
+- Cognito User Attributes
+- React `useAuth` custom hook
 
 ## Shopping Experience
 
@@ -341,6 +408,8 @@ The Docker image includes:
 # ☁️ AWS Services Used
 
 - Amazon API Gateway
+- Amazon Cognito
+- AWS Amplify
 - AWS Lambda
 - Amazon DynamoDB
 - Amazon ECS
@@ -377,6 +446,11 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - Favorites Management
 - DynamoDB Composite Keys
 - State Synchronization
+- Amazon Cognito
+- AWS Amplify
+- Authentication & Authorization
+- Protected Routes
+- React Authentication Hooks
 
 ---
 # 🏆 Key Accomplishments
@@ -391,6 +465,10 @@ Infrastructure provisioning is maintained in the companion Terraform repository.
 - React custom hooks
 - Dockerized Next.js application
 - Infrastructure managed with Terraform
+- AWS Cognito Authentication
+- Secure Customer Account
+- Password Recovery Workflow
+- Protected Customer Pages
 
 # 🌟 Portfolio Highlights
 
@@ -412,28 +490,32 @@ This project demonstrates:
 - React custom hook architecture
 - Cross-page state synchronization
 - Serverless CRUD APIs
+- Enterprise Authentication using Amazon Cognito
+- Secure Customer Account Management
+- React Authentication Hooks
+- Protected Route Architecture
 
 ---
 
 # 🔄 Future Enhancements
 
-The following enhancements are planned as the application continues to evolve into a production-style cloud-native e-commerce platform.
+The following enhancements are planned as the application continues to evolve into a production-ready, cloud-native luxury retail e-commerce platform.
 
 ---
 
-## 🛒 Shopping Cart Backend (Planned)
+## 🛒 Shopping Cart Backend
 
-The current shopping cart experience will be migrated from client-side storage to a fully serverless backend.
+The current shopping cart implementation will be migrated from browser-based storage to a fully serverless backend powered by AWS services.
 
 ### Planned Features
 
 - Persist shopping carts in Amazon DynamoDB
 - Serverless CRUD APIs using AWS Lambda
-- REST endpoints exposed through Amazon API Gateway
+- REST APIs exposed through Amazon API Gateway
 - React `useCart` custom hook for centralized state management
-- Real-time synchronization across Product Detail, Shopping Cart, and Checkout pages
+- Real-time synchronization across Product Detail, Shopping Cart, Header, and Checkout pages
 - Quantity updates and item removal through REST APIs
-- Automatic cart persistence across devices after user sign-in
+- Automatic cart persistence across devices for authenticated users
 
 ### Planned REST APIs
 
@@ -441,8 +523,8 @@ The current shopping cart experience will be migrated from client-side storage t
 |---------|----------|-------------|
 | POST | /cart | Add item to cart |
 | GET | /cart | Retrieve shopping cart |
-| PUT | /cart/{productId} | Update quantity |
-| DELETE | /cart/{productId} | Remove item |
+| PUT | /cart/{productId} | Update cart item quantity |
+| DELETE | /cart/{productId} | Remove item from cart |
 
 ### Planned Architecture
 
@@ -450,13 +532,13 @@ The current shopping cart experience will be migrated from client-side storage t
 React Components
         │
         ▼
-    useCart Hook
+     useCart Hook
         │
         ▼
  Amazon API Gateway
         │
         ▼
-    AWS Lambda
+     AWS Lambda
         │
         ▼
  Amazon DynamoDB
@@ -464,26 +546,99 @@ React Components
 
 ---
 
-Planned improvements include:
+# 👤 Customer Account Enhancements
 
-- Address Management
-- Payment Methods
-- User Profile
-- Amazon Cognito Authentication
-- JWT Authorization
-- Payment Gateway Integration
-- Product Reviews
-- Inventory Management
-- Email Notifications
-- Amazon S3 Image Hosting
-- CloudFront CDN
-- GitHub Actions CI/CD
-- CloudWatch Monitoring & Dashboards
-- Performance Optimization
-- End-to-End Testing
+The customer account experience will continue to evolve with additional functionality.
 
+### Planned Features
+
+- Address Management (Add, Edit, Delete)
+- Payment Method Management
+- Customer Profile Editing
+- Preferred Store Management
+- Account Settings
+- Profile Photo Support
 
 ---
+
+# 💳 Checkout Enhancements
+
+Future improvements include:
+
+- Payment Gateway Integration
+- Shipping Method Selection
+- Tax Calculation
+- Promo Codes & Coupons
+- Gift Cards
+- Order Tracking
+- Order Cancellation
+- Return & Refund Workflow
+
+---
+
+# ☁️ Cloud & Infrastructure Enhancements
+
+- JWT-based API Authorization
+- Amazon S3 Product Image Storage
+- Amazon CloudFront CDN
+- GitHub Actions CI/CD
+- CloudWatch Dashboards
+- CloudWatch Alarms
+- AWS X-Ray Tracing
+- Performance Monitoring
+- Infrastructure Automation using Terraform
+
+---
+
+# 🛍 Shopping Experience Enhancements
+
+- Product Reviews & Ratings
+- Recently Viewed Products
+- Recommended Products
+- Personalized Shopping Experience
+- AI Shopping Assistant
+- Advanced Product Filters
+- Product Comparison
+- Inventory Availability
+- Low Stock Notifications
+
+---
+
+# 🔐 Security Enhancements
+
+- Multi-Factor Authentication (MFA)
+- Social Login (Google, Apple)
+- Role-Based Access Control (RBAC)
+- Secure JWT Authorization
+- API Rate Limiting
+- Audit Logging
+
+---
+
+# 🧪 Quality & Testing
+
+- Unit Testing
+- Integration Testing
+- End-to-End Testing
+- Performance Testing
+- Accessibility Improvements
+- Cross-Browser Testing
+- Mobile Optimization
+
+---
+
+# 🚀 Long-Term Roadmap
+
+- Complete Serverless Backend
+- Event-Driven Architecture
+- Microservices Expansion
+- Real-Time Notifications
+- Email Notifications
+- SMS Notifications
+- Customer Loyalty Program
+- Rewards & Membership
+- Analytics Dashboard
+- Business Intelligence Reporting
 
 # 🔗 Related Repositories
 
