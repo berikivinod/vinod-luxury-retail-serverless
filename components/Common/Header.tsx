@@ -108,6 +108,8 @@ import {
   logoutUser,
   getLoggedInUser,
 } from "@/services/auth";
+import { getCart } from "@/services/cart";
+import { CartItem } from "@/types/cart";
 
 
 type DrawerMode = "signin" | "stores" | "auth" | "account" | "cart" | null;
@@ -133,7 +135,7 @@ export default function Header() {
   const [cartCount, setCartCount] =
     useState(0);
   const [cartItems, setCartItems] =
-    useState<any[]>([]);
+    useState<CartItem[]>([]);
 
   const [searchText, setSearchText] =
     useState("");
@@ -302,43 +304,44 @@ export default function Header() {
   }
 };
 
-  const loadCart = async (userId: string) => {
+  const loadCart = async (
+    userId: string
+) => {
 
     try {
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart?userId=${userId}`
-      );
+        const cart =
+            await getCart(userId);
 
-      if (!response.ok) {
-        throw new Error("Unable to load cart");
-      }
-
-      const cart =
-        await response.json();
-
-      setCartItems(cart.items || []);
-
-      const count =
-        (cart.items || []).reduce(
-          (sum: number, item: any) =>
-            sum + item.quantity,
-          0
+        setCartItems(
+            cart.items || []
         );
 
-      setCartCount(count);
+        const count =
+            (cart.items || []).reduce(
+
+                (
+                    sum,
+                    item
+                ) => sum + item.quantity,
+
+                0
+
+            );
+
+        setCartCount(count);
 
     } catch (error) {
 
-      console.error(error);
+        console.error(error);
 
-      setCartItems([]);
+        setCartItems([]);
 
-      setCartCount(0);
+        setCartCount(0);
 
     }
 
-  };
+};
 
   const handleUseMyLocation = () => {
     if (!navigator.geolocation) {
