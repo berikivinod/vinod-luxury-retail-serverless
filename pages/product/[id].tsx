@@ -13,6 +13,8 @@ import RecentlyViewed
 
 import { Product } from "@/types/product";
 
+import { getProductById } from "@/services/products";
+
 import styles from "@/styles/PDP.module.css";
 
 export default function ProductDetail() {
@@ -42,41 +44,14 @@ export default function ProductDetail() {
             return;
         }
 
-        console.log(
-            "API URL:",
-            process.env.NEXT_PUBLIC_PRODUCTS_API
-        );
-
-        console.log(
-            "Product Id:",
-            id
-        );
-
         const loadProduct = async () => {
 
             try {
 
                 setLoading(true);
 
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/products/${id}`
-                );
-
-                console.log(
-                    "Status:",
-                    response.status
-                );
-
-                const responseText =
-                    await response.text();
-
-                console.log(
-                    "Response Text:",
-                    responseText
-                );
-
-                const data: Product =
-                    JSON.parse(responseText);
+                const data =
+                    await getProductById(id);
 
                 setProduct(data);
 

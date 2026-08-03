@@ -9,6 +9,8 @@ import useFavorites from "@/hooks/useFavorites";
 
 import { Product } from "@/types/product";
 
+import { getProducts } from "@/services/products";
+
 import styles from "@/styles/PLP.module.css";
 
 export default function CategoryPage() {
@@ -40,12 +42,8 @@ export default function CategoryPage() {
 
                 setLoading(true);
 
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/products`
-                );
-
-                const data: Product[] =
-                    await response.json();
+                const data =
+                    await getProducts();
 
                 const filtered =
                     data.filter(
