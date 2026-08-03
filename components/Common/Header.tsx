@@ -110,6 +110,9 @@ import {
 } from "@/services/auth";
 import { getCart } from "@/services/cart";
 import { CartItem } from "@/types/cart";
+import useCart from "@/hooks/useCart";
+import { Product } from "@/types/product";
+import { AuthUser } from "@/types/user";
 
 
 type DrawerMode = "signin" | "stores" | "auth" | "account" | "cart" | null;
@@ -117,8 +120,6 @@ type DrawerMode = "signin" | "stores" | "auth" | "account" | "cart" | null;
 
 
 export default function Header() {
-  console.log("Header Render");
-  console.log("Header Mounted");
   const router = useRouter();
   const [drawerMode, setDrawerMode] = useState<DrawerMode>(null);
 
@@ -130,18 +131,22 @@ export default function Header() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  
 
-  const [loggedInUser, setLoggedInUser] = useState<any>(null);
-  const [cartCount, setCartCount] =
-    useState(0);
-  const [cartItems, setCartItems] =
-    useState<CartItem[]>([]);
+  const [loggedInUser, setLoggedInUser] =
+    useState<AuthUser | null>(null);
 
   const [searchText, setSearchText] =
     useState("");
 
   const [searchSuggestions, setSearchSuggestions] =
-    useState<any[]>([]);
+    useState<Product[]>([]);
+
+  const {
+    cart,
+    cartCount,
+    refreshCart,
+} = useCart();
 
 
   useEffect(() => {
@@ -177,16 +182,14 @@ export default function Header() {
         JSON.stringify(user)
       );
 
-      await loadCart(user.id); // tempororily using Number(user.id) since user.id is a string
+      await refreshCart();
     } catch {
 
       localStorage.removeItem("user");
 
       setLoggedInUser(null);
 
-      setCartItems([]);
-
-      setCartCount(0);
+      await refreshCart();
 
     }
 
@@ -243,32 +246,16 @@ export default function Header() {
 
     // Get the authenticated user's profile
     const user = await getLoggedInUser();
-
+    setLoggedInUser(user);
     // Keep localStorage for now so existing pages continue to work
     localStorage.setItem(
       "user",
       JSON.stringify(user)
     );
 
-    setLoggedInUser(user);
+    await refreshCart();
 
-    // Load existing cart
-    const cart = JSON.parse(
-      localStorage.getItem(
-        `cart_${user.id}`
-      ) || "[]"
-    );
-
-    const count = cart.reduce(
-      (sum: number, item: any) =>
-        sum + item.quantity,
-      0
-    );
-
-    setCartCount(count);
-
-    // Close drawer
-    setDrawerMode(null);
+setDrawerMode(null);
 
   } catch (error: any) {
 
@@ -289,9 +276,7 @@ export default function Header() {
 
     setLoggedInUser(null);
 
-    setCartItems([]);
-
-    setCartCount(0);
+    await refreshCart();
 
     setDrawerMode(null);
 
@@ -302,45 +287,6 @@ export default function Header() {
     console.error(error);
 
   }
-};
-
-  const loadCart = async (
-    userId: string
-) => {
-
-    try {
-
-        const cart =
-            await getCart(userId);
-
-        setCartItems(
-            cart.items || []
-        );
-
-        const count =
-            (cart.items || []).reduce(
-
-                (
-                    sum,
-                    item
-                ) => sum + item.quantity,
-
-                0
-
-            );
-
-        setCartCount(count);
-
-    } catch (error) {
-
-        console.error(error);
-
-        setCartItems([]);
-
-        setCartCount(0);
-
-    }
-
 };
 
   const handleUseMyLocation = () => {
@@ -380,39 +326,16 @@ export default function Header() {
     });
   };
 
-  useEffect(() => {
-    const updateCartCount = async () => {
-      const storedUser =
-        localStorage.getItem("user");
 
-      if (!storedUser) return;
+const cartSubtotal =
+    cart.items.reduce(
 
-      const user =
-        JSON.parse(storedUser);
+        (sum, item) =>
 
-      await loadCart(user.id);
-    };
+            sum + item.price * item.quantity,
 
-    window.addEventListener(
-      "cartUpdated",
-      updateCartCount
-    );
+        0
 
-    return () => {
-      window.removeEventListener(
-        "cartUpdated",
-        updateCartCount
-      );
-    };
-  }, []);
-
-  console.log(cartItems);
-  const cartSubtotal =
-    cartItems.reduce(
-      (sum, item) =>
-        sum +
-        item.price * item.quantity,
-      0
     );
 
   useEffect(() => {
@@ -565,7 +488,7 @@ export default function Header() {
             {searchSuggestions.length > 0 && (
               <div className={styles.searchDropdown}>
                 {searchSuggestions.map(
-                  (product: any) => (
+                  (product: Product) => (
                     <div
                       key={product.id}
                       className={
@@ -998,16 +921,16 @@ export default function Header() {
               Shopping Bag ({cartCount})
             </h2>
 
-            {cartItems.length === 0 ? (
+            {cart.items.length === 0 ? (
               <p>
                 Your shopping bag is empty.
               </p>
             ) : (
               <>
-                {cartItems.map((item: any) => (
+                {cart.items.map((item: CartItem) => (
 
                   <div
-                    key={item.id}
+                    key={item.productId}
                     style={{
                       display: "flex",
                       gap: "12px",

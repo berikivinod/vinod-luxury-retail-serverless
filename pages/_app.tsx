@@ -4,6 +4,7 @@ import "@/services/amplify";
 import type { AppProps } from "next/app";
 
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
 
 export default function App({
     Component,
@@ -14,7 +15,11 @@ export default function App({
 
         <AuthProvider>
 
-            <Component {...pageProps} />
+            <CartProvider>
+
+                <Component {...pageProps} />
+
+            </CartProvider>
 
         </AuthProvider>
 
