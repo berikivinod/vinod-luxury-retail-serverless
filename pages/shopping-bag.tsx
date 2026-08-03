@@ -2,6 +2,11 @@ import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 
 import styles from "@/styles/ShoppingBag.module.css";
+import {
+    getCart,
+    updateCartItem,
+    removeCartItem,
+} from "@/services/cart";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -36,23 +41,14 @@ export default function ShoppingBag() {
 
             try {
 
-                const response =
-                    await fetch(
-                        `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart?userId=${currentUser.id}`
-                    );
-
-                if (!response.ok) {
-                    throw new Error(
-                        "Unable to load cart"
-                    );
-                }
-
                 const cartResponse =
-                    await response.json();
+    await getCart(
+        String(currentUser.id)
+    );
 
-                setCart(
-                    cartResponse.items || []
-                );
+setCart(
+    cartResponse.items || []
+);
 
             } catch (error) {
 
@@ -95,40 +91,24 @@ export default function ShoppingBag() {
 
         try {
 
-            const response =
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart`,
-                    {
-                        method: "PUT",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            userId: String(user.id),
-                            productId,
-                            quantity: newQuantity
-                        })
-                    }
-                );
-
-            if (!response.ok) {
-                throw new Error(
-                    "Failed to update cart."
-                );
-            }
-
             const updatedCart =
-                await response.json();
+    await updateCartItem(
 
-            setCart(
-                updatedCart.items || []
-            );
+        String(user.id),
 
-            window.dispatchEvent(
-                new Event("cartUpdated")
-            );
+        productId,
+
+        newQuantity
+
+    );
+
+setCart(
+    updatedCart.items || []
+);
+
+window.dispatchEvent(
+    new Event("cartUpdated")
+);
 
         } catch (error) {
 
@@ -148,42 +128,22 @@ export default function ShoppingBag() {
 
         try {
 
-            const response =
-                await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart`,
-                    {
-                        method: "DELETE",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            userId: String(user.id),
-                            productId
-                        })
-
-                    }
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Unable to remove item."
-                );
-
-            }
-
             const updatedCart =
-                await response.json();
+    await removeCartItem(
 
-            setCart(
-                updatedCart.items || []
-            );
+        String(user.id),
 
-            window.dispatchEvent(
-                new Event("cartUpdated")
-            );
+        productId
+
+    );
+
+setCart(
+    updatedCart.items || []
+);
+
+window.dispatchEvent(
+    new Event("cartUpdated")
+);
 
         } catch (error) {
 

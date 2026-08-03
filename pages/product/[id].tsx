@@ -14,6 +14,7 @@ import RecentlyViewed
 import { Product } from "@/types/product";
 
 import { getProductById } from "@/services/products";
+import { addToCart } from "@/services/cart";
 
 import styles from "@/styles/PDP.module.css";
 
@@ -160,69 +161,45 @@ export default function ProductDetail() {
 
     const handleAddToBag = async () => {
 
-        if (!user) {
+    if (!user) {
 
-            alert(
-                "Please sign in to add items to your bag."
-            );
+        alert(
+            "Please sign in to add items to your bag."
+        );
 
-            return;
+        return;
 
-        }
+    }
 
-        try {
+    try {
 
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart`,
-                {
-                    method: "POST",
+        await addToCart(
 
-                    body: JSON.stringify({
+            String(user.id),
 
-                        userId: String(user.id),
+            product.id,
 
-                        productId: product.id,
+            1
 
-                        quantity: 1,
+        );
 
-                    }),
+        window.dispatchEvent(
+            new Event("cartUpdated")
+        );
 
-                }
-            );
+        alert("Added to Bag");
 
-            if (!response.ok) {
+    } catch (error) {
 
-                throw new Error(
-                    "Failed to add item to cart."
-                );
+        console.error(error);
 
-            }
+        alert(
+            "Unable to add item to cart."
+        );
 
-            const updatedCart =
-                await response.json();
+    }
 
-            console.log(
-                "Updated Cart:",
-                updatedCart
-            );
-
-            window.dispatchEvent(
-                new Event("cartUpdated")
-            );
-
-            alert("Added to Bag");
-
-        } catch (error) {
-
-            console.error(error);
-
-            alert(
-                "Unable to add item to cart."
-            );
-
-        }
-
-    };
+};
 
     return (
 
