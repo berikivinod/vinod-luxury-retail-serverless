@@ -40,9 +40,9 @@ export default function ProductDetail() {
 
     useEffect(() => {
 
-        if (!id) {
-            return;
-        }
+        if (!id || Array.isArray(id)) {
+        return;
+    }
 
         const loadProduct = async () => {
 

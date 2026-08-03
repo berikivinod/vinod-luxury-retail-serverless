@@ -5,6 +5,8 @@ import Image from "next/image";
 import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
+import { getOrders } from "@/services/orders";
+
 import { Order } from "@/types/order";
 
 import styles from "@/styles/OrderHistory.module.css";
@@ -34,18 +36,8 @@ export default function OrderHistory() {
 
             try {
 
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders?userId=${user.id}`
-                );
-
-                if (!response.ok) {
-                    throw new Error(
-                        "Unable to load orders."
-                    );
-                }
-
-                const data: Order[] =
-                    await response.json();
+                const data =
+                    await getOrders(user.id);
 
                 setAllOrders(data);
 
@@ -157,9 +149,7 @@ export default function OrderHistory() {
                                 : ""
                         }
                         onClick={() =>
-                            setActiveTab(
-                                "In-Store"
-                            )
+                            setActiveTab("In-Store")
                         }
                     >
                         In-Store
@@ -169,11 +159,7 @@ export default function OrderHistory() {
 
                 {userOrders.length === 0 ? (
 
-                    <div
-                        className={
-                            styles.emptyState
-                        }
-                    >
+                    <div className={styles.emptyState}>
 
                         <h3>
                             No Orders Found
@@ -192,133 +178,91 @@ export default function OrderHistory() {
 
                 ) : (
 
-                    <div
-                        className={
-                            styles.ordersList
-                        }
-                    >
+                    <div className={styles.ordersList}>
 
-                        {userOrders.map(
-                            (order: Order) => (
+                        {userOrders.map((order: Order) => (
 
-                                <div
-                                    key={
-                                        order.orderId
+                            <div
+                                key={order.orderId}
+                                className={styles.orderCard}
+                            >
+
+                                <Image
+                                    src={
+                                        order.items?.[0]?.image ||
+                                        "/images/no-image.png"
                                     }
-                                    className={
-                                        styles.orderCard
+                                    alt={
+                                        order.items?.[0]?.productName ||
+                                        "Product"
                                     }
-                                >
+                                    width={120}
+                                    height={140}
+                                    className={styles.orderImage}
+                                />
 
-                                    <Image
-                                        src={
-                                            order.items?.[0]
-                                                ?.image ||
-                                            "/images/no-image.png"
-                                        }
-                                        alt={
-                                            order.items?.[0]
-                                                ?.productName ||
-                                            "Product"
-                                        }
-                                        width={120}
-                                        height={140}
-                                        className={
-                                            styles.orderImage
-                                        }
-                                    />
+                                <div className={styles.orderContent}>
 
-                                    <div
-                                        className={
-                                            styles.orderContent
-                                        }
-                                    >
+                                    <div className={styles.orderHeader}>
 
-                                        <div
-                                            className={
-                                                styles.orderHeader
-                                            }
-                                        >
-
-                                            <div
-                                                className={
-                                                    styles.orderNumber
-                                                }
-                                            >
-                                                Order #
-                                                {order.orderId}
-                                            </div>
-
-                                            <div
-                                                className={`${styles.orderStatus} ${
-                                                    styles[
-                                                        order.status.toLowerCase()
-                                                    ]
-                                                }`}
-                                            >
-                                                {order.status}
-                                            </div>
-
+                                        <div className={styles.orderNumber}>
+                                            Order #{order.orderId}
                                         </div>
 
                                         <div
-                                            className={
-                                                styles.productName
-                                            }
+                                            className={`${styles.orderStatus} ${
+                                                styles[
+                                                    order.status.toLowerCase()
+                                                ]
+                                            }`}
                                         >
-                                            {
-                                                order.items?.[0]
-                                                    ?.productName
-                                            }
+                                            {order.status}
                                         </div>
-
-                                        <div
-                                            className={
-                                                styles.orderInfo
-                                            }
-                                        >
-
-                                            <div>
-                                                {order.channel}{" "}
-                                                Order
-                                            </div>
-
-                                            <div>
-                                                {order.orderDate}
-                                            </div>
-
-                                        </div>
-
-                                        <div
-                                            className={
-                                                styles.total
-                                            }
-                                        >
-                                            Total: $
-                                            {Number(
-                                                order.total
-                                            ).toFixed(2)}
-                                        </div>
-
-                                        <button
-                                            className={
-                                                styles.viewDetails
-                                            }
-                                            onClick={() =>
-                                                router.push(
-                                                    `/order-details/${order.orderId}`
-                                                )
-                                            }
-                                        >
-                                            VIEW DETAILS
-                                        </button>
 
                                     </div>
 
+                                    <div className={styles.productName}>
+                                        {
+                                            order.items?.[0]
+                                                ?.productName
+                                        }
+                                    </div>
+
+                                    <div className={styles.orderInfo}>
+
+                                        <div>
+                                            {order.channel} Order
+                                        </div>
+
+                                        <div>
+                                            {order.orderDate}
+                                        </div>
+
+                                    </div>
+
+                                    <div className={styles.total}>
+                                        Total: $
+                                        {Number(
+                                            order.total
+                                        ).toFixed(2)}
+                                    </div>
+
+                                    <button
+                                        className={styles.viewDetails}
+                                        onClick={() =>
+                                            router.push(
+                                                `/order-details/${order.orderId}`
+                                            )
+                                        }
+                                    >
+                                        VIEW DETAILS
+                                    </button>
+
                                 </div>
 
-                            )
-                        )}
+                            </div>
+
+                        ))}
 
                     </div>
 

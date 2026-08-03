@@ -10,6 +10,8 @@ import {
     OrderItem,
 } from "@/types/order";
 
+import { getOrderById } from "@/services/orders";
+
 import styles from "@/styles/OrderDetails.module.css";
 
 export default function OrderDetails() {
@@ -29,7 +31,11 @@ export default function OrderDetails() {
 
     useEffect(() => {
 
-        if (!router.isReady || !orderId) {
+        if (
+            !router.isReady ||
+            !orderId ||
+            Array.isArray(orderId)
+        ) {
             return;
         }
 
@@ -41,26 +47,8 @@ export default function OrderDetails() {
 
                 setError("");
 
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders/${orderId}`
-                );
-
-                if (!response.ok) {
-                    throw new Error("Order not found.");
-                }
-
-                const orderResponse: Order =
-                    await response.json();
-
-                console.log(
-                    "Status:",
-                    response.status
-                );
-
-                console.log(
-                    "Order API Response:",
-                    orderResponse
-                );
+                const orderResponse =
+                    await getOrderById(orderId);
 
                 setOrder(orderResponse);
 
@@ -70,9 +58,7 @@ export default function OrderDetails() {
 
                 if (err instanceof Error) {
 
-                    setError(
-                        err.message
-                    );
+                    setError(err.message);
 
                 } else {
 
