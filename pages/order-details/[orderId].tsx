@@ -5,6 +5,11 @@ import Image from "next/image";
 import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 
+import {
+    Order,
+    OrderItem,
+} from "@/types/order";
+
 import styles from "@/styles/OrderDetails.module.css";
 
 export default function OrderDetails() {
@@ -13,54 +18,77 @@ export default function OrderDetails() {
 
     const { orderId } = router.query;
 
-    const [order, setOrder] = useState<any>(null);
+    const [order, setOrder] =
+        useState<Order | null>(null);
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] =
+        useState(true);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
     useEffect(() => {
 
-        if (!router.isReady || !orderId) return;
+        if (!router.isReady || !orderId) {
+            return;
+        }
 
         const fetchOrder = async () => {
 
-    try {
+            try {
 
-        setLoading(true);
+                setLoading(true);
 
-        setError("");
+                setError("");
 
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders/${orderId}`
-        );
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders/${orderId}`
+                );
 
-        if (!response.ok) {
-            throw new Error("Order not found.");
-        }
+                if (!response.ok) {
+                    throw new Error("Order not found.");
+                }
 
-        const orderResponse = await response.json();
+                const orderResponse: Order =
+                    await response.json();
 
-        console.log("Status:", response.status);
-        console.log("Order API Response:", orderResponse);
+                console.log(
+                    "Status:",
+                    response.status
+                );
 
-        setOrder(orderResponse);
+                console.log(
+                    "Order API Response:",
+                    orderResponse
+                );
 
-    }
-    catch (err: any) {
+                setOrder(orderResponse);
 
-        console.error(err);
+            } catch (err: unknown) {
 
-        setError(err.message || "Unable to load order.");
+                console.error(err);
 
-    }
-    finally {
+                if (err instanceof Error) {
 
-        setLoading(false);
+                    setError(
+                        err.message
+                    );
 
-    }
+                } else {
 
-};
+                    setError(
+                        "Unable to load order."
+                    );
+
+                }
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        };
 
         fetchOrder();
 
@@ -108,7 +136,9 @@ export default function OrderDetails() {
 
                 <button
                     className={styles.backButton}
-                    onClick={() => router.push("/order-history")}
+                    onClick={() =>
+                        router.push("/order-history")
+                    }
                 >
                     ← Back to Orders
                 </button>
@@ -128,7 +158,7 @@ export default function OrderDetails() {
                         <p
                             className={
                                 styles[
-                                order.status.toLowerCase()
+                                    order.status.toLowerCase()
                                 ]
                             }
                         >
@@ -173,52 +203,63 @@ export default function OrderDetails() {
 
                 <h2>Items Purchased</h2>
 
-                {order.items?.map((item: any) => (
+                {order.items.map(
+                    (item: OrderItem) => (
 
-                    <div
-                        key={item.productId}
-                        className={styles.productCard}
-                    >
+                        <div
+                            key={item.productId}
+                            className={styles.productCard}
+                        >
 
-                        <Image
-                            src={item.image}
-                            alt={item.productName}
-                            width={150}
-                            height={180}
-                            className={styles.productImage}
-                        />
+                            <Image
+                                src={item.image}
+                                alt={item.productName}
+                                width={150}
+                                height={180}
+                                className={styles.productImage}
+                            />
 
-                        <div className={styles.productInfo}>
+                            <div className={styles.productInfo}>
 
-                            <h3>
-                                {item.productName}
-                            </h3>
+                                <h3>
+                                    {item.productName}
+                                </h3>
 
-                            <p>
-                                Brand: {item.brand}
-                            </p>
+                                <p>
+                                    Brand: {item.brand}
+                                </p>
 
-                            <p>
-                                Quantity: {item.quantity}
-                            </p>
+                                <p>
+                                    Quantity: {item.quantity}
+                                </p>
 
-                            <p>
-                                Price: ${item.price}
-                            </p>
+                                <p>
+                                    Price: ${item.price}
+                                </p>
 
-                            <p>
-                                Line Total: ${item.lineTotal}
-                            </p>
+                                <p>
+                                    Line Total: ${item.lineTotal}
+                                </p>
+
+                            </div>
 
                         </div>
 
-                    </div>
+                    )
+                )}
 
-                ))}
-                                <div style={{ marginBottom: "40px" }}>
-                    <button className={styles.primaryButton}>
+                <div
+                    style={{
+                        marginBottom: "40px",
+                    }}
+                >
+
+                    <button
+                        className={styles.primaryButton}
+                    >
                         REORDER ITEMS
                     </button>
+
                 </div>
 
                 <h2>Shipping Information</h2>
@@ -228,11 +269,17 @@ export default function OrderDetails() {
                     {order.shippingAddress ? (
 
                         <p>
+
                             {order.shippingAddress.street}
+
                             <br />
+
                             {order.shippingAddress.city},{" "}
+
                             {order.shippingAddress.state}{" "}
+
                             {order.shippingAddress.zip}
+
                         </p>
 
                     ) : (
@@ -282,37 +329,25 @@ export default function OrderDetails() {
                 <div className={styles.infoCard}>
 
                     <p>
-
                         Subtotal: $
-
                         {Number(order.subtotal).toFixed(2)}
-
                     </p>
 
                     <p>
-
                         Tax: $
-
                         {Number(order.tax).toFixed(2)}
-
                     </p>
 
                     <p>
-
                         Shipping: $
-
                         {Number(order.shipping).toFixed(2)}
-
                     </p>
 
                     <p>
 
                         <strong>
-
                             Total: $
-
                             {Number(order.total).toFixed(2)}
-
                         </strong>
 
                     </p>

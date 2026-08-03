@@ -5,6 +5,8 @@ import Image from "next/image";
 import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 
+import { Order } from "@/types/order";
+
 import styles from "@/styles/OrderHistory.module.css";
 
 export default function OrderHistory() {
@@ -20,11 +22,13 @@ export default function OrderHistory() {
         useState("All");
 
     const [allOrders, setAllOrders] =
-        useState<any[]>([]);
+        useState<Order[]>([]);
 
     useEffect(() => {
 
-        if (!user) return;
+        if (!user) {
+            return;
+        }
 
         const loadOrders = async () => {
 
@@ -40,7 +44,7 @@ export default function OrderHistory() {
                     );
                 }
 
-                const data =
+                const data: Order[] =
                     await response.json();
 
                 setAllOrders(data);
@@ -68,7 +72,7 @@ export default function OrderHistory() {
     }
 
     const userOrders =
-        allOrders.filter((order) => {
+        allOrders.filter((order: Order) => {
 
             const matchesTab =
                 activeTab === "All"
@@ -195,7 +199,7 @@ export default function OrderHistory() {
                     >
 
                         {userOrders.map(
-                            (order) => (
+                            (order: Order) => (
 
                                 <div
                                     key={
@@ -208,14 +212,12 @@ export default function OrderHistory() {
 
                                     <Image
                                         src={
-                                            order
-                                                .items?.[0]
+                                            order.items?.[0]
                                                 ?.image ||
                                             "/images/no-image.png"
                                         }
                                         alt={
-                                            order
-                                                .items?.[0]
+                                            order.items?.[0]
                                                 ?.productName ||
                                             "Product"
                                         }
@@ -244,9 +246,7 @@ export default function OrderHistory() {
                                                 }
                                             >
                                                 Order #
-                                                {
-                                                    order.orderId
-                                                }
+                                                {order.orderId}
                                             </div>
 
                                             <div
@@ -256,9 +256,7 @@ export default function OrderHistory() {
                                                     ]
                                                 }`}
                                             >
-                                                {
-                                                    order.status
-                                                }
+                                                {order.status}
                                             </div>
 
                                         </div>
@@ -269,8 +267,7 @@ export default function OrderHistory() {
                                             }
                                         >
                                             {
-                                                order
-                                                    .items?.[0]
+                                                order.items?.[0]
                                                     ?.productName
                                             }
                                         </div>
@@ -282,16 +279,12 @@ export default function OrderHistory() {
                                         >
 
                                             <div>
-                                                {
-                                                    order.channel
-                                                }{" "}
+                                                {order.channel}{" "}
                                                 Order
                                             </div>
 
                                             <div>
-                                                {
-                                                    order.orderDate
-                                                }
+                                                {order.orderDate}
                                             </div>
 
                                         </div>
@@ -304,9 +297,7 @@ export default function OrderHistory() {
                                             Total: $
                                             {Number(
                                                 order.total
-                                            ).toFixed(
-                                                2
-                                            )}
+                                            ).toFixed(2)}
                                         </div>
 
                                         <button
@@ -319,8 +310,7 @@ export default function OrderHistory() {
                                                 )
                                             }
                                         >
-                                            VIEW
-                                            DETAILS
+                                            VIEW DETAILS
                                         </button>
 
                                     </div>
