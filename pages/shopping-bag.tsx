@@ -5,6 +5,7 @@ import styles from "@/styles/ShoppingBag.module.css";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { CartItem } from "@/types/cart";
 
 export default function ShoppingBag() {
     const router = useRouter();
@@ -12,9 +13,9 @@ export default function ShoppingBag() {
     const [user, setUser] = useState<any>(null);
 
     const [cart, setCart] =
-        useState<any[]>([]);
+    useState<CartItem[]>([]);
     const [savedItems, setSavedItems] =
-        useState<any[]>([]);
+        useState<CartItem[]>([]);
 
     useEffect(() => {
 
@@ -61,7 +62,7 @@ export default function ShoppingBag() {
 
             }
 
-            const savedItems =
+            const savedItems: CartItem[] =
                 JSON.parse(
                     localStorage.getItem(
                         `saved_${currentUser.id}`
@@ -197,9 +198,9 @@ export default function ShoppingBag() {
     };
 
     const moveToSaved = (
-        item: any
+        item: CartItem
     ) => {
-        const saved =
+        const saved : CartItem[] =
             JSON.parse(
                 localStorage.getItem(
                     `saved_${user.id}`
@@ -208,8 +209,8 @@ export default function ShoppingBag() {
 
         const exists =
             saved.some(
-                (p: any) =>
-                    p.id === item.productId
+                (p: CartItem) =>
+                    p.productId === item.productId
             );
 
         if (!exists) {
@@ -224,7 +225,7 @@ export default function ShoppingBag() {
         const updatedCart =
             cart.filter(
                 (p) =>
-                    p.id !== item.productId
+                    p.productId !== item.productId
             );
 
         setCart(updatedCart);
@@ -241,7 +242,7 @@ export default function ShoppingBag() {
     };
 
     const moveToBag = (
-        item: any
+        item: CartItem
     ) => {
         const updatedCart = [
             ...cart,
@@ -251,7 +252,7 @@ export default function ShoppingBag() {
         const updatedSaved =
             savedItems.filter(
                 (p) =>
-                    p.id !== item.productId
+                    p.productId !== item.productId
             );
 
         setCart(updatedCart);
@@ -303,7 +304,7 @@ export default function ShoppingBag() {
                     <>
                         <div className={styles.cartItems}>
                             {cart.map(
-                                (item: any) => (
+                                (item: CartItem) => (
                                     <div
                                         key={item.productId}
                                         className={
@@ -451,7 +452,7 @@ export default function ShoppingBag() {
                         </h2>
 
                         {savedItems.map(
-                            (item: any) => (
+                            (item: CartItem) => (
                                 <div
                                     key={item.productId}
                                     className={
