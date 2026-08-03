@@ -5,6 +5,8 @@ import AccountLayout from "@/components/Account/AccountLayout";
 import useAuth from "@/hooks/useAuth";
 import useFavorites from "@/hooks/useFavorites";
 
+import { Product } from "@/types/product";
+
 import styles from "@/styles/favorites.module.css";
 
 export default function Favorites() {
@@ -67,7 +69,7 @@ export default function Favorites() {
 
                     <div className={styles.productsGrid}>
 
-                        {favorites.map((product: any) => (
+                        {favorites.map((product: Product) => (
 
                             <div
                                 key={product.id}
