@@ -30,7 +30,9 @@ export default function Verify() {
 
     const handleVerify = async () => {
 
-        if (!email) return;
+        if (!email) {
+            return;
+        }
 
         setLoading(true);
 
@@ -55,12 +57,19 @@ export default function Verify() {
 
             }, 2000);
 
-        } catch (err: any) {
+        } catch (err: unknown) {
 
-            setError(
-                err.message ||
-                "Verification failed."
-            );
+            if (err instanceof Error) {
+
+                setError(err.message);
+
+            } else {
+
+                setError(
+                    "Verification failed."
+                );
+
+            }
 
         } finally {
 
@@ -72,7 +81,9 @@ export default function Verify() {
 
     const handleResend = async () => {
 
-        if (!email) return;
+        if (!email) {
+            return;
+        }
 
         setMessage("");
 
@@ -88,12 +99,19 @@ export default function Verify() {
                 "A new verification code has been sent."
             );
 
-        } catch (err: any) {
+        } catch (err: unknown) {
 
-            setError(
-                err.message ||
-                "Unable to resend verification code."
-            );
+            if (err instanceof Error) {
+
+                setError(err.message);
+
+            } else {
+
+                setError(
+                    "Unable to resend verification code."
+                );
+
+            }
 
         }
 

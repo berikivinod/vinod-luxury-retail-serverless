@@ -5,28 +5,40 @@ import addresses from "@/data/addresses.json";
 
 import styles from "@/styles/Checkout.module.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
+import { useAuthContext } from "@/context/AuthContext";
+import useCart from "@/hooks/useCart";
+
+import { Address } from "@/types/address";
+
+import { placeOrder } from "@/services/checkout";
+
 export default function Checkout() {
+
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
+    const {
+        user,
+        loading: authLoading,
+    } = useAuthContext();
 
-    const [cart, setCart] =
-        useState<any[]>([]);
+    const {
+        cart,
+        refreshCart,
+    } = useCart();
 
     const [selectedAddress, setSelectedAddress] =
-        useState<any>(null);
+        useState<Address | null>(null);
 
     useEffect(() => {
 
-    const loadCheckout = async () => {
+        if (authLoading) {
+            return;
+        }
 
-        const storedUser =
-            localStorage.getItem("user");
-
-        if (!storedUser) {
+        if (!user) {
 
             router.push("/");
 
@@ -34,58 +46,19 @@ export default function Checkout() {
 
         }
 
-        const currentUser =
-            JSON.parse(storedUser);
-
-        setUser(currentUser);
-
-        try {
-
-            const response =
-                await fetch(
-
-                    `${process.env.NEXT_PUBLIC_PRODUCTS_API}/cart?userId=${currentUser.id}`
-
-                );
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Unable to load cart."
-                );
-
-            }
-
-            const cartResponse =
-                await response.json();
-
-            setCart(
-                cartResponse.items || []
-            );
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            setCart([]);
-
-        }
-
         const userAddresses =
-            addresses.filter(
+            (addresses as Address[]).filter(
 
-                (address: any) =>
+                (address) =>
 
-                    address.userId ===
-                    currentUser.id
+                    address.userId === user.id
 
             );
 
         const defaultAddress =
             userAddresses.find(
 
-                (address: any) =>
+                (address) =>
 
                     address.isDefault
 
@@ -95,204 +68,282 @@ export default function Checkout() {
             defaultAddress || null
         );
 
-    };
+    }, [
+        authLoading,
+        user,
+        router,
+    ]);
 
-    loadCheckout();
+    const subtotal = useMemo(
 
-}, [router]);
+        () =>
 
-    const subtotal = cart.reduce(
-        (sum, item) =>
-            sum +
-            item.price * item.quantity,
-        0
+            cart.items.reduce(
+
+                (sum, item) =>
+
+                    sum +
+                    item.price *
+                    item.quantity,
+
+                0
+
+            ),
+
+        [cart]
+
     );
 
-    const tax = subtotal * 0.08;
+    const tax =
+        subtotal * 0.08;
 
-    const total = subtotal + tax;
+    const total =
+        subtotal + tax;
 
-    if (!user) return null;
+    if (authLoading) {
+
+        return null;
+
+    }
+
+    if (!user) {
+
+        return null;
+
+    }
 
     const handlePlaceOrder = async () => {
 
-    if (!user || cart.length === 0) {
-        return;
-    }
+        if (cart.items.length === 0) {
 
-    try {
+            return;
 
-        const response =
-            await fetch(
+        }
 
-                `${process.env.NEXT_PUBLIC_PRODUCTS_API}/orders`,
+        try {
 
-                {
+            const result =
+                await placeOrder(
+                    user.id
+                );
 
-                    method: "POST",
+            await refreshCart();
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+            router.push({
 
-                    body: JSON.stringify({
+                pathname:
+                    "/order-confirmation",
 
-                        userId: user.id
+                query: {
 
-                    })
+                    orderId:
+                        result.orderId,
 
-                }
+                    orderDate:
+                        result.orderDate,
 
-            );
+                    status:
+                        result.status,
 
-        if (!response.ok) {
+                    total:
+                        result.total,
 
-            throw new Error(
+                },
+
+            });
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
                 "Unable to place order."
             );
 
         }
 
-        const result =
-            await response.json();
-        console.log("Place Order Response:", result);
+    };
+        return (
 
-        setCart([]);
-
-        localStorage.removeItem(
-            `cart_${user.id}`
-        );
-
-        window.dispatchEvent(
-            new Event("cartUpdated")
-        );
-
-        router.push({
-
-    pathname: "/order-confirmation",
-
-    query: {
-
-        orderId: result.orderId,
-
-        orderDate: result.orderDate,
-
-        status: result.status,
-
-        total: result.total
-
-    }
-
-});
-
-    }
-    catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to place order."
-        );
-
-    }
-
-};
-
-    return (
         <>
+
             <Header />
 
             <div className={styles.wrapper}>
+
                 <h1>Checkout</h1>
 
                 <div className={styles.grid}>
+
                     <div>
+
                         <h2>
                             Shipping Address
                         </h2>
 
-                        {selectedAddress && (
-                            <div
-                                className={
-                                    styles.card
-                                }
-                            >
+                        {selectedAddress ? (
+
+                            <div className={styles.card}>
+
                                 <p>
-                                    {
-                                        selectedAddress.firstName
-                                    }{" "}
-                                    {
-                                        selectedAddress.lastName
-                                    }
+
+                                    {selectedAddress.firstName}{" "}
+
+                                    {selectedAddress.lastName}
+
                                 </p>
 
                                 <p>
-                                    {
-                                        selectedAddress.street
-                                    }
+
+                                    {selectedAddress.street}
+
                                 </p>
 
                                 <p>
-                                    {
-                                        selectedAddress.city
-                                    }
-                                    ,{" "}
-                                    {
-                                        selectedAddress.state
-                                    }{" "}
-                                    {
-                                        selectedAddress.zip
-                                    }
+
+                                    {selectedAddress.city},{" "}
+
+                                    {selectedAddress.state}{" "}
+
+                                    {selectedAddress.zip}
+
                                 </p>
+
                             </div>
+
+                        ) : (
+
+                            <div className={styles.card}>
+
+                                <p>
+
+                                    No default shipping address found.
+
+                                </p>
+
+                            </div>
+
                         )}
+
                     </div>
 
                     <div>
+
                         <h2>
                             Order Summary
                         </h2>
 
-                        <div
-                            className={
-                                styles.card
-                            }
-                        >
-                            <p>
-                                Subtotal: $
-                                {subtotal.toFixed(
-                                    2
-                                )}
-                            </p>
+                        <div className={styles.card}>
 
-                            <p>
-                                Tax: $
-                                {tax.toFixed(2)}
-                            </p>
+                            {cart.items.length === 0 ? (
 
-                            <h3>
-                                Total: $
-                                {total.toFixed(
-                                    2
-                                )}
-                            </h3>
+                                <p>
+                                    Your shopping bag is empty.
+                                </p>
 
-                            <button
-                                className={
-                                    styles.placeOrderButton
-                                }
-                                onClick={
-                                    handlePlaceOrder
-                                }
-                            >
-                                PLACE ORDER
-                            </button>
+                            ) : (
+
+                                <>
+
+                                    {cart.items.map((item) => (
+
+                                        <div
+                                            key={item.productId}
+                                            style={{
+                                                display: "flex",
+                                                justifyContent:
+                                                    "space-between",
+                                                marginBottom: "12px",
+                                            }}
+                                        >
+
+                                            <div>
+
+                                                <strong>
+
+                                                    {item.name}
+
+                                                </strong>
+
+                                                <br />
+
+                                                Qty: {item.quantity}
+
+                                            </div>
+
+                                            <div>
+
+                                                $
+
+                                                {(
+                                                    item.price *
+                                                    item.quantity
+                                                ).toFixed(2)}
+
+                                            </div>
+
+                                        </div>
+
+                                    ))}
+
+                                    <hr />
+
+                                    <p>
+
+                                        Subtotal: $
+
+                                        {subtotal.toFixed(2)}
+
+                                    </p>
+
+                                    <p>
+
+                                        Tax: $
+
+                                        {tax.toFixed(2)}
+
+                                    </p>
+
+                                    <h3>
+
+                                        Total: $
+
+                                        {total.toFixed(2)}
+
+                                    </h3>
+
+                                    <button
+
+                                        className={
+                                            styles.placeOrderButton
+                                        }
+
+                                        onClick={
+                                            handlePlaceOrder
+                                        }
+
+                                    >
+
+                                        PLACE ORDER
+
+                                    </button>
+
+                                </>
+
+                            )}
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
 
             <Footer />
+
         </>
+
     );
+
 }

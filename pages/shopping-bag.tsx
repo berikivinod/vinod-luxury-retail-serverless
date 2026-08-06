@@ -2,113 +2,111 @@ import Header from "@/components/Common/Header";
 import Footer from "@/components/Common/Footer";
 
 import styles from "@/styles/ShoppingBag.module.css";
-import {
-    getCart,
-    updateCartItem,
-    removeCartItem,
-} from "@/services/cart";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+
+import useCart from "@/hooks/useCart";
+
 import { CartItem } from "@/types/cart";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function ShoppingBag() {
+
     const router = useRouter();
+    const {
+    user,
+    loading: authLoading,
+} = useAuthContext();
 
-    const [user, setUser] = useState<any>(null);
+    const {
+        cart,
+        addItem,
+        updateItem,
+        removeItem,
+    } = useCart();
 
-    const [cart, setCart] =
-    useState<CartItem[]>([]);
+
     const [savedItems, setSavedItems] =
         useState<CartItem[]>([]);
 
     useEffect(() => {
 
-        const loadData = async () => {
+    if (authLoading) {
 
-            const storedUser =
-                localStorage.getItem("user");
+        return;
 
-            if (!storedUser) {
-                router.push("/");
-                return;
-            }
+    }
 
-            const currentUser =
-                JSON.parse(storedUser);
+    if (!user) {
 
-            setUser(currentUser);
+        router.push("/");
 
-            try {
+        return;
 
-                const cartResponse =
-    await getCart(
-        String(currentUser.id)
-    );
+    }
 
-setCart(
-    cartResponse.items || []
-);
+    const saved: CartItem[] =
+        JSON.parse(
 
-            } catch (error) {
+            localStorage.getItem(
 
-                console.error(error);
+                `saved_${user.id}`
 
-                setCart([]);
+            ) || "[]"
 
-            }
+        );
 
-            const savedItems: CartItem[] =
-                JSON.parse(
-                    localStorage.getItem(
-                        `saved_${currentUser.id}`
-                    ) || "[]"
-                );
+    setSavedItems(saved);
 
-            setSavedItems(savedItems);
-
-        };
-
-        loadData();
-
-    }, [router]);
+}, [
+    authLoading,
+    user,
+    router,
+]);
 
     const updateQuantity = async (
+
         productId: number,
+
         change: number
+
     ) => {
 
         const item =
-            cart.find(
+            cart.items.find(
                 (i) =>
                     i.productId === productId
             );
 
-        if (!item) return;
+        if (!item) {
+
+            return;
+
+        }
 
         const newQuantity =
             item.quantity + change;
 
+        if (newQuantity <= 0) {
+
+            await handleRemoveItem(
+                productId
+            );
+
+            return;
+
+        }
+
         try {
 
-            const updatedCart =
-    await updateCartItem(
+            await updateItem(
 
-        String(user.id),
+                productId,
 
-        productId,
+                newQuantity
 
-        newQuantity
-
-    );
-
-setCart(
-    updatedCart.items || []
-);
-
-window.dispatchEvent(
-    new Event("cartUpdated")
-);
+            );
 
         } catch (error) {
 
@@ -122,254 +120,293 @@ window.dispatchEvent(
 
     };
 
-    const removeItem = async (
-        productId: number
-    ) => {
+    const handleRemoveItem =
+        async (
+            productId: number
+        ) => {
 
-        try {
+            try {
 
-            const updatedCart =
-    await removeCartItem(
+                await removeItem(productId);
 
-        String(user.id),
+            } catch (error) {
 
-        productId
+                console.error(error);
 
-    );
+                alert(
+                    "Unable to remove item."
+                );
 
-setCart(
-    updatedCart.items || []
-);
+            }
 
-window.dispatchEvent(
-    new Event("cartUpdated")
-);
+        };
 
-        } catch (error) {
+    const moveToSaved =
+        async (
+            item: CartItem
+        ) => {
 
-            console.error(error);
+            if (!user) {
 
-            alert(
-                "Failed to remove item."
+                return;
+
+            }
+
+            const saved: CartItem[] =
+                JSON.parse(
+
+                    localStorage.getItem(
+
+                        `saved_${user.id}`
+
+                    ) || "[]"
+
+                );
+
+            const exists =
+                saved.some(
+
+                    (p) =>
+
+                        p.productId ===
+                        item.productId
+
+                );
+
+            if (!exists) {
+
+                saved.push(item);
+
+                localStorage.setItem(
+
+                    `saved_${user.id}`,
+
+                    JSON.stringify(saved)
+
+                );
+
+            }
+
+            setSavedItems(saved);
+
+            await removeItem(
+                item.productId
             );
 
-        }
+        };
 
-    };
+    const moveToBag =
+        async (
+            item: CartItem
+        ) => {
 
-    const moveToSaved = (
-        item: CartItem
-    ) => {
-        const saved : CartItem[] =
-            JSON.parse(
-                localStorage.getItem(
-                    `saved_${user.id}`
-                ) || "[]"
+            if (!user) {
+
+                return;
+
+            }
+
+            await addItem(
+
+                item.productId,
+
+                item.quantity
+
             );
 
-        const exists =
-            saved.some(
-                (p: CartItem) =>
-                    p.productId === item.productId
-            );
+            const updatedSaved =
+                savedItems.filter(
 
-        if (!exists) {
-            saved.push(item);
+                    (p) =>
+
+                        p.productId !==
+                        item.productId
+
+                );
+
+            setSavedItems(
+                updatedSaved
+            );
 
             localStorage.setItem(
+
                 `saved_${user.id}`,
-                JSON.stringify(saved)
-            );
-        }
 
-        const updatedCart =
-            cart.filter(
-                (p) =>
-                    p.productId !== item.productId
+                JSON.stringify(
+                    updatedSaved
+                )
+
             );
 
-        setCart(updatedCart);
-        setSavedItems(saved);
+        };
 
-        localStorage.setItem(
-            `cart_${user.id}`,
-            JSON.stringify(updatedCart)
+    const subtotal =
+        cart.items.reduce(
+
+            (sum, item) =>
+
+                sum +
+                item.price *
+                item.quantity,
+
+            0
+
         );
 
-        window.dispatchEvent(
-            new Event("cartUpdated")
-        );
-    };
-
-    const moveToBag = (
-        item: CartItem
-    ) => {
-        const updatedCart = [
-            ...cart,
-            item
-        ];
-
-        const updatedSaved =
-            savedItems.filter(
-                (p) =>
-                    p.productId !== item.productId
-            );
-
-        setCart(updatedCart);
-        setSavedItems(updatedSaved);
-
-        localStorage.setItem(
-            `cart_${user.id}`,
-            JSON.stringify(updatedCart)
-        );
-
-        localStorage.setItem(
-            `saved_${user.id}`,
-            JSON.stringify(updatedSaved)
-        );
-
-        window.dispatchEvent(
-            new Event("cartUpdated")
-        );
-    };
-
-
-
-    const subtotal = cart.reduce(
-        (sum, item) =>
-            sum +
-            item.price * item.quantity,
-        0
-    );
-
-    const tax = subtotal * 0.08;
+    const tax =
+        subtotal * 0.08;
 
     const grandTotal =
         subtotal + tax;
 
-    if (!user) return null;
 
-    return (
+if (authLoading) {
+
+    return null;
+
+}
+
+if (!user) {
+
+    return null;
+
+}
+
+        return (
         <>
             <Header />
 
             <div className={styles.wrapper}>
+
                 <h1>Shopping Bag</h1>
 
-                {cart.length === 0 ? (
+                {cart.items.length === 0 ? (
+
                     <div className={styles.emptyBag}>
                         Your shopping bag is empty.
                     </div>
+
                 ) : (
+
                     <>
+
                         <div className={styles.cartItems}>
-                            {cart.map(
-                                (item: CartItem) => (
-                                    <div
-                                        key={item.productId}
-                                        className={
-                                            styles.cartItem
+
+                            {cart.items.map((item: CartItem) => (
+
+                                <div
+                                    key={item.productId}
+                                    className={styles.cartItem}
+                                >
+
+                                    <img
+                                        src={
+                                            item.image ||
+                                            "/images/products/placeholder-product.jpg"
                                         }
-                                    >
-                                        <img
-                                            src={
-                                                item.image ||
-                                                "/images/products/placeholder-product.jpg"
-                                            }
-                                            alt={item.name}
-                                            className={
-                                                styles.image
-                                            }
-                                        />
+                                        alt={item.name}
+                                        className={styles.image}
+                                    />
 
-                                        <div>
-                                            <h3>
-                                                {item.brand}
-                                            </h3>
+                                    <div>
 
-                                            <p>
-                                                {item.name}
-                                            </p>
+                                        <h3>
+                                            {item.brand}
+                                        </h3>
 
-                                            <div
-                                                className={
-                                                    styles.quantity
+                                        <p>
+                                            {item.name}
+                                        </p>
+
+                                        <div
+                                            className={styles.quantity}
+                                        >
+
+                                            <button
+                                                onClick={() =>
+                                                    updateQuantity(
+                                                        item.productId,
+                                                        -1
+                                                    )
                                                 }
                                             >
-                                                <button
-                                                    onClick={() =>
-                                                        updateQuantity(
-                                                            item.productId,
-                                                            -1
-                                                        )
-                                                    }
-                                                >
-                                                    -
-                                                </button>
+                                                -
+                                            </button>
 
-                                                <span>
-                                                    {
-                                                        item.quantity
-                                                    }
-                                                </span>
+                                            <span>
+                                                {item.quantity}
+                                            </span>
 
-                                                <button
-                                                    onClick={() =>
-                                                        updateQuantity(
-                                                            item.productId,
-                                                            1
-                                                        )
-                                                    }
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-
-                                            <p>
-                                                $
-                                                {item.price.toLocaleString()}
-                                            </p>
-
-                                            <p>
-                                                Subtotal: $
-                                                {(
-                                                    item.price *
-                                                    item.quantity
-                                                ).toLocaleString()}
-                                            </p>
-
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    gap: "12px",
-                                                    marginTop: "10px",
-                                                }}
+                                            <button
+                                                onClick={() =>
+                                                    updateQuantity(
+                                                        item.productId,
+                                                        1
+                                                    )
+                                                }
                                             >
-                                                <button
-                                                    className={styles.removeButton}
-                                                    onClick={() =>
-                                                        removeItem(item.productId)
-                                                    }
-                                                >
-                                                    Remove
-                                                </button>
+                                                +
+                                            </button>
 
-                                                <button
-                                                    className={styles.removeButton}
-                                                    onClick={() =>
-                                                        moveToSaved(item)
-                                                    }
-                                                >
-                                                    Save For Later
-                                                </button>
-                                            </div>
                                         </div>
+
+                                        <p>
+                                            $
+                                            {item.price.toLocaleString()}
+                                        </p>
+
+                                        <p>
+                                            Subtotal: $
+                                            {(
+                                                item.price *
+                                                item.quantity
+                                            ).toLocaleString()}
+                                        </p>
+
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                gap: "12px",
+                                                marginTop: "10px",
+                                            }}
+                                        >
+
+                                            <button
+                                                className={
+                                                    styles.removeButton
+                                                }
+                                                onClick={() =>
+                                                    handleRemoveItem(
+                                                        item.productId
+                                                    )
+                                                }
+                                            >
+                                                Remove
+                                            </button>
+
+                                            <button
+                                                className={
+                                                    styles.removeButton
+                                                }
+                                                onClick={() =>
+                                                    moveToSaved(item)
+                                                }
+                                            >
+                                                Save For Later
+                                            </button>
+
+                                        </div>
+
                                     </div>
-                                )
-                            )}
+
+                                </div>
+
+                            ))}
+
                         </div>
 
                         <div className={styles.summary}>
+
                             <h2>
                                 Order Summary
                             </h2>
@@ -390,80 +427,91 @@ window.dispatchEvent(
                             </h3>
 
                             <button
-                                className={styles.checkoutButton}
+                                className={
+                                    styles.checkoutButton
+                                }
                                 onClick={() =>
                                     router.push("/checkout")
                                 }
                             >
                                 CHECKOUT
                             </button>
+
                         </div>
+
                     </>
+
                 )}
 
                 {savedItems.length > 0 && (
+
                     <div
                         style={{
-                            marginTop: "40px"
+                            marginTop: "40px",
                         }}
                     >
+
                         <h2>
                             Saved For Later
                         </h2>
 
-                        {savedItems.map(
-                            (item: CartItem) => (
-                                <div
-                                    key={item.productId}
-                                    className={
-                                        styles.cartItem
+                        {savedItems.map((item: CartItem) => (
+
+                            <div
+                                key={item.productId}
+                                className={styles.cartItem}
+                            >
+
+                                <img
+                                    src={
+                                        item.image ||
+                                        "/images/products/placeholder-product.jpg"
                                     }
-                                >
-                                    <img
-                                        src={
-                                            item.image
-                                        }
-                                        alt={
-                                            item.name
-                                        }
+                                    alt={item.name}
+                                    className={styles.image}
+                                />
+
+                                <div>
+
+                                    <h3>
+                                        {item.brand}
+                                    </h3>
+
+                                    <p>
+                                        {item.name}
+                                    </p>
+
+                                    <p>
+                                        $
+                                        {item.price.toLocaleString()}
+                                    </p>
+
+                                    <button
                                         className={
-                                            styles.image
+                                            styles.checkoutButton
                                         }
-                                    />
+                                        onClick={() =>
+                                            moveToBag(item)
+                                        }
+                                    >
+                                        Move To Bag
+                                    </button>
 
-                                    <div>
-                                        <h3>
-                                            {item.brand}
-                                        </h3>
-
-                                        <p>
-                                            {item.name}
-                                        </p>
-
-                                        <p>
-                                            $
-                                            {item.price.toLocaleString()}
-                                        </p>
-
-                                        <button
-                                            className={
-                                                styles.checkoutButton
-                                            }
-                                            onClick={() =>
-                                                moveToBag(item)
-                                            }
-                                        >
-                                            Move To Bag
-                                        </button>
-                                    </div>
                                 </div>
-                            )
-                        )}
+
+                            </div>
+
+                        ))}
+
                     </div>
+
                 )}
+
             </div>
 
             <Footer />
+
         </>
     );
+
 }

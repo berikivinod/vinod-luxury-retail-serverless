@@ -7,40 +7,70 @@ import { confirmForgotPassword } from "@/services/auth";
 import styles from "@/styles/Register.module.css";
 
 export default function ResetPassword() {
+
     const router = useRouter();
 
     const { email } = router.query;
 
-    const [code, setCode] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [code, setCode] =
+        useState("");
 
-    const [loading, setLoading] = useState(false);
+    const [password, setPassword] =
+        useState("");
 
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
+    const [confirmPassword, setConfirmPassword] =
+        useState("");
+
+    const [loading, setLoading] =
+        useState(false);
+
+    const [message, setMessage] =
+        useState("");
+
+    const [error, setError] =
+        useState("");
 
     const handleReset = async () => {
+
         setError("");
         setMessage("");
 
-        if (!code || !password || !confirmPassword) {
-            setError("Please complete all fields.");
+        if (
+            !code ||
+            !password ||
+            !confirmPassword
+        ) {
+
+            setError(
+                "Please complete all fields."
+            );
+
             return;
+
         }
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match.");
+
+            setError(
+                "Passwords do not match."
+            );
+
             return;
+
         }
 
         try {
+
             setLoading(true);
 
             await confirmForgotPassword(
+
                 String(email),
+
                 code,
+
                 password
+
             );
 
             setMessage(
@@ -48,19 +78,35 @@ export default function ResetPassword() {
             );
 
             setTimeout(() => {
+
                 router.push("/");
+
             }, 2000);
 
-        } catch (err: any) {
-            setError(
-                err.message || "Unable to reset password."
-            );
+        } catch (err: unknown) {
+
+            if (err instanceof Error) {
+
+                setError(err.message);
+
+            } else {
+
+                setError(
+                    "Unable to reset password."
+                );
+
+            }
+
         } finally {
+
             setLoading(false);
+
         }
+
     };
 
     return (
+
         <AuthLayout title="Reset Password">
 
             <div className={styles.container}>
@@ -76,27 +122,37 @@ export default function ResetPassword() {
                     {" "}and choose a new password.
                 </p>
 
-                <label>Verification Code</label>
+                <label>
+                    Verification Code
+                </label>
 
                 <input
                     type="text"
                     value={code}
                     onChange={(e) =>
-                        setCode(e.target.value)
+                        setCode(
+                            e.target.value
+                        )
                     }
                 />
 
-                <label>New Password</label>
+                <label>
+                    New Password
+                </label>
 
                 <input
                     type="password"
                     value={password}
                     onChange={(e) =>
-                        setPassword(e.target.value)
+                        setPassword(
+                            e.target.value
+                        )
                     }
                 />
 
-                <label>Confirm Password</label>
+                <label>
+                    Confirm Password
+                </label>
 
                 <input
                     type="password"
@@ -109,6 +165,7 @@ export default function ResetPassword() {
                 />
 
                 {message && (
+
                     <div
                         style={{
                             color: "green",
@@ -117,9 +174,11 @@ export default function ResetPassword() {
                     >
                         {message}
                     </div>
+
                 )}
 
                 {error && (
+
                     <div
                         style={{
                             color: "red",
@@ -128,6 +187,7 @@ export default function ResetPassword() {
                     >
                         {error}
                     </div>
+
                 )}
 
                 <button
@@ -135,13 +195,17 @@ export default function ResetPassword() {
                     onClick={handleReset}
                     disabled={loading}
                 >
+
                     {loading
                         ? "RESETTING..."
                         : "RESET PASSWORD"}
+
                 </button>
 
             </div>
 
         </AuthLayout>
+
     );
+
 }

@@ -7,14 +7,14 @@ import Footer from "@/components/Common/Footer";
 import Image from "next/image";
 
 import useFavorites from "@/hooks/useFavorites";
+import useCart from "@/hooks/useCart";
+import { useAuthContext } from "@/context/AuthContext";
 
-import RecentlyViewed
-    from "@/components/Product/RecentlyViewed";
+import RecentlyViewed from "@/components/Product/RecentlyViewed";
 
 import { Product } from "@/types/product";
 
 import { getProductById } from "@/services/products";
-import { addToCart } from "@/services/cart";
 
 import styles from "@/styles/PDP.module.css";
 
@@ -22,11 +22,12 @@ export default function ProductDetail() {
 
     const router = useRouter();
 
-    const { id } = router.query;
+    const {
+        user,
+        loading: authLoading,
+    } = useAuthContext();
 
-    // Will be replaced with AuthContext in a later refactor
-    const [user, setUser] =
-        useState<any>(null);
+    const { id } = router.query;
 
     const [product, setProduct] =
         useState<Product | null>(null);
@@ -39,11 +40,13 @@ export default function ProductDetail() {
         toggleFavorite,
     } = useFavorites();
 
+    const { addItem } = useCart();
+
     useEffect(() => {
 
         if (!id || Array.isArray(id)) {
-        return;
-    }
+            return;
+        }
 
         const loadProduct = async () => {
 
@@ -107,20 +110,26 @@ export default function ProductDetail() {
 
     }, [product]);
 
-    useEffect(() => {
+    if (authLoading) {
 
-        const storedUser =
-            localStorage.getItem("user");
+        return (
+            <>
+                <Header />
 
-        if (storedUser) {
+                <div
+                    style={{
+                        padding: "40px",
+                        textAlign: "center",
+                    }}
+                >
+                    Loading...
+                </div>
 
-            setUser(
-                JSON.parse(storedUser)
-            );
+                <Footer />
+            </>
+        );
 
-        }
-
-    }, []);
+    }
 
     if (loading) {
 
@@ -161,45 +170,36 @@ export default function ProductDetail() {
 
     const handleAddToBag = async () => {
 
-    if (!user) {
+        if (!user) {
 
-        alert(
-            "Please sign in to add items to your bag."
-        );
+            alert(
+                "Please sign in to add items to your bag."
+            );
 
-        return;
+            return;
 
-    }
+        }
 
-    try {
+        try {
 
-        await addToCart(
+            await addItem(
+                product.id,
+                1
+            );
 
-            String(user.id),
+            alert("Added to Bag");
 
-            product.id,
+        } catch (error) {
 
-            1
+            console.error(error);
 
-        );
+            alert(
+                "Unable to add item to cart."
+            );
 
-        window.dispatchEvent(
-            new Event("cartUpdated")
-        );
+        }
 
-        alert("Added to Bag");
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to add item to cart."
-        );
-
-    }
-
-};
+    };
 
     return (
 
@@ -254,9 +254,7 @@ export default function ProductDetail() {
                     <button
                         className={styles.addToFavorites}
                         onClick={() =>
-                            toggleFavorite(
-                                product.id
-                            )
+                            toggleFavorite(product.id)
                         }
                     >
                         {favoriteIds.has(product.id)

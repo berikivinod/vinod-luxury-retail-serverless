@@ -20,9 +20,11 @@ export default function Register() {
         phone: "",
     });
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] =
+        useState(false);
 
-    const [error, setError] = useState("");
+    const [error, setError] =
+        useState("");
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement>
@@ -79,11 +81,19 @@ export default function Register() {
 
             });
 
-        } catch (err: any) {
+        } catch (err: unknown) {
 
-            setError(
-                err.message || "Registration failed."
-            );
+            if (err instanceof Error) {
+
+                setError(err.message);
+
+            } else {
+
+                setError(
+                    "Registration failed."
+                );
+
+            }
 
         } finally {
 
@@ -170,9 +180,11 @@ export default function Register() {
                 </div>
 
                 {error && (
+
                     <div className={styles.error}>
                         {error}
                     </div>
+
                 )}
 
                 <button

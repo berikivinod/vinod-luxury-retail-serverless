@@ -1,131 +1,228 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+
 import { registerUser } from "@/services/auth";
 
 export default function Signup() {
-  const router = useRouter();
 
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+    const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+    const [form, setForm] = useState({
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
+        firstName: "",
+
+        lastName: "",
+
+        email: "",
+
+        password: "",
+
+        confirmPassword: "",
+
     });
-  };
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
+    const [loading, setLoading] =
+        useState(false);
 
-    setError("");
+    const [error, setError] =
+        useState("");
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
 
-    try {
-      setLoading(true);
+        setForm({
 
-      await registerUser({
-        firstName: form.firstName,
-        lastName: form.lastName,
-        email: form.email,
-        password: form.password,
-      });
+            ...form,
 
-      router.push({
-        pathname: "/verify",
-        query: { email: form.email },
-      });
-    } catch (err: any) {
-      setError(err.message || "Registration failed.");
-    } finally {
-      setLoading(false);
-    }
-  };
+            [e.target.name]:
+                e.target.value,
 
-  return (
-    <div style={{ maxWidth: 500, margin: "40px auto" }}>
-      <h1>Create Account</h1>
+        });
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="firstName"
-          placeholder="First Name"
-          value={form.firstName}
-          onChange={handleChange}
-          required
-        />
+    };
 
-        <br /><br />
+    const handleSubmit = async (
+        e: React.FormEvent
+    ) => {
 
-        <input
-          name="lastName"
-          placeholder="Last Name"
-          value={form.lastName}
-          onChange={handleChange}
-          required
-        />
+        e.preventDefault();
 
-        <br /><br />
+        setError("");
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          required
-        />
+        if (
+            form.password !==
+            form.confirmPassword
+        ) {
 
-        <br /><br />
+            setError(
+                "Passwords do not match."
+            );
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
+            return;
 
-        <br /><br />
+        }
 
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
-        />
+        try {
 
-        <br /><br />
+            setLoading(true);
 
-        {error && (
-          <p style={{ color: "red" }}>
-            {error}
-          </p>
-        )}
+            await registerUser({
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Creating..." : "Create Account"}
-        </button>
-      </form>
-    </div>
-  );
+                firstName:
+                    form.firstName,
+
+                lastName:
+                    form.lastName,
+
+                email:
+                    form.email,
+
+                password:
+                    form.password,
+
+            });
+
+            router.push({
+
+                pathname:
+                    "/verify",
+
+                query: {
+
+                    email:
+                        form.email,
+
+                },
+
+            });
+
+        } catch (err: unknown) {
+
+            if (err instanceof Error) {
+
+                setError(
+                    err.message
+                );
+
+            } else {
+
+                setError(
+                    "Registration failed."
+                );
+
+            }
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+    return (
+
+        <div
+            style={{
+                maxWidth: 500,
+                margin: "40px auto",
+            }}
+        >
+
+            <h1>
+                Create Account
+            </h1>
+
+            <form
+                onSubmit={handleSubmit}
+            >
+
+                <input
+                    name="firstName"
+                    placeholder="First Name"
+                    value={form.firstName}
+                    onChange={handleChange}
+                    required
+                />
+
+                <br />
+                <br />
+
+                <input
+                    name="lastName"
+                    placeholder="Last Name"
+                    value={form.lastName}
+                    onChange={handleChange}
+                    required
+                />
+
+                <br />
+                <br />
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                />
+
+                <br />
+                <br />
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleChange}
+                    required
+                />
+
+                <br />
+                <br />
+
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    required
+                />
+
+                <br />
+                <br />
+
+                {error && (
+
+                    <p
+                        style={{
+                            color: "red",
+                        }}
+                    >
+                        {error}
+                    </p>
+
+                )}
+
+                <button
+                    type="submit"
+                    disabled={loading}
+                >
+
+                    {loading
+                        ? "Creating..."
+                        : "Create Account"}
+
+                </button>
+
+            </form>
+
+        </div>
+
+    );
+
 }

@@ -6,6 +6,8 @@ import useAuth from "@/hooks/useAuth";
 
 import paymentMethods from "@/data/payment-methods.json";
 
+import { PaymentMethod } from "@/types/payment";
+
 import styles from "@/styles/PaymentInformation.module.css";
 
 export default function PaymentInformation() {
@@ -15,15 +17,17 @@ export default function PaymentInformation() {
     const { user, loading } = useAuth();
 
     const [cards, setCards] =
-        useState<any[]>([]);
+        useState<PaymentMethod[]>([]);
 
     useEffect(() => {
 
-        if (!user) return;
+        if (!user) {
+            return;
+        }
 
         const userCards =
-            paymentMethods.filter(
-                (card: any) =>
+            (paymentMethods as PaymentMethod[]).filter(
+                (card) =>
                     card.userId === user.id
             );
 

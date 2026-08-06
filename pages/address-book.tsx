@@ -6,6 +6,8 @@ import useAuth from "@/hooks/useAuth";
 
 import addresses from "@/data/addresses.json";
 
+import { Address } from "@/types/address";
+
 import styles from "@/styles/AddressBook.module.css";
 
 export default function AddressBook() {
@@ -15,17 +17,25 @@ export default function AddressBook() {
     const { user, loading } = useAuth();
 
     const [userAddresses, setUserAddresses] =
-        useState<any[]>([]);
+        useState<Address[]>([]);
 
     useEffect(() => {
 
-        if (!user) return;
+        if (!user) {
+            return;
+        }
 
-        const filteredAddresses =
-            addresses.filter(
-                (address: any) =>
+       /* const filteredAddresses =
+            (addresses as Address[]).filter(
+                (address) =>
                     address.userId === user.id
             );
+        */
+        const filteredAddresses =
+    addresses.filter(
+        (address) =>
+            address.userId === Number(user.id)
+    );
 
         setUserAddresses(filteredAddresses);
 

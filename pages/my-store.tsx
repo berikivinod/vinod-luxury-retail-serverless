@@ -6,6 +6,9 @@ import useAuth from "@/hooks/useAuth";
 import addresses from "@/data/addresses.json";
 import stores from "@/data/stores.json";
 
+import { Address } from "@/types/address";
+import { Store } from "@/types/store";
+
 import styles from "@/styles/MyStore.module.css";
 
 export default function MyStore() {
@@ -13,7 +16,7 @@ export default function MyStore() {
     const { user, loading } = useAuth();
 
     const [store, setStore] =
-        useState<any>(null);
+        useState<Store | null>(null);
 
     useEffect(() => {
 
@@ -22,20 +25,23 @@ export default function MyStore() {
         }
 
         const defaultAddress =
-            addresses.find(
-                (address: any) =>
+            (addresses as Address[]).find(
+                (address) =>
                     address.userId === user.id &&
                     address.isDefault
             );
 
         if (!defaultAddress) {
+
             setStore(null);
+
             return;
+
         }
 
         const matchedStore =
-            stores.find(
-                (store: any) =>
+            (stores as Store[]).find(
+                (store) =>
                     store.city.toLowerCase() ===
                         defaultAddress.city.toLowerCase() &&
                     store.state.toLowerCase() ===
@@ -145,10 +151,7 @@ export default function MyStore() {
                             </h2>
 
                             {store.restaurants.map(
-                                (
-                                    restaurant: string,
-                                    index: number
-                                ) => (
+                                (restaurant, index) => (
 
                                     <p key={index}>
                                         {restaurant}
@@ -166,10 +169,7 @@ export default function MyStore() {
                             </h2>
 
                             {store.services.map(
-                                (
-                                    service: string,
-                                    index: number
-                                ) => (
+                                (service, index) => (
 
                                     <p key={index}>
                                         {service}

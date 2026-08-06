@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "userId": 1,
+    "userId": "1",
     "type": "Home",
     "firstName": "Alex",
     "lastName": "Johnson",
@@ -14,7 +14,7 @@
   },
   {
     "id": 2,
-    "userId": 1,
+    "userId": "2",
     "type": "Work",
     "firstName": "Alex",
     "lastName": "Johnson",
@@ -27,7 +27,7 @@
   },
   {
     "id": 3,
-    "userId": 2,
+    "userId": "3",
     "type": "Home",
     "firstName": "Emma",
     "lastName": "Carter",

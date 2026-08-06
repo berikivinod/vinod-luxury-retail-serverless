@@ -50,12 +50,19 @@ export default function ForgotPassword() {
 
             });
 
-        } catch (err: any) {
+        } catch (err: unknown) {
 
-            setError(
-                err.message ||
-                "Unable to send verification code."
-            );
+            if (err instanceof Error) {
+
+                setError(err.message);
+
+            } else {
+
+                setError(
+                    "Unable to send verification code."
+                );
+
+            }
 
         } finally {
 

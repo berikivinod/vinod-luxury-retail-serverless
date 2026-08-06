@@ -257,12 +257,17 @@ export default function Header() {
 
 setDrawerMode(null);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
 
-    setLoginError(
-      error?.message ||
-      "Invalid email or password."
-    );
+    if (error instanceof Error) {
+
+        setLoginError(error.message);
+
+    } else {
+
+        setLoginError("Unable to sign in.");
+
+    }
 
   }
 };
