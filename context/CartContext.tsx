@@ -141,7 +141,7 @@ export function CartProvider({
                     quantity
                 );
 
-            setCart(updated);
+            await refreshCart();
 
         };
 
@@ -162,7 +162,7 @@ export function CartProvider({
                     quantity
                 );
 
-            setCart(updated);
+            await refreshCart();
 
         };
 
@@ -181,7 +181,7 @@ export function CartProvider({
                     productId
                 );
 
-            setCart(updated);
+            await refreshCart();
 
         };
 

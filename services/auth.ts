@@ -11,76 +11,116 @@ import {
 } from "aws-amplify/auth";
 
 import { SignUpForm } from "@/types/auth";
+import { AuthUser } from "@/types/user";
 
 export async function registerUser(
     data: SignUpForm
 ) {
+
     return signUp({
+
         username: data.email,
+
         password: data.password,
+
         options: {
+
             userAttributes: {
+
                 email: data.email,
+
                 given_name: data.firstName,
+
                 family_name: data.lastName,
+
             },
+
         },
+
     });
+
 }
 
 export async function verifyUser(
     email: string,
     code: string
 ) {
+
     return confirmSignUp({
+
         username: email,
+
         confirmationCode: code,
+
     });
+
 }
 
 export async function resendVerificationCode(
     email: string
 ) {
+
     return resendSignUpCode({
+
         username: email,
+
     });
+
 }
 
 export async function loginUser(
     email: string,
     password: string
 ) {
+
     return signIn({
+
         username: email,
+
         password,
+
     });
+
 }
 
 export async function logoutUser() {
+
     return signOut();
+
 }
 
-export async function getLoggedInUser() {
+export async function getLoggedInUser():
+Promise<AuthUser | null> {
 
-    const user =
-        await getCurrentUser();
+    try {
 
-    const attributes =
-        await fetchUserAttributes();
+        const user =
+            await getCurrentUser();
 
-    return {
+        const attributes =
+            await fetchUserAttributes();
 
-        id: user.userId,
+        return {
 
-        email: attributes.email || "",
+            id: user.userId,
 
-        firstName:
-            attributes.given_name || "",
+            email:
+                attributes.email || "",
 
-        lastName:
-            attributes.family_name || "",
+            firstName:
+                attributes.given_name || "",
 
-    };
+            lastName:
+                attributes.family_name || "",
+
+        };
+
+    } catch {
+
+        // No authenticated user
+        return null;
+
+    }
 
 }
 
@@ -91,9 +131,13 @@ export async function getLoggedInUser() {
 export async function forgotPassword(
     email: string
 ) {
+
     return resetPassword({
+
         username: email,
+
     });
+
 }
 
 export async function confirmForgotPassword(
@@ -101,9 +145,15 @@ export async function confirmForgotPassword(
     confirmationCode: string,
     newPassword: string
 ) {
+
     return confirmResetPassword({
+
         username: email,
+
         confirmationCode,
+
         newPassword,
+
     });
+
 }

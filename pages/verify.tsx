@@ -48,14 +48,14 @@ export default function Verify() {
             );
 
             setMessage(
-                "Your account has been verified successfully."
+                "Account verified successfully! Please sign in to continue."
             );
 
             setTimeout(() => {
 
                 router.push("/");
 
-            }, 2000);
+            }, 3000);
 
         } catch (err: unknown) {
 
