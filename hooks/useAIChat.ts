@@ -73,6 +73,11 @@ export default function useAIChat() {
 
                 });
 
+            // Simulate AI thinking time.
+            await new Promise(resolve =>
+                setTimeout(resolve, 1000)
+            );
+
             const assistantMessage: ChatMessage = {
 
                 id: `${Date.now()}-assistant`,

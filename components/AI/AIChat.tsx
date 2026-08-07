@@ -27,7 +27,7 @@ export default function AIChat() {
 
         }
 
-    }, [messages]);
+    }, [messages, loading]);
 
     return (
 
@@ -46,6 +46,34 @@ export default function AIChat() {
                     />
 
                 ))}
+
+                {loading && (
+
+                    <div className={styles.typingContainer}>
+
+                        <div className={styles.avatar}>
+                            👩
+                        </div>
+
+                        <div>
+
+                            <div className={styles.name}>
+                                AI Style Advisor
+                            </div>
+
+                            <div className={styles.typingBubble}>
+
+                                <span>.</span>
+                                <span>.</span>
+                                <span>.</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                )}
 
             </div>
 
