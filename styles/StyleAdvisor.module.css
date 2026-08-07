@@ -1,0 +1,99 @@
+.wrapper {
+
+    max-width: 1200px;
+
+    margin: 40px auto;
+
+    padding: 20px;
+
+}
+
+.hero {
+
+    text-align: center;
+
+    margin-bottom: 50px;
+
+}
+
+.badge {
+
+    display: inline-block;
+
+    padding: 8px 18px;
+
+    border-radius: 30px;
+
+    background: #111;
+
+    color: white;
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 20px;
+
+}
+
+.hero h1 {
+
+    font-size: 48px;
+
+    margin-bottom: 20px;
+
+}
+
+.description {
+
+    max-width: 700px;
+
+    margin: auto;
+
+    color: #666;
+
+    line-height: 1.8;
+
+    font-size: 18px;
+
+}
+
+.quickPrompts {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+    margin-bottom: 40px;
+
+}
+
+.quickPrompts button {
+
+    border: none;
+
+    background: #f5f5f5;
+
+    padding: 14px 22px;
+
+    border-radius: 40px;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+    font-size: 15px;
+
+}
+
+.quickPrompts button:hover {
+
+    background: black;
+
+    color: white;
+
+}
