@@ -1,3 +1,4 @@
+import { Product } from "./product";
 export type ChatRole =
     | "user"
     | "assistant";
@@ -11,6 +12,8 @@ export interface ChatMessage {
     content: string;
 
     createdAt: string;
+
+    recommendations?: AIRecommendation[];
 
 }
 
@@ -36,11 +39,15 @@ export interface StyleAdvisorRequest {
 
     messages: ChatMessage[];
 
+    previousResponseId?: string;
+
 }
 
 export interface StyleAdvisorResponse {
 
     reply: string;
+
+    responseId?: string;
 
     recommendations: AIRecommendation[];
 

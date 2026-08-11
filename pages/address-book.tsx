@@ -25,17 +25,12 @@ export default function AddressBook() {
             return;
         }
 
-       /* const filteredAddresses =
+       const filteredAddresses =
             (addresses as Address[]).filter(
                 (address) =>
                     address.userId === user.id
             );
-        */
-        const filteredAddresses =
-    addresses.filter(
-        (address) =>
-            address.userId === Number(user.id)
-    );
+        
 
         setUserAddresses(filteredAddresses);
 

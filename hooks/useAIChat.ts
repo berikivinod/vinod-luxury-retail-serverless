@@ -13,6 +13,7 @@ export default function useAIChat() {
     const [messages, setMessages] =
         useState<ChatMessage[]>([
             {
+
                 id: "welcome",
 
                 role: "assistant",
@@ -22,6 +23,7 @@ export default function useAIChat() {
 
                 createdAt:
                     new Date().toISOString(),
+
             },
         ]);
 
@@ -30,6 +32,11 @@ export default function useAIChat() {
 
     const [error, setError] =
         useState<string | null>(null);
+
+    const [
+        previousResponseId,
+        setPreviousResponseId,
+    ] = useState<string>();
 
     async function send(
         text: string
@@ -43,7 +50,8 @@ export default function useAIChat() {
 
         const userMessage: ChatMessage = {
 
-            id: `${Date.now()}-user`,
+            id:
+                `${Date.now()}-user`,
 
             role: "user",
 
@@ -55,8 +63,11 @@ export default function useAIChat() {
         };
 
         const updatedMessages = [
+
             ...messages,
+
             userMessage,
+
         ];
 
         setMessages(updatedMessages);
@@ -71,21 +82,32 @@ export default function useAIChat() {
                     messages:
                         updatedMessages,
 
+                    previousResponseId,
+
                 });
 
-            // Simulate AI thinking time.
-            await new Promise(resolve =>
-                setTimeout(resolve, 1000)
-            );
+            if (
+                response.responseId
+            ) {
+
+                setPreviousResponseId(
+                    response.responseId
+                );
+
+            }
 
             const assistantMessage: ChatMessage = {
 
-                id: `${Date.now()}-assistant`,
+                id:
+                    `${Date.now()}-assistant`,
 
                 role: "assistant",
 
                 content:
                     response.reply,
+
+                recommendations:
+                    response.recommendations,
 
                 createdAt:
                     new Date().toISOString(),

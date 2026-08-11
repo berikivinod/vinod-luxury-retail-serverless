@@ -3,26 +3,30 @@ import {
     StyleAdvisorResponse,
 } from "@/types/ai";
 
-const AI_API = "/api/ai/style-advisor";
+const AI_API =
+    "/api/ai/style-advisor";
 
 export async function sendMessage(
     request: StyleAdvisorRequest
 ): Promise<StyleAdvisorResponse> {
 
-    const response = await fetch(
-        AI_API,
-        {
+    const response =
+        await fetch(
+            AI_API,
+            {
 
-            method: "POST",
+                method: "POST",
 
-            headers: {
-                "Content-Type": "application/json",
-            },
+                headers: {
+                    "Content-Type":
+                        "application/json",
+                },
 
-            body: JSON.stringify(request),
+                body:
+                    JSON.stringify(request),
 
-        }
-    );
+            }
+        );
 
     if (!response.ok) {
 
@@ -32,6 +36,9 @@ export async function sendMessage(
 
     }
 
-    return response.json();
+    const data: StyleAdvisorResponse =
+        await response.json();
+
+    return data;
 
 }
