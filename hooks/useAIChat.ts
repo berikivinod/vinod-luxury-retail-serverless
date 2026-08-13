@@ -2,11 +2,13 @@ import { useState } from "react";
 
 import {
     ChatMessage,
+    StylePreferences,
 } from "@/types/ai";
 
 import {
     sendMessage,
 } from "@/services/ai";
+
 
 export default function useAIChat() {
 
@@ -27,16 +29,31 @@ export default function useAIChat() {
             },
         ]);
 
+
     const [loading, setLoading] =
         useState(false);
 
+
     const [error, setError] =
         useState<string | null>(null);
+
 
     const [
         previousResponseId,
         setPreviousResponseId,
     ] = useState<string>();
+
+
+    /*
+     * Structured shopping preferences
+     * collected during the conversation.
+     */
+
+    const [
+        preferences,
+        setPreferences,
+    ] = useState<StylePreferences>({});
+
 
     async function send(
         text: string
@@ -46,7 +63,9 @@ export default function useAIChat() {
             return;
         }
 
+
         setError(null);
+
 
         const userMessage: ChatMessage = {
 
@@ -62,6 +81,7 @@ export default function useAIChat() {
 
         };
 
+
         const updatedMessages = [
 
             ...messages,
@@ -70,11 +90,16 @@ export default function useAIChat() {
 
         ];
 
-        setMessages(updatedMessages);
+
+        setMessages(
+            updatedMessages
+        );
+
 
         try {
 
             setLoading(true);
+
 
             const response =
                 await sendMessage({
@@ -84,7 +109,15 @@ export default function useAIChat() {
 
                     previousResponseId,
 
+                    preferences,
+
                 });
+
+
+            /*
+             * Store the OpenAI response ID
+             * for the next turn.
+             */
 
             if (
                 response.responseId
@@ -96,7 +129,30 @@ export default function useAIChat() {
 
             }
 
-            const assistantMessage: ChatMessage = {
+
+            /*
+             * Store the structured shopping
+             * preferences returned by the AI.
+             */
+
+            if (
+                response.preferences
+            ) {
+
+                setPreferences(
+                    response.preferences
+                );
+
+            }
+
+
+            /*
+             * Add the AI response to the
+             * conversation.
+             */
+
+            const assistantMessage:
+                ChatMessage = {
 
                 id:
                     `${Date.now()}-assistant`,
@@ -114,21 +170,27 @@ export default function useAIChat() {
 
             };
 
-            setMessages(previous => [
 
-                ...previous,
+            setMessages(
+                previous => [
 
-                assistantMessage,
+                    ...previous,
 
-            ]);
+                    assistantMessage,
+
+                ]
+            );
+
 
         } catch (err) {
 
             console.error(err);
 
+
             setError(
                 "Unable to contact AI Style Advisor."
             );
+
 
         } finally {
 
@@ -138,6 +200,7 @@ export default function useAIChat() {
 
     }
 
+
     return {
 
         messages,
@@ -145,6 +208,8 @@ export default function useAIChat() {
         loading,
 
         error,
+
+        preferences,
 
         send,
 

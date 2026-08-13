@@ -1,8 +1,13 @@
 import { Product } from "@/types/product";
 
 import {
+    StylePreferences,
+} from "@/types/ai";
+
+import {
     getProducts,
 } from "@/services/products";
+
 
 interface ProductScore {
 
@@ -11,6 +16,7 @@ interface ProductScore {
     score: number;
 
 }
+
 
 /*
  * Extract the customer's maximum budget.
@@ -38,10 +44,12 @@ function extractMaxPrice(
 
     ];
 
+
     for (const pattern of patterns) {
 
         const match =
             request.match(pattern);
+
 
         if (match) {
 
@@ -51,9 +59,11 @@ function extractMaxPrice(
 
     }
 
+
     return undefined;
 
 }
+
 
 /*
  * Determine whether the customer is
@@ -77,6 +87,7 @@ function isShoeRequest(
 
 }
 
+
 /*
  * Determine whether the customer is
  * specifically looking for handbags.
@@ -96,6 +107,7 @@ function isHandbagRequest(
 
 }
 
+
 /*
  * Determine whether the customer is
  * specifically looking for jewelry.
@@ -114,6 +126,7 @@ function isJewelryRequest(
     );
 
 }
+
 
 /*
  * Determine whether the customer is
@@ -135,6 +148,7 @@ function isClothingRequest(
 
 }
 
+
 /*
  * Get the customer's requested category.
  */
@@ -148,11 +162,13 @@ function getRequestedCategory(
 
     }
 
+
     if (isHandbagRequest(request)) {
 
         return "handbags";
 
     }
+
 
     if (isJewelryRequest(request)) {
 
@@ -160,15 +176,18 @@ function getRequestedCategory(
 
     }
 
+
     if (isClothingRequest(request)) {
 
         return "clothing";
 
     }
 
+
     return undefined;
 
 }
+
 
 /*
  * Determine interview/formal intent.
@@ -188,6 +207,7 @@ function isInterviewRequest(
 
 }
 
+
 /*
  * Determine specific product intent.
  */
@@ -199,6 +219,7 @@ function hasProductIntent(
     const name =
         productName.toLowerCase();
 
+
     if (
         request.includes("loafer") &&
         name.includes("loafer")
@@ -207,6 +228,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("boot") &&
@@ -217,6 +239,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("sneaker") &&
         name.includes("sneaker")
@@ -225,6 +248,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("pump") &&
@@ -235,6 +259,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("tote") &&
         name.includes("tote")
@@ -243,6 +268,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("dress") &&
@@ -253,6 +279,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("blazer") &&
         name.includes("blazer")
@@ -261,6 +288,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("shirt") &&
@@ -271,6 +299,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("jacket") &&
         name.includes("jacket")
@@ -279,6 +308,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("necklace") &&
@@ -289,6 +319,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("bracelet") &&
         name.includes("bracelet")
@@ -297,6 +328,7 @@ function hasProductIntent(
         return true;
 
     }
+
 
     if (
         request.includes("belt") &&
@@ -307,6 +339,7 @@ function hasProductIntent(
 
     }
 
+
     if (
         request.includes("sunglasses") &&
         name.includes("sunglasses")
@@ -316,46 +349,394 @@ function hasProductIntent(
 
     }
 
+
     return false;
 
 }
 
+
+/*
+ * Check whether a preference has a
+ * meaningful value.
+ */
+function hasPreference(
+    value: string | undefined
+): boolean {
+
+    return Boolean(
+        value &&
+        value.trim()
+    );
+
+}
+
+
+/*
+ * Check whether a product matches
+ * a product type preference.
+ */
+function matchesProductType(
+    product: Product,
+    productType: string
+): boolean {
+
+    const searchableText = [
+
+        product.name,
+
+        product.description,
+
+        product.category,
+
+    ]
+        .join(" ")
+        .toLowerCase();
+
+
+    return searchableText.includes(
+        productType.toLowerCase()
+    );
+
+}
+
+
+/*
+ * Check whether a product matches
+ * a brand preference.
+ */
+function matchesBrand(
+    product: Product,
+    brand: string
+): boolean {
+
+    return product.brand
+        .toLowerCase()
+        .includes(
+            brand.toLowerCase()
+        );
+
+}
+
+
+/*
+ * Check whether a product matches
+ * a color preference.
+ *
+ * Your current Product interface has
+ * an optional color field, so we only
+ * use it when available.
+ */
+function matchesColor(
+    product: Product,
+    color: string
+): boolean {
+
+    const productColor =
+        product.color ||
+        "";
+
+    const searchableText = [
+
+        product.name,
+
+        product.description,
+
+        productColor,
+
+    ]
+        .join(" ")
+        .toLowerCase();
+
+
+    return searchableText.includes(
+        color.toLowerCase()
+    );
+
+}
+
+
+/*
+ * Determine whether a product is
+ * appropriate for the requested style.
+ *
+ * This is intentionally scoring-based
+ * rather than a hard filter because
+ * your current catalog does not have a
+ * dedicated style field.
+ */
+function matchesStyle(
+    product: Product,
+    style: string
+): boolean {
+
+    const searchableText = [
+
+        product.name,
+
+        product.description,
+
+        product.category,
+
+        product.brand,
+
+    ]
+        .join(" ")
+        .toLowerCase();
+
+
+    const styleTerms =
+        style
+            .toLowerCase()
+            .split(/[\s,.-]+/)
+            .filter(
+                (term) =>
+                    term.length > 2
+            );
+
+
+    return styleTerms.some(
+        (term) =>
+            searchableText.includes(
+                term
+            )
+    );
+
+}
+
+
+/*
+ * Determine whether a product is
+ * appropriate for the requested occasion.
+ *
+ * Occasion is currently used as a
+ * relevance signal because the Product
+ * model does not contain an occasion field.
+ */
+function getOccasionScore(
+    product: Product,
+    occasion: string
+): number {
+
+    const request =
+        occasion.toLowerCase();
+
+    const productName =
+        product.name.toLowerCase();
+
+    const category =
+        product.category.toLowerCase();
+
+
+    let score = 0;
+
+
+    /*
+     * Interview / business occasions.
+     */
+
+    if (
+        request.includes("interview") ||
+        request.includes("business") ||
+        request.includes("professional") ||
+        request.includes("formal")
+    ) {
+
+        if (
+            category === "shoes"
+        ) {
+
+            if (
+                productName.includes(
+                    "loafer"
+                )
+            ) {
+
+                score += 8;
+
+            }
+
+            if (
+                productName.includes(
+                    "pump"
+                )
+            ) {
+
+                score += 7;
+
+            }
+
+            if (
+                productName.includes(
+                    "chelsea"
+                )
+            ) {
+
+                score += 6;
+
+            }
+
+            if (
+                productName.includes(
+                    "sneaker"
+                )
+            ) {
+
+                score -= 5;
+
+            }
+
+        }
+
+    }
+
+
+    return score;
+
+}
+
+
+/*
+ * Search products for the AI Style
+ * Advisor.
+ *
+ * preferences are optional so the
+ * existing Phase 1 callers continue
+ * to work.
+ */
 export async function searchProductsForAI(
 
-    customerRequest: string
+    customerRequest: string,
+
+    preferences?: StylePreferences
 
 ): Promise<Product[]> {
+
 
     const products =
         await getProducts();
 
+
     const request =
         customerRequest.toLowerCase();
 
-    const maxPrice =
+
+    /*
+     * ------------------------------------------------
+     * Determine requirements from the text.
+     * ------------------------------------------------
+     */
+
+    const textMaxPrice =
         extractMaxPrice(request);
 
-    const requestedCategory =
+
+    const textRequestedCategory =
         getRequestedCategory(request);
 
-    const interviewRequest =
+
+    const textInterviewRequest =
         isInterviewRequest(request);
+
+
+    /*
+     * ------------------------------------------------
+     * Determine requirements from structured
+     * preferences.
+     *
+     * Structured preferences take priority
+     * over text extraction.
+     * ------------------------------------------------
+     */
+
+    const maxPrice =
+        preferences?.maxPrice ??
+        textMaxPrice;
+
+
+    const minPrice =
+        preferences?.minPrice;
+
+
+    const requestedCategory =
+        preferences?.category
+            ? preferences.category.toLowerCase()
+            : textRequestedCategory;
+
+
+    const productType =
+        preferences?.productType;
+
+
+    const occasion =
+        preferences?.occasion;
+
+
+    const brand =
+        preferences?.brand;
+
+
+    const color =
+        preferences?.color;
+
+
+    const style =
+        preferences?.style;
+
+
+    const interviewRequest =
+        Boolean(
+            occasion &&
+            (
+                occasion
+                    .toLowerCase()
+                    .includes("interview") ||
+                occasion
+                    .toLowerCase()
+                    .includes("business") ||
+                occasion
+                    .toLowerCase()
+                    .includes("formal") ||
+                occasion
+                    .toLowerCase()
+                    .includes("professional")
+            )
+        ) ||
+        textInterviewRequest;
+
 
     /*
      * Log the interpreted request.
-     *
-     * Useful while testing the AI.
      */
 
     console.log(
         "Product Search Request:",
         {
+
             request,
+
+            preferences,
+
             maxPrice,
+
+            minPrice,
+
             requestedCategory,
+
+            productType,
+
+            occasion,
+
+            brand,
+
+            color,
+
+            style,
+
             interviewRequest,
+
         }
     );
+
 
     /*
      * ------------------------------------------------
@@ -363,13 +744,18 @@ export async function searchProductsForAI(
      * Apply HARD filters first.
      * ------------------------------------------------
      *
-     * If the customer specifies a budget,
-     * NEVER send products above that budget
-     * to GPT.
+     * Explicit budget and category
+     * requirements must never be violated.
      */
+
 
     let filteredProducts =
         [...products];
+
+
+    /*
+     * Maximum budget.
+     */
 
     if (
         maxPrice !== undefined
@@ -384,9 +770,31 @@ export async function searchProductsForAI(
 
     }
 
+
     /*
-     * If the customer clearly requested
-     * a category, only search that category.
+     * Minimum budget.
+     *
+     * This is optional and only applies
+     * when the customer actually provided
+     * one.
+     */
+
+    if (
+        minPrice !== undefined
+    ) {
+
+        filteredProducts =
+            filteredProducts.filter(
+                (product) =>
+                    product.price >=
+                    minPrice
+            );
+
+    }
+
+
+    /*
+     * Requested category.
      */
 
     if (
@@ -403,13 +811,14 @@ export async function searchProductsForAI(
 
     }
 
+
     /*
      * If hard filtering produced nothing,
      * return an empty result.
      *
      * This prevents GPT from recommending
-     * products outside the customer's
-     * explicit requirements.
+     * products outside explicit budget or
+     * category requirements.
      */
 
     if (
@@ -423,6 +832,7 @@ export async function searchProductsForAI(
         return [];
 
     }
+
 
     /*
      * ------------------------------------------------
@@ -439,10 +849,13 @@ export async function searchProductsForAI(
                     term.length > 2
             );
 
+
     const scoredProducts:
         ProductScore[] =
+
         filteredProducts.map(
             (product) => {
+
 
                 const searchableText = [
 
@@ -461,7 +874,9 @@ export async function searchProductsForAI(
                     .join(" ")
                     .toLowerCase();
 
+
                 let score = 0;
+
 
                 /*
                  * General keyword matching.
@@ -482,6 +897,7 @@ export async function searchProductsForAI(
 
                     }
                 );
+
 
                 /*
                  * Category intent.
@@ -504,6 +920,7 @@ export async function searchProductsForAI(
 
                 }
 
+
                 if (
                     requestedCategory ===
                     "handbags"
@@ -520,6 +937,7 @@ export async function searchProductsForAI(
                     }
 
                 }
+
 
                 if (
                     requestedCategory ===
@@ -538,6 +956,7 @@ export async function searchProductsForAI(
 
                 }
 
+
                 if (
                     requestedCategory ===
                     "clothing"
@@ -555,8 +974,10 @@ export async function searchProductsForAI(
 
                 }
 
+
                 /*
-                 * Specific product intent.
+                 * Specific product intent from
+                 * the customer's text.
                  */
 
                 if (
@@ -570,14 +991,136 @@ export async function searchProductsForAI(
 
                 }
 
+
                 /*
-                 * Interview/formal intent.
+                 * Structured product type.
+                 */
+
+                if (
+                    hasPreference(
+                        productType
+                    )
+                ) {
+
+                    if (
+                        matchesProductType(
+                            product,
+                            productType!
+                        )
+                    ) {
+
+                        score += 12;
+
+                    }
+
+                }
+
+
+                /*
+                 * Structured brand preference.
+                 */
+
+                if (
+                    hasPreference(
+                        brand
+                    )
+                ) {
+
+                    if (
+                        matchesBrand(
+                            product,
+                            brand!
+                        )
+                    ) {
+
+                        score += 12;
+
+                    }
+
+                }
+
+
+                /*
+                 * Structured color preference.
+                 */
+
+                if (
+                    hasPreference(
+                        color
+                    )
+                ) {
+
+                    if (
+                        matchesColor(
+                            product,
+                            color!
+                        )
+                    ) {
+
+                        score += 10;
+
+                    }
+
+                }
+
+
+                /*
+                 * Structured style preference.
+                 */
+
+                if (
+                    hasPreference(
+                        style
+                    )
+                ) {
+
+                    if (
+                        matchesStyle(
+                            product,
+                            style!
+                        )
+                    ) {
+
+                        score += 6;
+
+                    }
+
+                }
+
+
+                /*
+                 * Occasion preference.
+                 *
+                 * Currently interview/formal
+                 * intent is the main supported
+                 * occasion because your catalog
+                 * does not contain an occasion
+                 * attribute.
+                 */
+
+                if (
+                    hasPreference(
+                        occasion
+                    )
+                ) {
+
+                    score +=
+                        getOccasionScore(
+                            product,
+                            occasion!
+                        );
+
+                }
+
+
+                /*
+                 * Interview/formal intent from
+                 * the customer's text.
                  *
                  * Prefer loafers, pumps and
-                 * Chelsea boots for interviews.
+                 * Chelsea boots.
                  *
-                 * Avoid sneakers for formal
-                 * interview requests.
+                 * Avoid sneakers.
                  */
 
                 if (
@@ -591,6 +1134,7 @@ export async function searchProductsForAI(
                         product.name
                             .toLowerCase();
 
+
                     if (
                         productName.includes(
                             "loafer"
@@ -600,6 +1144,7 @@ export async function searchProductsForAI(
                         score += 8;
 
                     }
+
 
                     if (
                         productName.includes(
@@ -611,6 +1156,7 @@ export async function searchProductsForAI(
 
                     }
 
+
                     if (
                         productName.includes(
                             "chelsea"
@@ -620,6 +1166,7 @@ export async function searchProductsForAI(
                         score += 6;
 
                     }
+
 
                     if (
                         productName.includes(
@@ -633,12 +1180,12 @@ export async function searchProductsForAI(
 
                 }
 
+
                 /*
                  * Budget preference.
                  *
-                 * At this point all products
-                 * already satisfy the hard
-                 * budget requirement.
+                 * All products already satisfy
+                 * the hard maximum budget.
                  *
                  * Give a small preference to
                  * products closer to the budget.
@@ -652,6 +1199,7 @@ export async function searchProductsForAI(
                         product.price /
                         maxPrice;
 
+
                     if (
                         budgetRatio >= 0.75
                     ) {
@@ -661,6 +1209,7 @@ export async function searchProductsForAI(
                     }
 
                 }
+
 
                 return {
 
@@ -672,6 +1221,7 @@ export async function searchProductsForAI(
 
             }
         );
+
 
     /*
      * Sort by relevance.
@@ -692,6 +1242,7 @@ export async function searchProductsForAI(
 
             }
 
+
             /*
              * When relevance is equal,
              * prefer the less expensive
@@ -706,6 +1257,7 @@ export async function searchProductsForAI(
         }
     );
 
+
     /*
      * Return at most five candidates
      * to GPT.
@@ -713,11 +1265,15 @@ export async function searchProductsForAI(
 
     const results =
         scoredProducts
-            .slice(0, 5)
+            .slice(
+                0,
+                5
+            )
             .map(
                 (item) =>
                     item.product
             );
+
 
     console.log(
         "Product Search Results:",
@@ -742,6 +1298,7 @@ export async function searchProductsForAI(
             })
         )
     );
+
 
     return results;
 

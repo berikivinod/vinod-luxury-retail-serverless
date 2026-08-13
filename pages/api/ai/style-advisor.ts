@@ -12,6 +12,7 @@ import {
     askStyleAdvisor,
 } from "@/services/ai/styleAdvisor";
 
+
 export default async function handler(
 
     req: NextApiRequest,
@@ -28,10 +29,12 @@ export default async function handler(
 
     }
 
+
     try {
 
         const body =
             req.body as StyleAdvisorRequest;
+
 
         /*
          * Make sure we have messages.
@@ -53,6 +56,7 @@ export default async function handler(
 
         }
 
+
         /*
          * Get the latest user message.
          */
@@ -64,6 +68,7 @@ export default async function handler(
                     (message) =>
                         message.role === "user"
                 );
+
 
         if (!lastMessage) {
 
@@ -77,6 +82,7 @@ export default async function handler(
             });
 
         }
+
 
         /*
          * Build context from ALL user messages.
@@ -103,6 +109,7 @@ export default async function handler(
 
                 .join("\n");
 
+
         /*
          * Send the latest message,
          * previous OpenAI response ID,
@@ -116,13 +123,16 @@ export default async function handler(
 
                 body.previousResponseId,
 
-                conversationContext
+                conversationContext,
+                body.preferences
 
             );
 
+
         /*
-         * Return the actual AI response
-         * and recommendations.
+         * Return the actual AI response,
+         * recommendations and structured
+         * shopping preferences.
          */
 
         return res.status(200).json({
@@ -136,6 +146,9 @@ export default async function handler(
             recommendations:
                 result.recommendations,
 
+            preferences:
+                result.preferences,
+
         });
 
     } catch (error) {
@@ -144,6 +157,7 @@ export default async function handler(
             "Style Advisor Error:",
             error
         );
+
 
         return res.status(500).json({
 

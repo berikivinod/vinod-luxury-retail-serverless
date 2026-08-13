@@ -1,8 +1,40 @@
-import { Product } from "./product";
 export type ChatRole =
     | "user"
     | "assistant";
 
+
+/*
+ * Customer shopping preferences
+ * collected during the conversation.
+ */
+export interface StylePreferences {
+
+    category?: string;
+
+    productType?: string;
+
+    occasion?: string;
+
+    gender?: string;
+
+    color?: string;
+
+    size?: string;
+
+    brand?: string;
+
+    style?: string;
+
+    minPrice?: number;
+
+    maxPrice?: number;
+
+}
+
+
+/*
+ * Individual chat message.
+ */
 export interface ChatMessage {
 
     id: string;
@@ -17,6 +49,11 @@ export interface ChatMessage {
 
 }
 
+
+/*
+ * Product recommendation returned
+ * by the AI Style Advisor.
+ */
 export interface AIRecommendation {
 
     productId: number;
@@ -35,14 +72,25 @@ export interface AIRecommendation {
 
 }
 
+
+/*
+ * Request sent from the Style Advisor
+ * frontend to the API.
+ */
 export interface StyleAdvisorRequest {
 
     messages: ChatMessage[];
 
     previousResponseId?: string;
 
+    preferences?: StylePreferences;
+
 }
 
+
+/*
+ * Response returned by the Style Advisor API.
+ */
 export interface StyleAdvisorResponse {
 
     reply: string;
@@ -50,5 +98,7 @@ export interface StyleAdvisorResponse {
     responseId?: string;
 
     recommendations: AIRecommendation[];
+
+    preferences?: StylePreferences;
 
 }
