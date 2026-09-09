@@ -4,6 +4,19 @@ export type ChatRole =
 
 
 /*
+ * Conversation intent detected from
+ * the customer's latest message.
+ */
+export type StyleAdvisorIntent =
+    | "SHOP"
+    | "REFINE"
+    | "SHOW_ALTERNATIVE"
+    | "SHOW_MORE"
+    | "COMPARE"
+    | "SELECT";
+
+
+/*
  * Customer shopping preferences
  * collected during the conversation.
  */
@@ -72,6 +85,26 @@ export interface AIRecommendation {
 
 }
 
+/*
+ * Product selection/comparison result
+ * returned internally by AI components.
+ */
+export interface AIProductSelection {
+
+    productIds: number[];
+
+    reply: string;
+
+    reasons: {
+
+        productId: number;
+
+        reason: string;
+
+    }[];
+
+}
+
 
 /*
  * Request sent from the Style Advisor
@@ -100,5 +133,7 @@ export interface StyleAdvisorResponse {
     recommendations: AIRecommendation[];
 
     preferences?: StylePreferences;
+
+    intent?: StyleAdvisorIntent;
 
 }

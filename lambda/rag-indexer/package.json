@@ -1,0 +1,22 @@
+{
+  "name": "vlr-product-rag-indexer",
+  "version": "1.0.0",
+  "description": "VLR product RAG indexer Lambda",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "npm install --omit=dev"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/credential-provider-node": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
+    "@opensearch-project/opensearch": "^2.0.0",
+    "openai": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

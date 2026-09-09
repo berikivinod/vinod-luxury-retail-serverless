@@ -111,9 +111,69 @@ export default async function handler(
 
 
         /*
-         * Send the latest message,
-         * previous OpenAI response ID,
-         * and complete user context.
+         * ----------------------------------------
+         * Previously shown products
+         * ----------------------------------------
+         *
+         * Assistant messages contain the
+         * recommendations that were already
+         * displayed to the customer.
+         *
+         * We collect those product IDs so the
+         * Style Advisor can exclude them when
+         * the customer asks for another option
+         * or more products.
+         */
+
+        const previouslyShownProductIds =
+            body.messages
+
+                .filter(
+                    (message) =>
+                        message.role === "assistant"
+                )
+
+                .flatMap(
+                    (message) =>
+                        message.recommendations || []
+                )
+
+                .map(
+                    (recommendation) =>
+                        recommendation.productId
+                );
+
+
+        /*
+         * Remove duplicate product IDs.
+         */
+
+        const uniquePreviouslyShownProductIds =
+            [
+                ...new Set(
+                    previouslyShownProductIds
+                ),
+            ];
+
+
+        console.log(
+            "Previously Shown Product IDs:",
+            uniquePreviouslyShownProductIds
+        );
+
+
+        /*
+         * ----------------------------------------
+         * Ask Style Advisor
+         * ----------------------------------------
+         *
+         * Send:
+         *
+         * 1. Latest customer message
+         * 2. Previous OpenAI response ID
+         * 3. Complete user conversation
+         * 4. Current preferences
+         * 5. Previously shown product IDs
          */
 
         const result =
@@ -124,15 +184,18 @@ export default async function handler(
                 body.previousResponseId,
 
                 conversationContext,
-                body.preferences
+
+                body.preferences,
+
+                uniquePreviouslyShownProductIds
 
             );
 
 
         /*
-         * Return the actual AI response,
-         * recommendations and structured
-         * shopping preferences.
+         * ----------------------------------------
+         * Return the actual AI response
+         * ----------------------------------------
          */
 
         return res.status(200).json({
@@ -148,6 +211,9 @@ export default async function handler(
 
             preferences:
                 result.preferences,
+
+            intent:
+                result.intent,
 
         });
 

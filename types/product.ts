@@ -34,4 +34,18 @@ export interface Product {
 
     isSale?: boolean;
 
+    /*
+     * RAG / catalog enrichment fields.
+     */
+
+    productType?: string;
+
+    gender?: string;
+
+    occasion?: string[];
+
+    material?: string[];
+
+    style?: string[];
+
 }

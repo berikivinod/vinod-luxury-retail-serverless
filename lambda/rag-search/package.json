@@ -1,0 +1,19 @@
+{
+  "name": "vlr-product-rag-search",
+  "version": "1.0.0",
+  "description": "VLR product RAG search Lambda",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@aws-sdk/credential-provider-node": "^3.0.0",
+    "@opensearch-project/opensearch": "^2.0.0",
+    "openai": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.0",
+    "@types/node": "^20.19.43",
+    "typescript": "^6.0.0"
+  }
+}

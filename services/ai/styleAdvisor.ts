@@ -1,17 +1,37 @@
-import type {
-    ResponseCreateParamsNonStreaming,
-} from "openai/resources/responses/responses";
-
-import { openai } from "./client";
-
 import {
     searchProductsForAI,
+    getProductsByIds,
 } from "./productSearch";
+
+import {
+    buildRecommendations,
+} from "./recommendationBuilder";
+
+import {
+    selectProducts,
+} from "./productRecommender";
 
 import {
     AIRecommendation,
     StylePreferences,
+    StyleAdvisorIntent,
 } from "@/types/ai";
+
+import {
+    extractIntent,
+} from "./intentClassifier";
+
+import {
+    compareProducts,
+} from "./productComparator";
+
+import {
+    handleProductSelection,
+} from "./productSelectionHandler";
+
+import {
+    extractCurrentPreferences,
+} from "./preferenceExtractor";
 
 
 export interface StyleAdvisorResult {
@@ -26,71 +46,37 @@ export interface StyleAdvisorResult {
     preferences:
         StylePreferences;
 
+    intent:
+        StyleAdvisorIntent;
+
 }
+
+type StyleAdvisorAIResult = {
+
+    selection: {
+
+        reply: string;
+
+        productIds: number[];
+
+        reasons: {
+
+            productId: number;
+
+            reason: string;
+
+        }[];
+
+    };
+
+    responseId: string;
+
+};
 
 
 /*
- * GPT returns null for preferences
- * that the customer has not provided.
- *
- * This is required because OpenAI strict
- * JSON schemas require every property to
- * be required.
+ * Main Style Advisor function.
  */
-interface AIExtractedPreferences {
-
-    category:
-        string | null;
-
-    productType:
-        string | null;
-
-    occasion:
-        string | null;
-
-    gender:
-        string | null;
-
-    color:
-        string | null;
-
-    size:
-        string | null;
-
-    brand:
-        string | null;
-
-    style:
-        string | null;
-
-    minPrice:
-        number | null;
-
-    maxPrice:
-        number | null;
-
-}
-
-
-interface AIProductSelection {
-
-    productIds: number[];
-
-    reply: string;
-
-    reasons: {
-
-        productId: number;
-
-        reason: string;
-
-    }[];
-
-    preferences:
-        AIExtractedPreferences;
-
-}
-
 
 export async function askStyleAdvisor(
 
@@ -100,14 +86,61 @@ export async function askStyleAdvisor(
 
     conversationContext?: string,
 
-    currentPreferences?: StylePreferences
+    currentPreferences?: StylePreferences,
+
+    previouslyShownProductIds: number[] = []
 
 ): Promise<StyleAdvisorResult> {
 
 
     /*
-     * Use the complete conversation for
-     * product searching.
+     * ----------------------------------------
+     * STEP 1
+     * ----------------------------------------
+     *
+     * Determine the customer's conversation
+     * intent from the latest message.
+     */
+
+    const intent =
+        await extractIntent(
+            message
+        );
+
+
+    console.log(
+        "Current AI Intent:",
+        intent
+    );
+
+
+    /*
+     * Products already shown to the customer
+     * should only be excluded when the customer
+     * explicitly asks for another/more products.
+     */
+
+    const excludeProductIds =
+        intent === "SHOW_ALTERNATIVE" ||
+        intent === "SHOW_MORE"
+            ? previouslyShownProductIds
+            : [];
+
+
+    console.log(
+        "Previously Shown Product IDs:",
+        previouslyShownProductIds
+    );
+
+
+    console.log(
+        "Product IDs Excluded From Search:",
+        excludeProductIds
+    );
+
+
+    /*
+     * Use the complete conversation.
      */
 
     const fullConversation =
@@ -116,710 +149,428 @@ export async function askStyleAdvisor(
 
 
     /*
-     * Search the actual product catalog.
+     * ----------------------------------------
+     * STEP 2
+     * ----------------------------------------
      *
-     * IMPORTANT:
+     * Extract CURRENT preferences FIRST.
      *
-     * Pass the structured preferences
-     * into productSearch so hard filters
-     * such as budget and category can be
-     * applied before products are sent
-     * to GPT.
+     * This is the key Phase 2.3 fix.
      */
 
-    const products =
-        await searchProductsForAI(
+    const extracted =
+        await extractCurrentPreferences(
 
             fullConversation,
 
-            currentPreferences
+            message,
+
+            currentPreferences,
+
+            previousResponseId
 
         );
 
 
-    /*
-     * Log candidates temporarily.
-     */
-
-    console.log(
-        "AI Product Candidates:",
-        products.map(
-            (product) => ({
-
-                id:
-                    product.id,
-
-                name:
-                    product.name,
-
-                brand:
-                    product.brand,
-
-                category:
-                    product.category,
-
-                price:
-                    product.price,
-
-            })
-        )
-    );
-
-
-    /*
-     * Prepare a smaller catalog for GPT.
-     */
-
-    const productCatalog =
-        products.map(
-            (product) => ({
-
-                id:
-                    product.id,
-
-                name:
-                    product.name,
-
-                brand:
-                    product.brand,
-
-                category:
-                    product.category,
-
-                price:
-                    product.price,
-
-                description:
-                    product.description,
-
-            })
-        );
-
-
-    /*
-     * Ask GPT to understand the
-     * customer's requirements and
-     * select products.
-     */
-
-    const request:
-        ResponseCreateParamsNonStreaming = {
-
-        model: "gpt-5",
-
-        stream: false,
-
-        input: [
-
-            {
-
-                role: "user",
-
-                content:
-                    `Customer conversation:
-
-${fullConversation}
-
-Latest customer message:
-
-${message}
-
-Current structured preferences:
-
-${JSON.stringify(
-    currentPreferences || {},
-    null,
-    2
-)}
-
-Available products:
-
-${JSON.stringify(
-    productCatalog,
-    null,
-    2
-)}
-
-Analyze the customer's complete
-conversation.
-
-Update the customer's current
-shopping preferences based on
-everything they have said.
-
-Keep previously stated requirements.
-
-If the customer changes a
-requirement, update it.
-
-Do not invent preferences.
-
-Use null for preferences that
-the customer has not provided.
-
-Then select the products that best
-match the customer's current
-requirements.
-
-Only select products from the
-provided catalog.
-
-Respect the customer's stated
-budget.
-
-If the customer has requested a
-specific category, prioritize that
-category.
-
-If appropriate products exist,
-return their product IDs.
-
-If no suitable products exist,
-return an empty productIds array.
-
-Provide a short reason for each
-selected product.`,
-
-            },
-
-        ],
-
-
-        instructions:
-            `You are the AI Style Advisor
-             for Vinod Luxury Retailers.
-
-             Act like an experienced luxury
-             fashion sales associate.
-
-             Understand the customer's
-             complete conversation.
-
-             Maintain structured shopping
-             preferences throughout the
-             conversation.
-
-             Track these preferences:
-
-             - category
-             - product type
-             - occasion
-             - gender
-             - color
-             - size
-             - brand
-             - style
-             - minimum price
-             - maximum price
-
-             When the customer gives a new
-             preference, add it.
-
-             When the customer changes a
-             preference, update it.
-
-             Never invent a preference that
-             the customer did not provide.
-
-             Use null when a preference is
-             unknown.
-
-             Select products only from the
-             supplied catalog.
-
-             Never invent products.
-
-             Never invent product IDs.
-
-             Never invent prices.
-
-             Never invent brands.
-
-             Respect the customer's budget.
-
-             Select up to three products.
-
-             If suitable products exist,
-             select them.
-
-             Give a concise reason for each
-             selected product.
-
-             Keep the conversational reply
-             natural and concise.
-
-             Ask one or two follow-up
-             questions when useful.`,
-
-
-        text: {
-
-            format: {
-
-                type: "json_schema",
-
-                name:
-                    "style_advisor_selection",
-
-                strict: true,
-
-                schema: {
-
-                    type: "object",
-
-                    properties: {
-
-                        reply: {
-
-                            type: "string",
-
-                        },
-
-
-                        productIds: {
-
-                            type: "array",
-
-                            items: {
-
-                                type:
-                                    "number",
-
-                            },
-
-                        },
-
-
-                        reasons: {
-
-                            type: "array",
-
-                            items: {
-
-                                type: "object",
-
-                                properties: {
-
-                                    productId: {
-
-                                        type:
-                                            "number",
-
-                                    },
-
-                                    reason: {
-
-                                        type:
-                                            "string",
-
-                                    },
-
-                                },
-
-                                required: [
-
-                                    "productId",
-
-                                    "reason",
-
-                                ],
-
-                                additionalProperties:
-                                    false,
-
-                            },
-
-                        },
-
-
-                        preferences: {
-
-                            type: "object",
-
-                            properties: {
-
-                                category: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                productType: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                occasion: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                gender: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                color: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                size: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                brand: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                style: {
-
-                                    type: [
-                                        "string",
-                                        "null",
-                                    ],
-
-                                },
-
-                                minPrice: {
-
-                                    type: [
-                                        "number",
-                                        "null",
-                                    ],
-
-                                },
-
-                                maxPrice: {
-
-                                    type: [
-                                        "number",
-                                        "null",
-                                    ],
-
-                                },
-
-                            },
-
-                            /*
-                             * IMPORTANT:
-                             *
-                             * With strict JSON schema,
-                             * every property must be
-                             * included here.
-                             */
-
-                            required: [
-
-                                "category",
-
-                                "productType",
-
-                                "occasion",
-
-                                "gender",
-
-                                "color",
-
-                                "size",
-
-                                "brand",
-
-                                "style",
-
-                                "minPrice",
-
-                                "maxPrice",
-
-                            ],
-
-                            additionalProperties:
-                                false,
-
-                        },
-
-                    },
-
-                    required: [
-
-                        "reply",
-
-                        "productIds",
-
-                        "reasons",
-
-                        "preferences",
-
-                    ],
-
-                    additionalProperties:
-                        false,
-
-                },
-
-            },
-
-        },
-
-    };
-
-
-    /*
-     * Continue the OpenAI conversation
-     * when a previous response exists.
-     */
-
-    if (previousResponseId) {
-
-        request.previous_response_id =
-            previousResponseId;
-
-    }
-
-
-    /*
-     * Call OpenAI.
-     */
-
-    const response =
-        await openai.responses.create(
-            request
-        );
-
-
-    /*
-     * Make sure this is a normal
-     * non-streaming response.
-     */
-
-    if (!("output_text" in response)) {
-
-        throw new Error(
-            "Unexpected streaming response."
-        );
-
-    }
-
-
-    /*
-     * Parse structured AI response.
-     */
-
-    let parsedResponse:
-        AIProductSelection;
-
-
-    try {
-
-        parsedResponse =
-            JSON.parse(
-                response.output_text
-            );
-
-    } catch (error) {
-
-        console.error(
-            "Unable to parse AI response:",
-            error
-        );
-
-        console.error(
-            "AI output:",
-            response.output_text
-        );
-
-        throw new Error(
-            "AI returned an invalid response."
-        );
-
-    }
-
-
-    /*
-     * Convert GPT null values into
-     * undefined values expected by our
-     * TypeScript StylePreferences type.
-     */
-
-    const preferences:
-        StylePreferences = {
-
-        category:
-            parsedResponse.preferences.category ||
-            undefined,
-
-        productType:
-            parsedResponse.preferences.productType ||
-            undefined,
-
-        occasion:
-            parsedResponse.preferences.occasion ||
-            undefined,
-
-        gender:
-            parsedResponse.preferences.gender ||
-            undefined,
-
-        color:
-            parsedResponse.preferences.color ||
-            undefined,
-
-        size:
-            parsedResponse.preferences.size ||
-            undefined,
-
-        brand:
-            parsedResponse.preferences.brand ||
-            undefined,
-
-        style:
-            parsedResponse.preferences.style ||
-            undefined,
-
-        minPrice:
-            parsedResponse.preferences.minPrice ??
-            undefined,
-
-        maxPrice:
-            parsedResponse.preferences.maxPrice ??
-            undefined,
-
-    };
-
-
-    /*
-     * Build recommendations ONLY from
-     * real products returned by our
-     * Products API.
-     */
-
-    const recommendations:
-        AIRecommendation[] =
-
-        parsedResponse.productIds
-
-            .map(
-                (productId) => {
-
-                    const product =
-                        products.find(
-                            (item) =>
-                                item.id ===
-                                productId
-                        );
-
-
-                    if (!product) {
-
-                        return null;
-
-                    }
-
-
-                    const reason =
-                        parsedResponse.reasons
-                            .find(
-                                (item) =>
-                                    item.productId ===
-                                    productId
-                            );
-
-
-                    return {
-
-                        productId:
-                            product.id,
-
-                        name:
-                            product.name,
-
-                        brand:
-                            product.brand,
-
-                        category:
-                            product.category,
-
-                        image:
-                            product.image,
-
-                        price:
-                            product.price,
-
-                        reason:
-                            reason?.reason ||
-                            "A strong match for your request.",
-
-                    };
-
-                }
-            )
-
-            .filter(
-                (
-                    item
-                ): item is AIRecommendation =>
-                    item !== null
-            )
-
-            .slice(
-                0,
-                3
-            );
-
-
-    /*
-     * Debug logging.
-     */
-
-    console.log(
-        "AI Selected Product IDs:",
-        parsedResponse.productIds
-    );
+    const preferences =
+        extracted.preferences;
 
 
     console.log(
-        "AI Style Preferences:",
+        "Current Preferences Used For Search:",
         preferences
     );
 
 
+    /*
+     * ----------------------------------------
+     * SELECT
+     * ----------------------------------------
+     *
+     * Selection operates ONLY on products
+     * that were previously shown.
+     */
+
+    if (
+        intent === "SELECT"
+    ) {
+
+        const selection =
+            await handleProductSelection(
+
+                message,
+
+                previouslyShownProductIds,
+
+                preferences,
+
+                extracted.responseId
+
+            );
+
+
+        return {
+
+            reply:
+                selection.reply || "",
+
+            responseId:
+                extracted.responseId,
+
+            recommendations:
+                selection.recommendations || [],
+
+            preferences,
+
+            intent,
+
+        };
+
+    }
+
+
+    /*
+     * ----------------------------------------
+     * STEP 3
+     * PRODUCT LOADING
+     * ----------------------------------------
+     *
+     * COMPARE:
+     * Load ONLY previously shown products.
+     *
+     * All other shopping intents:
+     * Search the catalog normally.
+     */
+
+    const products =
+        intent === "COMPARE"
+
+            ? await getProductsByIds(
+                  previouslyShownProductIds
+              )
+
+            : await searchProductsForAI(
+
+                  fullConversation,
+
+                  preferences,
+
+                  excludeProductIds
+
+              );
+
+
+    /*
+     * Comparison debugging.
+     */
+
+    if (
+        intent === "COMPARE"
+    ) {
+
+        console.log(
+            "COMPARE: Loading previously shown products only:",
+            previouslyShownProductIds
+        );
+
+
+        console.log(
+            "Products Loaded For Comparison:",
+
+            products.map(
+
+                (product) => ({
+
+                    id:
+                        product.id,
+
+                    name:
+                        product.name,
+
+                    brand:
+                        product.brand,
+
+                    category:
+                        product.category,
+
+                    price:
+                        product.price,
+
+                })
+
+            )
+
+        );
+
+    }
+
+
+    /*
+     * ----------------------------------------
+     * STEP 3.5
+     * ----------------------------------------
+     *
+     * Intelligent no-result handling.
+     *
+     * If the product search returns no
+     * products, do NOT call the final
+     * product-selection AI.
+     *
+     * The search layer is authoritative
+     * for product availability.
+     */
+
+    if (
+        products.length === 0
+    ) {
+
+        console.log(
+            "No products match the customer's hard requirements."
+        );
+
+
+        let fallbackReply =
+            "I couldn't find another product that matches your current requirements.";
+
+
+        if (
+            intent === "SHOW_ALTERNATIVE" ||
+            intent === "SHOW_MORE"
+        ) {
+
+            fallbackReply =
+                "I don't have another option that matches your current requirements. " +
+                "Would you like to change the budget, product style, or another preference?";
+
+        } else {
+
+            fallbackReply =
+                "I couldn't find a product that matches all of your current requirements. " +
+                "Would you like to change the budget, product style, or another preference?";
+
+        }
+
+
+        console.log(
+            "No-Result Fallback:",
+            fallbackReply
+        );
+
+
+        return {
+
+            reply:
+                fallbackReply,
+
+            responseId:
+                extracted.responseId,
+
+            recommendations:
+                [],
+
+            preferences,
+
+            intent,
+
+        };
+
+    }
+
+
+    /*
+     * ----------------------------------------
+     * DEBUG
+     * ----------------------------------------
+     *
+     * Log candidates.
+     */
+
     console.log(
-        "Final Recommendations:",
-        recommendations
+
+        "AI Product Candidates:",
+
+        products.map(
+
+            (product) => ({
+
+                id:
+                    product.id,
+
+                name:
+                    product.name,
+
+                brand:
+                    product.brand,
+
+                category:
+                    product.category,
+
+                price:
+                    product.price,
+
+            })
+
+        )
+
     );
 
 
     /*
-     * Return the complete result.
+     * ----------------------------------------
+     * STEP 4
+     * ----------------------------------------
+     *
+     * Ask the appropriate AI component.
+     *
+     * COMPARE:
+     * compare previously shown products.
+     *
+     * Everything else:
+     * select products from the catalog.
+     */
+
+    let selected:
+        StyleAdvisorAIResult;
+
+
+    if (
+        intent === "COMPARE"
+    ) {
+
+        selected = {
+
+            selection:
+                await compareProducts(
+
+                    message,
+
+                    products,
+
+                    preferences
+
+                ),
+
+            responseId:
+                extracted.responseId,
+
+        };
+
+    } else {
+
+        /*
+         * Prepare catalog for the final
+         * product-selection GPT call.
+         */
+
+        const productCatalog =
+            products.map(
+
+                (product) => ({
+
+                    id:
+                        product.id,
+
+                    name:
+                        product.name,
+
+                    brand:
+                        product.brand,
+
+                    category:
+                        product.category,
+
+                    price:
+                        product.price,
+
+                    description:
+                        product.description,
+
+                })
+
+            );
+
+
+        selected =
+            await selectProducts(
+
+                fullConversation,
+
+                message,
+
+                preferences,
+
+                productCatalog,
+
+                extracted.responseId
+
+            );
+
+    }
+
+
+    const parsedResponse =
+        selected.selection;
+
+
+    /*
+     * ----------------------------------------
+     * STEP 5
+     * ----------------------------------------
+     *
+     * Build recommendations ONLY from
+     * real products returned by the
+     * Products API.
+     */
+
+    const recommendations =
+        buildRecommendations(
+
+            parsedResponse.productIds,
+
+            parsedResponse.reasons,
+
+            products
+
+        );
+
+
+    /*
+     * ----------------------------------------
+     * DEBUG LOGGING
+     * ----------------------------------------
+     */
+
+    console.log(
+
+        "AI Selected Product IDs:",
+
+        parsedResponse.productIds
+
+    );
+
+
+    console.log(
+
+        "AI Style Preferences:",
+
+        preferences
+
+    );
+
+
+    console.log(
+
+        "Final Recommendations:",
+
+        recommendations
+
+    );
+
+
+    /*
+     * ----------------------------------------
+     * FINAL RESULT
+     * ----------------------------------------
      */
 
     return {
@@ -828,11 +579,13 @@ selected product.`,
             parsedResponse.reply,
 
         responseId:
-            response.id,
+            selected.responseId,
 
         recommendations,
 
         preferences,
+
+        intent,
 
     };
 
